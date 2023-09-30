@@ -12,7 +12,7 @@ from flask import Flask, request, jsonify
 # 6. Run the python file
 cred = credentials.Certificate("./Backend/serviceAccountKey.json")
 
-# Application Default credentials are automatically created.
+# Initialize Firestore 
 app = firebase_admin.initialize_app(cred)
 db = firestore.client()
 
