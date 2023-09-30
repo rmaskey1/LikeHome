@@ -7,10 +7,9 @@ from flask import Flask, request, jsonify
 # 1. On your terminal execute this command "pip install firebase-admin"
 # 2. Also install Flask: "pip install flask"
 # 3. Download serviceAccountKey.json under resources in our discord channel
-# 4. Save the file anywhere in your computer and copy the address/path to that file
-# 5. On line 13 replace the string inside Certificate with your own path to serviceAccountKey.json
+# 4. Drag that file and add it into backend folder if you have not done so
 # 6. Run the python file
-cred = credentials.Certificate("C:\\Users\\haily\\Documents\\serviceAccountKey.json")
+cred = credentials.Certificate("./backend/serviceAccountKey.json")
 
 # Application Default credentials are automatically created.
 app = firebase_admin.initialize_app(cred)
