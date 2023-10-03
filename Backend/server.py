@@ -1,7 +1,9 @@
 import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
-from flask import Flask, request, jsonify
+import database
+# import pyrebase
+from firebase_admin import credentials, firestore, auth
+from flask import Flask, request, jsonify, render_template, redirect, url_for
+from database import addUser
 
 # -----------IMPORTANT-------------
 # 1. On your terminal execute this command "pip install firebase-admin"
@@ -27,3 +29,30 @@ app = Flask(__name__)
 if __name__ == '__main__':
     #app.debug = True
     app.run(host='0.0.0.0', port=8000)
+
+@app.route('/signup', methods=['POST', 'GET'])
+def signup():
+    if request.method == "POST":
+        # Get form data
+        firstName = request.form['firstName']
+        lastName = request.form['lastName']
+        email = request.form['email']
+        password = request.form['password']
+        phone = request.form['phone']
+
+        # Insert data into the database
+        try: # Check if entered email is already in use
+            usr = auth.get_user_by_email(email) # Returns auth.UserNotFoundError if email does not exist, jumps to first except block
+            print("Email already in use.")
+            return render_template("signup.html", error=True) # Returns signup.html page with error message
+        except auth.UserNotFoundError:
+            try: # Check if entered phone number is already in use
+                usr = auth.get_user_by_phone_number(phone) # Returns auth.UserNotFoundError if email does not exist, jumps to second except block
+                print("Phone number already in use.")
+                return render_template("signup.html", error=True) # Returns signup.html page with error message
+            except auth.UserNotFoundError:
+                dispName = firstName + " " + lastName
+                addUser(email, phone, password, dispName) # Adds user to database
+                return redirect(url_for("login")) # Redirects to login page
+    else:
+        return render_template("signup.html", error=False) # Returns signup.html page if no POST request is made yet
