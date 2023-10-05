@@ -9,7 +9,7 @@ from flask import Flask, request, jsonify
 # 4. Drag that file and add it into backend folder if you have not done so
 # 5. Make sure you are in cmpe165-likehome directory and not Backend directory
 # 6. Run the python file
-cred = credentials.Certificate("./Backend/serviceAccountKey.json")
+cred = credentials.Certificate("./serviceAccountKey.json")
 
 # Application Default credentials are automatically created.
 app = firebase_admin.initialize_app(cred)
