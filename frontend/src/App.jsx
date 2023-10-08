@@ -5,6 +5,7 @@ import Details from "routes/Details";
 import Home from "routes/Home";
 import Login from "routes/Login";
 import Register from "routes/Register";
+import AddListing from "routes/AddListing";
 
 function App() {
   return (
@@ -15,6 +16,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/hotel/:id" element={<Details />} />
+        <Route path="/addlisting" element={<AddListing />} />
+        <Route path="/hotel/:id/modifylisting" element={<AddListing />} />
       </Routes>
     </BrowserRouter>
   );
