@@ -100,7 +100,7 @@ const Checkbox = styled.input`
   vertical-align: bottom;
 `;
 
-const Add = styled.button`
+const SubmitButton = styled.button`
   margin-top: 50px;
   width: 500px;
   height: 60px;
@@ -442,7 +442,7 @@ function AddListing() {
         </CheckboxGroup>
 
         <CenteredButtonContainer>
-          <Add type="submit">Add</Add>
+          <SubmitButton type="submit">Add</SubmitButton>
         </CenteredButtonContainer>
       </form>
     </Container>

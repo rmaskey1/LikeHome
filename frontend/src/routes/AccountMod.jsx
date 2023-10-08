@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import styled from "styled-components";
 
 const Container = styled.main`
-  display: center;
+  display: flex;
+  flex-direction: column;
   margin: auto;
   width: 70%;
   margin-top: 36px;
@@ -12,14 +13,14 @@ const Container = styled.main`
 `;
 
 const ListingTitle = styled.div`
-  font-size: 28px;
+  font-size: 35px;
   font-weight: 700;
 `;
 
 const SectionTitle = styled.div`
   margin-top: 20px;
   font-size: 22px;
-  font-weight: 500;
+  font-weight: 300;
 `;
 
 const Input = styled.input`
@@ -100,7 +101,7 @@ const Checkbox = styled.input`
   vertical-align: bottom;
 `;
 
-const Add = styled.button`
+const SubmitButton = styled.button`
   margin-top: 50px;
   width: 500px;
   height: 60px;
@@ -124,18 +125,25 @@ const CenteredButtonContainer = styled.div`
   margin-top: 20px;
 `;
 
+const LeftBox = styled.div`
+  margin-top: 40px;
+  margin-left: 50px;
+  display: flex;
+  justify-content: flex-start; /* Align items to the left */
+  align-items: center; /* Center vertically */
+  margin-bottom: 20px; /* Add some spacing from the form */
+`;
+
+const Button = styled.button`
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 19px;
+  font-weight: 500;
+`;
+
 function AddListing() {
   const { handleSubmit, control, register, setValue } = useForm();
-  const [uploadedFileName, setUploadedFileName] = useState(null);
-
-  const handleFileInputChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setUploadedFileName(file.name);
-    } else {
-      setUploadedFileName(null);
-    }
-  };
+  const [formData, setFormData] = useState(null);
 
   const onSubmit = (data) => {
     //Handle form submission here!! <3
@@ -143,220 +151,49 @@ function AddListing() {
   };
 
   return (
-    <Container>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <ListingTitle>Add a new listing:</ListingTitle>
-        <SectionTitle>Basic Information</SectionTitle>
-        <div style={{ display: "flex" }}>
-          <Input
-            {...register("hotelName")}
-            type="text"
-            placeholder="Hotel Name"
-            style={{ marginRight: "10px" }}
-          />
-          <Input
-            {...register("price", { valueAsNumber: true })}
-            type="number"
-            placeholder="Price"
-          />
-        </div>
-        <Input
-          {...register("hotelLocation")}
-          type="text"
-          placeholder="Hotel Location"
-        />
-        <div style={{ marginTop: "15px" }}>
+    <>
+      <LeftBox>
+        <Button onClick={() => window.history.back()}>Back</Button>
+      </LeftBox>
+      <Container>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ListingTitle>Update Profile</ListingTitle>
+          <SectionTitle>First Name</SectionTitle>
           <Controller
-            name="image"
+            name="firstName"
             control={control}
-            defaultValue={null}
-            render={({ field }) => (
-              <>
-                <UploadButton>
-                  Upload Image
-                  <FileInput
-                    {...field}
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      field.onChange(e);
-                      handleFileInputChange(e);
-                    }}
-                  />
-                </UploadButton>
-              </>
-            )}
+            render={({ field }) => <Input {...field} type="text" />}
           />
-        </div>
-        {uploadedFileName && <FileName>{uploadedFileName}</FileName>}
-
-        <br />
-
-        <SectionTitle>Room Details</SectionTitle>
-        <div style={{ display: "flex" }}>
-          <Input
-            {...register("beds", { valueAsNumber: true })}
-            type="number"
-            placeholder="# of Beds"
-            style={{ marginRight: "10px" }}
+          <SectionTitle>Last Name</SectionTitle>
+          <Controller
+            name="lastName"
+            control={control}
+            render={({ field }) => <Input {...field} type="text" />}
           />
-          <Input {...register("bedType")} type="text" placeholder="Bed Type" />
-        </div>
-        <div style={{ display: "flex" }}>
-          <Input
-            {...register("guests", { valueAsNumber: true })}
-            type="number"
-            placeholder="# of Guests"
-            style={{ marginRight: "10px" }}
+          <SectionTitle>Email</SectionTitle>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => <Input {...field} type="text" />}
           />
-          <Input
-            {...register("bathrooms", { valueAsNumber: true })}
-            type="number"
-            placeholder="# of Bathrooms"
+          <SectionTitle>Password</SectionTitle>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => <Input {...field} type="text" />}
           />
-        </div>
-
-        <br />
-
-        <SectionTitle>Amenities Offered</SectionTitle>
-        <CheckboxGroup>
-          <CheckboxItem>
-            <Label>
-              <Controller
-                name="amenities[0].freeWifi"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              Free Wifi
-            </Label>
-            <Label>
-              <Controller
-                name="amenities[1].pool"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              Pool
-            </Label>
-            <Label>
-              <Controller
-                name="amenities[2].tv"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              TV
-            </Label>
-            <Label>
-              <Controller
-                name="amenities[3].freeWasherInUnit"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              Free washer - In unit
-            </Label>
-            <Label>
-              <Controller
-                name="amenities[4].freeDryerInUnit"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              Free dryer - In unit
-            </Label>
-            <Label>
-              <Controller
-                name="amenities[5].freeParking"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              Free parking
-            </Label>
-            <Label>
-              <Controller
-                name="amenities[6].airConditioning"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              Air conditioning
-            </Label>
-          </CheckboxItem>
-          <CheckboxItem>
-            <Label>
-              <Controller
-                name="amenities[7].freeBreakfast"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              Free Breakfast
-            </Label>
-            <Label>
-              <Controller
-                name="amenities[8].freeLunch"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              Free Lunch
-            </Label>
-            <Label>
-              <Controller
-                name="amenities[9].freeDinner"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              Free Dinner
-            </Label>
-            <Label>
-              <Controller
-                name="amenities[10].microwave"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              Microwave
-            </Label>
-            <Label>
-              <Controller
-                name="amenities[11].refrigerator"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              Refrigerator
-            </Label>
-            <Label>
-              <Controller
-                name="amenities[12].petFriendly"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              Pet Friendly
-            </Label>
-            <Label>
-              <Controller
-                name="amenities[13].spa"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
-              />
-              Spa
-            </Label>
-          </CheckboxItem>
-        </CheckboxGroup>
-
-        <CenteredButtonContainer>
-          <Add type="submit">Add</Add>
-        </CenteredButtonContainer>
-      </form>
-    </Container>
+          <SectionTitle>Phone Number</SectionTitle>
+          <Controller
+            name="phoneNumber"
+            control={control}
+            render={({ field }) => <Input {...field} type="text" />}
+          />
+          <CenteredButtonContainer>
+            <SubmitButton type="submit">Update</SubmitButton>
+          </CenteredButtonContainer>
+        </form>
+      </Container>
+    </>
   );
 }
 
