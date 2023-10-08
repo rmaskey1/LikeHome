@@ -5,6 +5,7 @@ import Details from "routes/Details";
 import Home from "routes/Home";
 import Login from "routes/Login";
 import Register from "routes/Register";
+import PreviewCardsListing from "components/PreviewCardsListing";
 
 function App() {
   return (
@@ -16,6 +17,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/hotel/:id" element={<Details />} />
       </Routes>
+      <div>
+        <PreviewCardsListing handleCardClick="" />
+      </div>
     </BrowserRouter>
   );
 }
