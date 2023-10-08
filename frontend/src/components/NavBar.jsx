@@ -44,7 +44,7 @@ function NavBar() {
 
   //show "Back" or "Home" based on the route -- used for add listing
   const renderLeftBox = () => {
-    if (location.pathname === "/addlisting") {
+    if (location.pathname === "/add_listing") {
       return (
         <LeftBox>
           <Button onClick={() => window.history.back()}>Back</Button>
@@ -61,7 +61,7 @@ function NavBar() {
 
   //render right box based on the left box content -- used for add listing
   const renderRightBox = () => {
-    if (location.pathname === "/addlisting") {
+    if (location.pathname === "/add_listing") {
       return <></>; // Empty fragment for the right box
     }
 

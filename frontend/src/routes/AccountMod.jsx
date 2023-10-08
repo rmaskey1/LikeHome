@@ -124,20 +124,8 @@ const CenteredButtonContainer = styled.div`
   margin-top: 20px;
 `;
 
-const ErrorMessage = styled.span`
-  color: #cf316a;
-  font-size: 14px;
-  margin-top: 5px;
-`;
-
 function AddListing() {
-  const {
-    handleSubmit,
-    control,
-    register,
-    setValue,
-    formState: { errors },
-  } = useForm();
+  const { handleSubmit, control, register, setValue } = useForm();
   const [uploadedFileName, setUploadedFileName] = useState(null);
 
   const handleFileInputChange = (e) => {
@@ -160,49 +148,23 @@ function AddListing() {
         <ListingTitle>Add a new listing:</ListingTitle>
         <SectionTitle>Basic Information</SectionTitle>
         <div style={{ display: "flex" }}>
-          <div style={{ flex: 1, marginRight: "10px" }}>
-            <Input
-              {...register("hotelName", { required: "Hotel Name is required" })}
-              type="text"
-              placeholder="Hotel Name"
-            />
-            {errors.hotelName && (
-              <ErrorMessage className="error-text">
-                <span>{errors.hotelName.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
-          <div style={{ flex: 1 }}>
-            <Input
-              {...register("price", {
-                valueAsNumber: true,
-                min: { value: 0, message: "Price must be non-negative" },
-                required: "Price is required",
-              })}
-              type="number"
-              placeholder="Price"
-            />
-            {errors.price && (
-              <ErrorMessage className="error-text">
-                <span>{errors.price.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
+          <Input
+            {...register("hotelName")}
+            type="text"
+            placeholder="Hotel Name"
+            style={{ marginRight: "10px" }}
+          />
+          <Input
+            {...register("price", { valueAsNumber: true })}
+            type="number"
+            placeholder="Price"
+          />
         </div>
-
         <Input
-          {...register("hotelLocation", {
-            required: "Hotel Location is required",
-          })}
+          {...register("hotelLocation")}
           type="text"
           placeholder="Hotel Location"
         />
-        {errors.hotelLocation && (
-          <ErrorMessage className="error-text">
-            <span>{errors.hotelLocation.message}</span>
-          </ErrorMessage>
-        )}
-
         <div style={{ marginTop: "15px" }}>
           <Controller
             name="image"
@@ -232,77 +194,26 @@ function AddListing() {
 
         <SectionTitle>Room Details</SectionTitle>
         <div style={{ display: "flex" }}>
-          <div style={{ flex: 1, marginRight: "10px" }}>
-            <Input
-              {...register("beds", {
-                valueAsNumber: true,
-                min: {
-                  value: 0,
-                  message: "Number of Beds must be non-negative",
-                },
-                required: "Number of Beds is required",
-              })}
-              type="number"
-              placeholder="# of Beds"
-            />
-            {errors.beds && (
-              <ErrorMessage className="error-text">
-                <span>{errors.beds.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
-          <div style={{ flex: 1 }}>
-            <Input
-              {...register("bedType", { required: "Bed Type is required" })}
-              type="text"
-              placeholder="Bed Type"
-            />
-            {errors.bedType && (
-              <ErrorMessage className="error-text">
-                <span>{errors.bedType.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
+          <Input
+            {...register("beds", { valueAsNumber: true })}
+            type="number"
+            placeholder="# of Beds"
+            style={{ marginRight: "10px" }}
+          />
+          <Input {...register("bedType")} type="text" placeholder="Bed Type" />
         </div>
         <div style={{ display: "flex" }}>
-          <div style={{ flex: 1, marginRight: "10px" }}>
-            <Input
-              {...register("guests", {
-                valueAsNumber: true,
-                min: {
-                  value: 1,
-                  message: "Number of Guests must be greater than 0",
-                },
-                required: "Number of Guests is required",
-              })}
-              type="number"
-              placeholder="# of Guests"
-            />
-            {errors.guests && (
-              <ErrorMessage className="error-text">
-                <span>{errors.guests.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
-          <div style={{ flex: 1 }}>
-            <Input
-              {...register("bathrooms", {
-                valueAsNumber: true,
-                min: {
-                  value: 0,
-                  message: "Number of Bathrooms must be non-negative",
-                },
-                required: "Number of Bathrooms is required",
-              })}
-              type="number"
-              placeholder="# of Bathrooms"
-            />
-            {errors.bathrooms && (
-              <ErrorMessage className="error-text">
-                <span>{errors.bathrooms.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
+          <Input
+            {...register("guests", { valueAsNumber: true })}
+            type="number"
+            placeholder="# of Guests"
+            style={{ marginRight: "10px" }}
+          />
+          <Input
+            {...register("bathrooms", { valueAsNumber: true })}
+            type="number"
+            placeholder="# of Bathrooms"
+          />
         </div>
 
         <br />
