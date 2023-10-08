@@ -141,12 +141,55 @@ const Button = styled.button`
   font-weight: 500;
 `;
 
+const ErrorText = styled.div`
+  color: #cf316a;
+  font-size: 14px;
+  margin-top: 5px;
+`;
+
 function AddListing() {
-  const { handleSubmit, control, register, setValue } = useForm();
+  const {
+    handleSubmit,
+    control,
+    setError,
+    formState: { errors },
+  } = useForm();
   const [formData, setFormData] = useState(null);
 
   const onSubmit = (data) => {
-    //Handle form submission here!! <3
+    const previousFirstName = "PreviousFirstName"; //INTEGRATIONS!! please replace with the user's previous first name
+    const previousLastName = "PreviousLastName"; //INTEGRATIONS!! please replace with the user's previous last name
+
+    if (data.firstName === previousFirstName) {
+      setError("firstName", {
+        type: "manual",
+        message: "First name matches the previous first name",
+      });
+    }
+
+    if (data.lastName === previousLastName) {
+      setError("lastName", {
+        type: "manual",
+        message: "Last name matches the previous last name",
+      });
+    }
+
+    //email is already taken
+    if (data.email === "taken@gmail.com") {
+      setError("email", {
+        type: "manual",
+        message: "Email is already taken",
+      });
+    }
+
+    //phone number is already taken
+    if (data.phoneNumber === "1234567890") {
+      setError("phoneNumber", {
+        type: "manual",
+        message: "Phone number is already taken",
+      });
+    }
+
     console.log(data);
   };
 
@@ -162,19 +205,38 @@ function AddListing() {
           <Controller
             name="firstName"
             control={control}
-            render={({ field }) => <Input {...field} type="text" />}
+            render={({ field }) => (
+              <>
+                <Input {...field} type="text" />
+                {errors.firstName && (
+                  <ErrorText>{errors.firstName.message}</ErrorText>
+                )}
+              </>
+            )}
           />
           <SectionTitle>Last Name</SectionTitle>
           <Controller
             name="lastName"
             control={control}
-            render={({ field }) => <Input {...field} type="text" />}
+            render={({ field }) => (
+              <>
+                <Input {...field} type="text" />
+                {errors.lastName && (
+                  <ErrorText>{errors.lastName.message}</ErrorText>
+                )}
+              </>
+            )}
           />
           <SectionTitle>Email</SectionTitle>
           <Controller
             name="email"
             control={control}
-            render={({ field }) => <Input {...field} type="text" />}
+            render={({ field }) => (
+              <>
+                <Input {...field} type="text" />
+                {errors.email && <ErrorText>{errors.email.message}</ErrorText>}
+              </>
+            )}
           />
           <SectionTitle>Password</SectionTitle>
           <Controller
@@ -186,7 +248,14 @@ function AddListing() {
           <Controller
             name="phoneNumber"
             control={control}
-            render={({ field }) => <Input {...field} type="text" />}
+            render={({ field }) => (
+              <>
+                <Input {...field} type="text" />
+                {errors.phoneNumber && (
+                  <ErrorText>{errors.phoneNumber.message}</ErrorText>
+                )}
+              </>
+            )}
           />
           <CenteredButtonContainer>
             <SubmitButton type="submit">Update</SubmitButton>
