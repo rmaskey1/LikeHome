@@ -176,6 +176,7 @@ function AddListing() {
 
     //email is already taken
     if (data.email === "taken@gmail.com") {
+      //INTEGRATIONS! Please replace with user's previous email
       setError("email", {
         type: "manual",
         message: "Email is already taken",
@@ -184,6 +185,7 @@ function AddListing() {
 
     //phone number is already taken
     if (data.phoneNumber === "1234567890") {
+      //INTEGRATIONS! Please replace with user's previous phone number
       setError("phoneNumber", {
         type: "manual",
         message: "Phone number is already taken",
