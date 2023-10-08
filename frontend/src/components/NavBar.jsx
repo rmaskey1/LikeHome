@@ -55,6 +55,7 @@ function NavBar() {
       <LeftBox>
         <Link to={""}>Home</Link>
         <Link to="mybooking">MyBooking</Link>
+        <Link to={"profile"}>Profile</Link>
       </LeftBox>
     );
   };
