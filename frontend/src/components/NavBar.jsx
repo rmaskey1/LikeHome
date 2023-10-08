@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const NavbarContainer = styled.nav`
@@ -10,50 +10,62 @@ const NavbarContainer = styled.nav`
   align-items: center;
   padding: 10px 50px;
   width: 100vw;
-  height: 60px;
+  height: 70px;
   background: #fff;
   color: #000;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px,
     rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+  font-size: 16px;
+  font-weight: 500;
 `;
 
 const LeftBox = styled.div`
-  font-size: 20px;
+  display: flex;
+  gap: 20px;
 `;
-const CenterBox = styled.div``;
+
 const RightBox = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 20px;
 `;
 
 const Button = styled.button`
-  padding: 10px;
-  border-radius: 8px;
-  background: #a877c5;
-  color: #fff;
+  display: flex;
+  gap: 20px;
+  background-color: transparent;
   cursor: pointer;
-
-  &:hover {
-    background: #847a8f;
-  }
 `;
 
 function NavBar() {
-  const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useState(false);
 
-  const onButtonClick = (path) => {
-    navigate(path);
-  };
+  const logout = () => setIsLogin((prev) => !prev);
 
   return (
     <NavbarContainer>
-      <LeftBox>Like Home</LeftBox>
-      <CenterBox></CenterBox>
-      <RightBox>
-        <Button onClick={() => onButtonClick("")}>Home</Button>
-        <Button onClick={() => onButtonClick("login")}>Log In</Button>
-        <Button onClick={() => onButtonClick("register")}>Register</Button>
-      </RightBox>
+      {isLogin ? (
+        <>
+          <LeftBox>
+            <Link to={""}>Home</Link>
+            <Link to="mybooking">MyBooking</Link>
+          </LeftBox>
+          <RightBox>
+            <Button onClick={logout}>Logout</Button>
+          </RightBox>
+        </>
+      ) : (
+        <>
+          <LeftBox>
+            <Link to={""}>Home</Link>
+          </LeftBox>
+          <RightBox>
+            <Link to="login" onClick={logout}>
+              Login
+            </Link>
+            <Link to="register">Sign Up</Link>
+          </RightBox>
+        </>
+      )}
     </NavbarContainer>
   );
 }

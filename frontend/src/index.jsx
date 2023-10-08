@@ -7,6 +7,9 @@ import { RecoilRoot } from "recoil";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 const GlobalStyle = createGlobalStyle`
+
+@import url('https://fonts.cdnfonts.com/css/rubik');
+
 * {
   margin: 0;
   padding: 0;
@@ -18,7 +21,7 @@ const GlobalStyle = createGlobalStyle`
   transition: all 0.2s;
 }
 body {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Rubik', 'Source Sans Pro', sans-serif;
   background-color: #fff;
   color: #000;
   padding-top: 60px;
