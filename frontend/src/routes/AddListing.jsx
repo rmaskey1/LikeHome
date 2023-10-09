@@ -22,6 +22,12 @@ const SectionTitle = styled.div`
   font-weight: 500;
 `;
 
+const SubTitle = styled.div`
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: 300;
+`;
+
 const Input = styled.input`
   margin-top: 15px;
   width: 100%;
@@ -254,19 +260,6 @@ function AddListing() {
           </div>
         </div>
 
-        <Input
-          {...register("availableDates", {
-            required: "Available Dates is required",
-          })}
-          type="text"
-          placeholder="Available Dates"
-        />
-        {errors.availableDates && (
-          <ErrorMessage className="error-text">
-            <span>{errors.avaialbleDates.message}</span>
-          </ErrorMessage>
-        )}
-
         <div style={{ marginTop: "15px" }}>
           <Controller
             name="image"
@@ -291,6 +284,96 @@ function AddListing() {
           />
         </div>
         {uploadedFileName && <FileName>{uploadedFileName}</FileName>}
+
+        <br />
+
+        <SectionTitle>Available Dates</SectionTitle>
+        <div style={{ display: "flex" }}>
+          <div style={{ flex: 1, marginRight: "10px" }}>
+            <SubTitle>From:</SubTitle>
+            <div style={{ display: "flex" }}>
+              <div style={{ flex: 1, marginRight: "10px" }}>
+                <Input
+                  {...register("fromMonth", {
+                    required: "Month is required",
+                  })}
+                  type="text"
+                  placeholder="Month"
+                />
+                {errors.fromMonth && (
+                  <ErrorMessage className="error-text">
+                    <span>{errors.fromMonth.message}</span>
+                  </ErrorMessage>
+                )}
+              </div>
+              <div style={{ flex: 1 }}>
+                <Input
+                  {...register("fromDay", {
+                    valueAsNumber: true,
+                    max: {
+                      value: 31,
+                      message: "Day is at most 31",
+                    },
+                    min: {
+                      value: 1,
+                      message: "Day must be at least 1",
+                    },
+                    required: "Day is required",
+                  })}
+                  type="number"
+                  placeholder="Day"
+                />
+                {errors.fromDay && (
+                  <ErrorMessage className="error-text">
+                    <span>{errors.fromDay.message}</span>
+                  </ErrorMessage>
+                )}
+              </div>
+            </div>
+          </div>
+          <div style={{ flex: 1 }}>
+            <SubTitle>To:</SubTitle>
+            <div style={{ display: "flex" }}>
+              <div style={{ flex: 1, marginRight: "10px" }}>
+                <Input
+                  {...register("toMonth", {
+                    required: "Month is required",
+                  })}
+                  type="text"
+                  placeholder="Month"
+                />
+                {errors.toMonth && (
+                  <ErrorMessage className="error-text">
+                    <span>{errors.toMonth.message}</span>
+                  </ErrorMessage>
+                )}
+              </div>
+              <div style={{ flex: 1 }}>
+                <Input
+                  {...register("toDay", {
+                    valueAsNumber: true,
+                    max: {
+                      value: 31,
+                      message: "Day is at most 31",
+                    },
+                    min: {
+                      value: 1,
+                      message: "Day must be at least 1",
+                    },
+                    required: "Day is required",
+                  })}
+                  type="number"
+                  placeholder="Day"
+                />
+                {errors.toDay && (
+                  <ErrorMessage className="error-text">
+                    <span>{errors.toDay.message}</span>
+                  </ErrorMessage>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
 
         <br />
 
