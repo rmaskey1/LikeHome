@@ -2,6 +2,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore, auth, exceptions
 import pyrebase
 import jwt
+import datetime
 from flask import Flask, request, jsonify
 from datetime import timedelta
 
@@ -75,6 +76,13 @@ def addUser(email, phone, password, firstName, lastName, type, hotel=None): # 'h
         })
     print('Sucessfully created new user: {0}'.format(user.uid))
 
+def addBooking(uid, rid, start_date, end_date):
+    doc_ref = db.collection("booking").document(uid).set({
+            'rid': rid,
+            'startDate': start_date,
+            'endDate': end_date,
+        })
+
 # Main method for testing
 def main():
     # addUser("gmail@email.com", "+15555555557", "password", "Mike", "Mike", "guest")
@@ -86,6 +94,8 @@ def main():
     user2 = auth.get_user_by_email("email@email.com")
     if user2.custom_claims.get('guest') == True:
         print("works")
+
+    addBooking('efjnejrgndfs', 'egfnejsgrnsjfn', datetime.datetime(2023, 10, 6, 20, 0, 0) , datetime.datetime(2023, 10, 7, 10, 0, 0))
 
 
 def guestLogin(email, password):

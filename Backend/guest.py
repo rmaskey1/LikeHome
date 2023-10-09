@@ -2,18 +2,19 @@ import firebase_admin
 import database
 import pyrebase
 import requests
+import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import  guestLogin, updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName
+from database import  guestLogin, updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, addBooking
 
 
 def guest_modification_func(app):
     @app.route('/guest_modification', methods=['POST', 'GET'])
     def guest_modification():
         
-
         # Get current user's uid
         uid = getUid()
+        print("UID: " + uid)
         #get uid in db
         firebase_admin.get_app()
         if request.method == "POST":
