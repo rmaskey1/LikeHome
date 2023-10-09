@@ -7,7 +7,6 @@ import Login from "routes/Login";
 import NotFound from "routes/NotFound";
 import Profile from "routes/Profile";
 import Register from "routes/Register";
-import Profile from "routes/Profile";
 import AddListing from "routes/AddListing";
 import AccountMod from "routes/AccountMod";
 
