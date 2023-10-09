@@ -192,15 +192,73 @@ function AddListing() {
         </div>
 
         <Input
-          {...register("hotelLocation", {
-            required: "Hotel Location is required",
+          {...register("streetName", {
+            required: "Street Name is required",
           })}
           type="text"
-          placeholder="Hotel Location"
+          placeholder="Street Name"
         />
-        {errors.hotelLocation && (
+        {errors.streetName && (
           <ErrorMessage className="error-text">
-            <span>{errors.hotelLocation.message}</span>
+            <span>{errors.streetName.message}</span>
+          </ErrorMessage>
+        )}
+
+        <div style={{ display: "flex" }}>
+          <div style={{ flex: 1, marginRight: "10px" }}>
+            <Input
+              {...register("city", {
+                required: "City is required",
+              })}
+              type="text"
+              placeholder="City"
+            />
+            {errors.city && (
+              <ErrorMessage className="error-text">
+                <span>{errors.city.message}</span>
+              </ErrorMessage>
+            )}
+          </div>
+          <div style={{ flex: 1, marginRight: "10px" }}>
+            <Input
+              {...register("state", {
+                required: "State is required",
+              })}
+              type="text"
+              placeholder="State"
+            />
+            {errors.state && (
+              <ErrorMessage className="error-text">
+                <span>{errors.state.message}</span>
+              </ErrorMessage>
+            )}
+          </div>
+          <div style={{ flex: 1 }}>
+            <Input
+              {...register("county", {
+                required: "County is required",
+              })}
+              type="text"
+              placeholder="County"
+            />
+            {errors.county && (
+              <ErrorMessage className="error-text">
+                <span>{errors.county.message}</span>
+              </ErrorMessage>
+            )}
+          </div>
+        </div>
+
+        <Input
+          {...register("availableDates", {
+            required: "Available Dates is required",
+          })}
+          type="text"
+          placeholder="Available Dates"
+        />
+        {errors.availableDates && (
+          <ErrorMessage className="error-text">
+            <span>{errors.avaialbleDates.message}</span>
           </ErrorMessage>
         )}
 

@@ -157,9 +157,12 @@ function AddListing() {
   const [formData, setFormData] = useState(null);
 
   const onSubmit = (data) => {
+    //INTEGRATIONS! Make error msgs for setting first and last names with numbers?
+
     //email is already taken
+    //INTEGRATIONS! Please check through the email database and ensure that the email they
+    //want to change is unique
     if (data.email === "taken@gmail.com") {
-      //INTEGRATIONS! Please replace with user's previous email
       setError("email", {
         type: "manual",
         message: "Email is already taken",
@@ -167,8 +170,9 @@ function AddListing() {
     }
 
     //phone number is already taken
+    //INTEGRATIONS! Please check through the phonenumber database and ensure that the number they
+    //want to change is unique
     if (data.phoneNumber === "1234567890") {
-      //INTEGRATIONS! Please replace with user's previous phone number
       setError("phoneNumber", {
         type: "manual",
         message: "Phone number is already taken",
@@ -227,7 +231,7 @@ function AddListing() {
           <Controller
             name="password"
             control={control}
-            render={({ field }) => <Input {...field} type="text" />}
+            render={({ field }) => <Input {...field} type="password" />}
           />
           <SectionTitle>Phone Number</SectionTitle>
           <Controller
