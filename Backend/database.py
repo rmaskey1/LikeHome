@@ -73,6 +73,10 @@ def updateEmail(uid, email):
         uid,
         email = email)
     
+    # Update the user's email in Firestore
+    user_ref = db.collection('user').document(uid)
+    user_ref.update({'email': email})
+    
 def updateName(uid, name):
     user = auth.update_user(
         uid,
