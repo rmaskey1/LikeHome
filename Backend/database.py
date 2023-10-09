@@ -57,7 +57,7 @@ def addUser(email, phone, password, firstName, lastName, type, hotel=None): # 'h
     
     # Adding user to custom "user" database
     if hotel == None:
-        doc_ref = db.collection("user").add({
+        doc_ref = db.collection("user").document(user.uid).set({
             'firstName': firstName,
             'lastName': lastName,
             'email': email,
@@ -65,7 +65,7 @@ def addUser(email, phone, password, firstName, lastName, type, hotel=None): # 'h
             'accountType': type
         })
     else:
-        doc_ref = db.collection("user").add({
+        doc_ref = db.collection("user").document(user.uid).set({
             'firstName': firstName,
             'lastName': lastName,
             'email': email,
