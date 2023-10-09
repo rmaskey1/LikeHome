@@ -16,8 +16,9 @@ from guest import guest_modification_func, guest_login_func
 guest_login_func(app)
 guest_modification_func(app)
 
-from hotel import hotel_modification_func
+from hotel import hotel_modification_func, hotel_func
 hotel_modification_func(app)
+hotel_func(app)
 
 # User Type Selection Function
 @app.route('/user_selection', methods=['POST', 'GET'])
@@ -30,6 +31,8 @@ def user_selection():
             return redirect(url_for("hotel_signup"))
         elif usertype == "guest_login": # If the input is 'hotel', redirect to hotel signup page
             return redirect(url_for("guest_login"))
+        elif usertype == "hotel_login": # redirect to hotel login page
+            return redirect(url_for("hotel_login"))
         else: # Else, nothing was chosen
             return render_template("user_selection.html")
     else:
