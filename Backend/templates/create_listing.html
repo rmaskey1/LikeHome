@@ -26,22 +26,16 @@
                     <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email or phone number" >
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
-                    <div style="padding-top: 5px">
-                        <input type="checkbox" class="form-check-input" id="showpass" onclick="showPassword()">
-                        <label class="check" for="showpass" style="font-family: 'Space Grotesk', sans-serif;">Show Password</label>
-                    </div>
-                    <script>
-                        function showPassword() {
-                            var x = document.getElementById("password");
-                            if (x.type === "password") {
-                                x.type = "text";
-                            } else {
-                                x.type = "password";
-                            }
-                        }
-                    </script>
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email or phone number" >
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email or phone number" >
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email or phone number" >
                 </div>
                 {% if emailError == True %}
                 <div class="error">
@@ -51,11 +45,6 @@
                 {% if passwordError == True %}
                 <div class="error">
                     <p>Incorrect password</p>
-                </div>
-                {% endif %}
-                {% if notHotelUserError == True %}
-                <div class="error">
-                    <p>User is not a Hotel Owner!</p>
                 </div>
                 {% endif %}
                 <button type="submit" class="btn btn-primary">Sign Up</button>
