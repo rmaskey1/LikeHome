@@ -5,6 +5,7 @@ from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from database import addUser
 
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -84,3 +85,4 @@ def hotel_signup():
 if __name__ == '__main__':
     #app.debug = True
     app.run()
+
