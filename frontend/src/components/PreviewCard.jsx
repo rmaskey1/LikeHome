@@ -46,6 +46,12 @@ const StyledCardDetails = styled.div`
 const formatMonthAndDate = (dateString) => {
   const options = { month: "short", day: "numeric" };
   const date = new Date(dateString);
+  const currentYear = new Date().getFullYear();
+  const includeYear = date.getFullYear() !== currentYear;
+
+  if (includeYear) {
+    options.year = "numeric";
+  }
   return date.toLocaleDateString(undefined, options);
 };
 

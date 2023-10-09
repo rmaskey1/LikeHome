@@ -16,10 +16,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/hotel/:id" element={<Details />} />
+        <Route path="/home" element={<PreviewCardsListing />} />
       </Routes>
-      <div>
-        <PreviewCardsListing handleCardClick="" />
-      </div>
     </BrowserRouter>
   );
 }

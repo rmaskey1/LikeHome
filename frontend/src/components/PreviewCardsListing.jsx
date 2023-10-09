@@ -10,7 +10,7 @@ const StyledCardsListing = styled.div`
   gap: 25px;
 `;
 
-function PreviewCardsListing({ handleCardClick }) {
+function PreviewCardsListing() {
   // const [previewCards, setPreviewCards] = useState([]);
 
   // useEffect(() => {
@@ -46,8 +46,8 @@ function PreviewCardsListing({ handleCardClick }) {
       location: "Santa Cruz, California",
       rating: 4.81,
       description: "Ocean views",
-      startDate: new Date("2023-10-22"),
-      endDate: new Date("2023-11-27"),
+      startDate: "2023-10-22",
+      endDate: "2023-11-27",
       price: 1325,
       imageUrls: [
         "https://static.independent.co.uk/2023/03/24/09/Best%20New%20York%20boutique%20hotels.jpg?width=1200",
@@ -61,8 +61,8 @@ function PreviewCardsListing({ handleCardClick }) {
       location: "Half Moon Bay, California",
       rating: 4.98,
       description: "Beach and ocean views",
-      startDate: new Date("2023-10-29"),
-      endDate: new Date("2023-11-3"),
+      startDate: "2023-10-29",
+      endDate: "2023-11-3",
       price: 354,
       imageUrls: [
         "https://static.independent.co.uk/2023/03/24/09/Best%20New%20York%20boutique%20hotels.jpg?width=1200",
@@ -75,8 +75,8 @@ function PreviewCardsListing({ handleCardClick }) {
       location: "Los Gatos, California",
       rating: 4.93,
       description: "Mountain and ocean views",
-      startDate: new Date("2023-10-22"),
-      endDate: new Date("2023-10-27"),
+      startDate: "2023-10-22",
+      endDate: "2023-10-27",
       price: 231,
       imageUrls: [
         "https://static.independent.co.uk/2023/03/24/09/Best%20New%20York%20boutique%20hotels.jpg?width=1200",
@@ -89,8 +89,8 @@ function PreviewCardsListing({ handleCardClick }) {
       location: "Half Moon Bay, California",
       rating: 4.98,
       description: "Beach and ocean views",
-      startDate: new Date("2023-10-29"),
-      endDate: new Date("2023-11-3"),
+      startDate: "2023-10-29",
+      endDate: "2023-11-3",
       price: 354,
       imageUrls: [
         "https://static.independent.co.uk/2023/03/24/09/Best%20New%20York%20boutique%20hotels.jpg?width=1200",
@@ -103,8 +103,8 @@ function PreviewCardsListing({ handleCardClick }) {
       location: "Half Moon Bay, California",
       rating: 4.98,
       description: "Beach and ocean views",
-      startDate: new Date("2023-10-29"),
-      endDate: new Date("2023-11-3"),
+      startDate: "2023-10-29",
+      endDate: "2023-11-3",
       price: 354,
       imageUrls: [
         "https://static.independent.co.uk/2023/03/24/09/Best%20New%20York%20boutique%20hotels.jpg?width=1200",
@@ -117,8 +117,8 @@ function PreviewCardsListing({ handleCardClick }) {
       location: "Half Moon Bay, California",
       rating: 4.98,
       description: "Beach and ocean views",
-      startDate: new Date("2023-10-29"),
-      endDate: new Date("2023-11-3"),
+      startDate: "2023-10-29",
+      endDate: "2023-11-3",
       price: 354,
       imageUrls: [
         "https://static.independent.co.uk/2023/03/24/09/Best%20New%20York%20boutique%20hotels.jpg?width=1200",
@@ -127,6 +127,10 @@ function PreviewCardsListing({ handleCardClick }) {
       ],
     },
   ];
+
+  const handleCardClick = (cardID) => {
+    console.log(`card ${cardID} clicked`);
+  };
 
   return (
     <div>
