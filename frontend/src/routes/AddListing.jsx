@@ -170,122 +170,21 @@ function AddListing() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <ListingTitle>Add a new listing:</ListingTitle>
         <SectionTitle>Basic Information</SectionTitle>
-        <div style={{ display: "flex" }}>
-          <div style={{ flex: 1, marginRight: "10px" }}>
-            <Input
-              {...register("hotelName", { required: "Hotel Name is required" })}
-              type="text"
-              placeholder="Hotel Name"
-              style={{ color: "black" }}
-            />
-            {errors.hotelName && (
-              <ErrorMessage className="error-text">
-                <span>{errors.hotelName.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
-          <div style={{ flex: 1 }}>
-            <Input
-              {...register("price", {
-                valueAsNumber: true,
-                min: { value: 0, message: "Price must be non-negative" },
-                required: "Price is required",
-              })}
-              type="number"
-              placeholder="Price"
-              style={{ color: "black" }}
-            />
-            {errors.price && (
-              <ErrorMessage className="error-text">
-                <span>{errors.price.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
-        </div>
-
         <Input
-          {...register("streetName", {
-            required: "Street Name is required",
+          {...register("price", {
+            valueAsNumber: true,
+            min: { value: 0, message: "Price must be non-negative" },
+            required: "Price is required",
           })}
-          type="text"
-          placeholder="Street Name"
+          type="number"
+          placeholder="Price"
           style={{ color: "black" }}
         />
-        {errors.streetName && (
+        {errors.price && (
           <ErrorMessage className="error-text">
-            <span>{errors.streetName.message}</span>
+            <span>{errors.price.message}</span>
           </ErrorMessage>
         )}
-
-        <div style={{ display: "flex" }}>
-          <div style={{ flex: 1, marginRight: "10px" }}>
-            <Input
-              {...register("city", {
-                required: "City is required",
-                validate: {
-                  validName: (value) => {
-                    if (!isLetter(value)) {
-                      return "Only letters are allowed";
-                    }
-                    return true;
-                  },
-                },
-              })}
-              type="text"
-              placeholder="City"
-              style={{ color: "black" }}
-            />
-            {errors.city && (
-              <ErrorMessage className="error-text">
-                <span>{errors.city.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
-          <div style={{ flex: 1, marginRight: "10px" }}>
-            <Input
-              {...register("state", {
-                required: "State is required",
-                validate: {
-                  validName: (value) => {
-                    if (!isLetter(value)) {
-                      return "Only letters are allowed";
-                    }
-                    return true;
-                  },
-                },
-              })}
-              type="text"
-              placeholder="State"
-              style={{ color: "black" }}
-            />
-            {errors.state && (
-              <ErrorMessage className="error-text">
-                <span>{errors.state.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
-          <div style={{ flex: 1 }}>
-            <Input
-              {...register("zipCode", {
-                valueAsNumber: true,
-                min: {
-                  value: 0,
-                  message: "Zip Code must be non-negative",
-                },
-                required: "Zip Code is required",
-              })}
-              type="number"
-              placeholder="Zip Code"
-              style={{ color: "black" }}
-            />
-            {errors.zipCode && (
-              <ErrorMessage className="error-text">
-                <span>{errors.zipCode.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
-        </div>
-
         <div style={{ marginTop: "15px" }}>
           <Controller
             name="image"
