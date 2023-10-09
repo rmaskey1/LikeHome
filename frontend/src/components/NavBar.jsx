@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 const NavbarContainer = styled.nav`
@@ -38,34 +38,56 @@ const Button = styled.button`
 
 function NavBar() {
   const [isLogin, setIsLogin] = useState(false);
+  const location = useLocation();
 
   const logout = () => setIsLogin((prev) => !prev);
 
+  //show "Back" or "Home" based on the route -- used for add listing
+  const renderLeftBox = () => {
+    if (location.pathname === "/add_listing") {
+      return (
+        <LeftBox>
+          <Button onClick={() => window.history.back()}>Back</Button>
+        </LeftBox>
+      );
+    }
+    return (
+      <LeftBox>
+        <Link to={""}>Home</Link>
+        <Link to="mybooking">MyBooking</Link>
+        <Link to={"profile"}>Profile</Link>
+      </LeftBox>
+    );
+  };
+
+  //render right box based on the left box content -- used for add listing
+  const renderRightBox = () => {
+    if (location.pathname === "/add_listing") {
+      return <></>; // Empty fragment for the right box
+    }
+
+    if (isLogin) {
+      return (
+        <RightBox>
+          <Button onClick={logout}>Logout</Button>
+        </RightBox>
+      );
+    }
+
+    return (
+      <RightBox>
+        <Link to="login" onClick={logout}>
+          Login
+        </Link>
+        <Link to="register">Sign Up</Link>
+      </RightBox>
+    );
+  };
+
   return (
     <NavbarContainer>
-      {isLogin ? (
-        <>
-          <LeftBox>
-            <Link to={""}>Home</Link>
-            <Link to="mybooking">MyBooking</Link>
-          </LeftBox>
-          <RightBox>
-            <Button onClick={logout}>Logout</Button>
-          </RightBox>
-        </>
-      ) : (
-        <>
-          <LeftBox>
-            <Link to={""}>Home</Link>
-          </LeftBox>
-          <RightBox>
-            <Link to="login" onClick={logout}>
-              Login
-            </Link>
-            <Link to="register">Sign Up</Link>
-          </RightBox>
-        </>
-      )}
+      {renderLeftBox()}
+      {renderRightBox()}
     </NavbarContainer>
   );
 }
