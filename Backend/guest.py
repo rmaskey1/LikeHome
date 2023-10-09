@@ -4,7 +4,7 @@ import pyrebase
 import requests
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import addUser, guestLogin, updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName
+from database import  guestLogin, updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName
 
 
 def guest_modification_func(app):
