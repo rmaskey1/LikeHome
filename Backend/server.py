@@ -12,6 +12,13 @@ app = Flask(__name__)
 def home():
     return redirect(url_for("user_selection"))
 
+from guest import guest_modification_func, guest_login_func
+guest_login_func(app)
+guest_modification_func(app)
+
+from hotel import hotel_modification_func
+hotel_modification_func(app)
+
 # User Type Selection Function
 @app.route('/user_selection', methods=['POST', 'GET'])
 def user_selection():
@@ -21,6 +28,8 @@ def user_selection():
             return redirect(url_for("guest_signup"))
         elif usertype == "hotel": # If the input is 'hotel', redirect to hotel signup page
             return redirect(url_for("hotel_signup"))
+        elif usertype == "guest_login": # If the input is 'hotel', redirect to hotel signup page
+            return redirect(url_for("guest_login"))
         else: # Else, nothing was chosen
             return render_template("user_selection.html")
     else:
@@ -83,6 +92,6 @@ def hotel_signup():
         return render_template("hotel_signup.html", error=False) # Returns hotel_signup.html page if no POST request is made yet
 
 if __name__ == '__main__':
-    #app.debug = True
+    app.debug = True
     app.run()
 
