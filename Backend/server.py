@@ -83,6 +83,6 @@ def hotel_signup():
         return render_template("hotel_signup.html", error=False) # Returns hotel_signup.html page if no POST request is made yet
 
 if __name__ == '__main__':
-    #app.debug = True
+    app.debug = True
     app.run()
 
