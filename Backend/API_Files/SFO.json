@@ -1,0 +1,830 @@
+{
+    "data": [
+      {
+        "chainCode": "WI",
+        "iataCode": "SFO",
+        "dupeId": 700034929,
+        "name": "WESTIN SAN FRANCISCO APO",
+        "hotelId": "WISFOSFO",
+        "geoCode": {
+          "latitude": 37.6047,
+          "longitude": -122.37693
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 1.58,
+          "unit": "KM"
+        },
+        "giataId": 64505,
+        "lastUpdate": "2023-08-21T06:05:04"
+      },
+      {
+        "chainCode": "AL",
+        "iataCode": "SFO",
+        "dupeId": 700006052,
+        "name": "ALOFT SAN FRANCISCO AIRPORT",
+        "hotelId": "ALSFO719",
+        "geoCode": {
+          "latitude": 37.60273,
+          "longitude": -122.37764
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 1.81,
+          "unit": "KM"
+        },
+        "giataId": 0,
+        "lastUpdate": "2023-07-17T06:05:27"
+      },
+      {
+        "chainCode": "MC",
+        "iataCode": "SFO",
+        "dupeId": 700009909,
+        "name": "SAN FRANCISCO AIRPORT MARRIOTT",
+        "hotelId": "MCSFOBGM",
+        "geoCode": {
+          "latitude": 37.6027,
+          "longitude": -122.3723
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 1.81,
+          "unit": "KM"
+        },
+        "giataId": 17048,
+        "lastUpdate": "2023-06-15T10:02:36"
+      },
+      {
+        "chainCode": "HX",
+        "iataCode": "SFO",
+        "dupeId": 700066790,
+        "name": "HAMPTON STES SFO BURLINGAME",
+        "hotelId": "HXSFO175",
+        "geoCode": {
+          "latitude": 37.60213,
+          "longitude": -122.37146
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 1.89,
+          "unit": "KM"
+        },
+        "giataId": 117152,
+        "lastUpdate": "2023-06-15T10:00:30"
+      },
+      {
+        "chainCode": "FN",
+        "iataCode": "SFO",
+        "dupeId": 700045831,
+        "name": "FAIRFIELD INN N STES MARRIOTT",
+        "hotelId": "FNSFOMEF",
+        "geoCode": {
+          "latitude": 37.60152,
+          "longitude": -122.39026
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 2.35,
+          "unit": "KM"
+        },
+        "giataId": 83701,
+        "lastUpdate": "2023-08-14T06:06:24"
+      },
+      {
+        "chainCode": "YX",
+        "iataCode": "SFO",
+        "dupeId": 700100729,
+        "name": "BAY LANDING HOTEL",
+        "hotelId": "YXSFOBLH",
+        "geoCode": {
+          "latitude": 37.59861,
+          "longitude": -122.36619
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 2.38,
+          "unit": "KM"
+        },
+        "giataId": 164423,
+        "lastUpdate": "2023-06-15T10:01:03"
+      },
+      {
+        "chainCode": "BW",
+        "iataCode": "SFO",
+        "dupeId": 700022806,
+        "name": "BEST WESTERN PLUS EL RANCHO",
+        "hotelId": "BWSFO244",
+        "geoCode": {
+          "latitude": 37.60707,
+          "longitude": -122.39775
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 2.39,
+          "unit": "KM"
+        },
+        "giataId": 40693,
+        "lastUpdate": "2023-10-05T11:52:35"
+      },
+      {
+        "chainCode": "LQ",
+        "iataCode": "SFO",
+        "dupeId": 700045535,
+        "name": "LA QUINTA INN STE SAN FRANCISCO AP WEST",
+        "hotelId": "LQSFO438",
+        "geoCode": {
+          "latitude": 37.61045,
+          "longitude": -122.40144
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 2.51,
+          "unit": "KM"
+        },
+        "giataId": 83321,
+        "lastUpdate": "2023-06-15T10:17:46"
+      },
+      {
+        "chainCode": "IQ",
+        "iataCode": "SFO",
+        "dupeId": 700155442,
+        "name": "THE DYLAN AT SFO",
+        "hotelId": "IQSFO173",
+        "geoCode": {
+          "latitude": 37.59791,
+          "longitude": -122.38606
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 2.52,
+          "unit": "KM"
+        },
+        "giataId": 248482,
+        "lastUpdate": "2023-06-15T10:03:39"
+      },
+      {
+        "chainCode": "YX",
+        "iataCode": "SFO",
+        "dupeId": 700069101,
+        "name": "MILLWOOD INN AND SUITES",
+        "hotelId": "YXSFOMIL",
+        "geoCode": {
+          "latitude": 37.60961,
+          "longitude": -122.40144
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 2.54,
+          "unit": "KM"
+        },
+        "giataId": 119950,
+        "lastUpdate": "2023-06-15T10:16:29"
+      },
+      {
+        "chainCode": "DI",
+        "iataCode": "SFO",
+        "dupeId": 700081509,
+        "name": "DI SAN FRANCISCO AIRPORT WEST",
+        "hotelId": "DISFO391",
+        "geoCode": {
+          "latitude": 37.61177,
+          "longitude": -122.40272
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 2.56,
+          "unit": "KM"
+        },
+        "giataId": 138849,
+        "lastUpdate": "2023-06-15T10:00:14"
+      },
+      {
+        "chainCode": "HY",
+        "iataCode": "SFO",
+        "dupeId": 700008483,
+        "name": "HYATT REGENCY SAN FRANCISCO AIRPORT",
+        "hotelId": "HYSFOHBR",
+        "geoCode": {
+          "latitude": 37.59406,
+          "longitude": -122.36529
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 2.89,
+          "unit": "KM"
+        },
+        "giataId": 14495,
+        "lastUpdate": "2023-06-15T10:00:30"
+      },
+      {
+        "chainCode": "IL",
+        "iataCode": "SFO",
+        "dupeId": 700116033,
+        "name": "RITZ INN",
+        "hotelId": "ILSFO080",
+        "geoCode": {
+          "latitude": 37.61666,
+          "longitude": -122.40818
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 2.93,
+          "unit": "KM"
+        },
+        "giataId": 181228,
+        "lastUpdate": "2023-06-15T09:48:27"
+      },
+      {
+        "chainCode": "HJ",
+        "iataCode": "SFO",
+        "dupeId": 700108057,
+        "name": "HOJO SAN BRUNO SFO WEST",
+        "hotelId": "HJSFO198",
+        "geoCode": {
+          "latitude": 37.61759,
+          "longitude": -122.40861
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 2.96,
+          "unit": "KM"
+        },
+        "giataId": 172383,
+        "lastUpdate": "2023-06-15T10:01:33"
+      },
+      {
+        "chainCode": "CI",
+        "iataCode": "SFO",
+        "dupeId": 700064281,
+        "name": "COMFORT INN AND SUITES SAN FRANCISCO AIR",
+        "hotelId": "CISFO850",
+        "geoCode": {
+          "latitude": 37.6311,
+          "longitude": -122.40744
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 3.16,
+          "unit": "KM"
+        },
+        "giataId": 114279,
+        "lastUpdate": "2023-06-15T10:00:14"
+      },
+      {
+        "chainCode": "OZ",
+        "iataCode": "SFO",
+        "dupeId": 700112113,
+        "name": "S8 SAN BRUNO-SF INTL ARPT",
+        "hotelId": "OZSFO261",
+        "geoCode": {
+          "latitude": 37.62166,
+          "longitude": -122.41203
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 3.27,
+          "unit": "KM"
+        },
+        "giataId": 176881,
+        "lastUpdate": "2023-06-15T10:04:26"
+      },
+      {
+        "chainCode": "WV",
+        "iataCode": "SFO",
+        "dupeId": 700115521,
+        "name": "REGENCY INN AND SUITES SAN FRANCISCO",
+        "hotelId": "WVSFO001",
+        "geoCode": {
+          "latitude": 37.63089,
+          "longitude": -122.40916
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 3.29,
+          "unit": "KM"
+        },
+        "giataId": 180667,
+        "lastUpdate": "2023-06-15T10:07:35"
+      },
+      {
+        "chainCode": "XK",
+        "iataCode": "SFO",
+        "dupeId": 501130840,
+        "name": "GRAN MELIA VICTORIA GRAN LUJO",
+        "hotelId": "XKSFOTFW",
+        "geoCode": {
+          "latitude": 37.59141,
+          "longitude": -122.36016
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 3.32,
+          "unit": "KM"
+        },
+        "giataId": 0,
+        "lastUpdate": "2023-06-15T10:28:18"
+      },
+      {
+        "chainCode": "RA",
+        "iataCode": "SFO",
+        "dupeId": 700114983,
+        "name": "RAMADA SAN BRUNO SFO AIRPORT",
+        "hotelId": "RASFO046",
+        "geoCode": {
+          "latitude": 37.62339,
+          "longitude": -122.41309
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 3.39,
+          "unit": "KM"
+        },
+        "giataId": 180092,
+        "lastUpdate": "2023-06-15T10:01:34"
+      },
+      {
+        "chainCode": "IL",
+        "iataCode": "SFO",
+        "dupeId": 700106254,
+        "name": "GATEWAY INN AND SUI",
+        "hotelId": "ILSFO084",
+        "geoCode": {
+          "latitude": 37.62398,
+          "longitude": -122.41304
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 3.4,
+          "unit": "KM"
+        },
+        "giataId": 170413,
+        "lastUpdate": "2023-06-15T09:45:19"
+      },
+      {
+        "chainCode": "IL",
+        "iataCode": "SFO",
+        "dupeId": 700190206,
+        "name": "SEASIDE INN",
+        "hotelId": "ILSFO175",
+        "geoCode": {
+          "latitude": 37.62398,
+          "longitude": -122.41304
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 3.4,
+          "unit": "KM"
+        },
+        "giataId": 367530,
+        "lastUpdate": "2023-06-15T10:23:49"
+      },
+      {
+        "chainCode": "NZ",
+        "iataCode": "SFO",
+        "dupeId": 700102813,
+        "name": "VILLA MONTES HOTEL AN ASCEND COLLECTION",
+        "hotelId": "NZSFO654",
+        "geoCode": {
+          "latitude": 37.62592,
+          "longitude": -122.4144
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 3.56,
+          "unit": "KM"
+        },
+        "giataId": 166705,
+        "lastUpdate": "2023-06-15T09:43:13"
+      },
+      {
+        "chainCode": "QI",
+        "iataCode": "SFO",
+        "dupeId": 700069254,
+        "name": "QUALITY INN AND SUITES",
+        "hotelId": "QISFO919",
+        "geoCode": {
+          "latitude": 37.642,
+          "longitude": -122.40296
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 3.56,
+          "unit": "KM"
+        },
+        "giataId": 120152,
+        "lastUpdate": "2023-06-15T10:00:31"
+      },
+      {
+        "chainCode": "CI",
+        "iataCode": "SFO",
+        "dupeId": 700065568,
+        "name": "COMFORT INN AND SUITES SAN FRANCISCO AIR",
+        "hotelId": "CISFO801",
+        "geoCode": {
+          "latitude": 37.65117,
+          "longitude": -122.38382
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 3.67,
+          "unit": "KM"
+        },
+        "giataId": 115699,
+        "lastUpdate": "2023-06-15T10:09:08"
+      },
+      {
+        "chainCode": "BW",
+        "iataCode": "SFO",
+        "dupeId": 700051792,
+        "name": "BEST WESTERN PLUS GROSVENOR",
+        "hotelId": "BWSFO297",
+        "geoCode": {
+          "latitude": 37.64359,
+          "longitude": -122.40437
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 3.77,
+          "unit": "KM"
+        },
+        "giataId": 94293,
+        "lastUpdate": "2023-06-15T10:01:16"
+      },
+      {
+        "chainCode": "DT",
+        "iataCode": "SFO",
+        "dupeId": 700021809,
+        "name": "DOUBLETREE BY HILTON SAN FRAN SFO",
+        "hotelId": "DTSFOIBI",
+        "geoCode": {
+          "latitude": 37.58964,
+          "longitude": -122.34986
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 3.93,
+          "unit": "KM"
+        },
+        "giataId": 38933,
+        "lastUpdate": "2023-06-15T10:01:32"
+      },
+      {
+        "chainCode": "HI",
+        "iataCode": "SFO",
+        "dupeId": 700008370,
+        "name": "HOLIDAY INN AIRPORT NORTH",
+        "hotelId": "HISFO56D",
+        "geoCode": {
+          "latitude": 37.64683,
+          "longitude": -122.40434
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.04,
+          "unit": "KM"
+        },
+        "giataId": 14320,
+        "lastUpdate": "2023-06-15T10:00:30"
+      },
+      {
+        "chainCode": "GI",
+        "iataCode": "SFO",
+        "dupeId": 700035474,
+        "name": "HILTON GARDEN INN BURLINGAME",
+        "hotelId": "GISFO167",
+        "geoCode": {
+          "latitude": 37.58885,
+          "longitude": -122.34819
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.09,
+          "unit": "KM"
+        },
+        "giataId": 65366,
+        "lastUpdate": "2023-06-15T10:01:01"
+      },
+      {
+        "chainCode": "CY",
+        "iataCode": "SFO",
+        "dupeId": 700100077,
+        "name": "COURTYARD MARRIOTT SFO AIRPORT",
+        "hotelId": "CYSFOSBC",
+        "geoCode": {
+          "latitude": 37.63065,
+          "longitude": -122.41978
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.15,
+          "unit": "KM"
+        },
+        "giataId": 163712,
+        "lastUpdate": "2023-06-15T10:01:32"
+      },
+      {
+        "chainCode": "LM",
+        "iataCode": "SFO",
+        "dupeId": 700011580,
+        "name": "CITIGARDEN HOTEL",
+        "hotelId": "LMSFO479",
+        "geoCode": {
+          "latitude": 37.64817,
+          "longitude": -122.40433
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.16,
+          "unit": "KM"
+        },
+        "giataId": 19879,
+        "lastUpdate": "2023-06-15T10:01:02"
+      },
+      {
+        "chainCode": "HH",
+        "iataCode": "SFO",
+        "dupeId": 700051911,
+        "name": "HILTON SAN FRANCISCO AIRPORT",
+        "hotelId": "HHSFO933",
+        "geoCode": {
+          "latitude": 37.59008,
+          "longitude": -122.34276
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.28,
+          "unit": "KM"
+        },
+        "giataId": 94455,
+        "lastUpdate": "2023-06-15T10:13:51"
+      },
+      {
+        "chainCode": "UZ",
+        "iataCode": "SFO",
+        "dupeId": 700118965,
+        "name": "HOTEL FOCUS SFO",
+        "hotelId": "UZSFOD80",
+        "geoCode": {
+          "latitude": 37.64962,
+          "longitude": -122.40435
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.28,
+          "unit": "KM"
+        },
+        "giataId": 185833,
+        "lastUpdate": "2023-06-15T10:24:05"
+      },
+      {
+        "chainCode": "HJ",
+        "iataCode": "SFO",
+        "dupeId": 700108062,
+        "name": "HOWARD JOHNSON S SAN FRANCISCO",
+        "hotelId": "HJSFO989",
+        "geoCode": {
+          "latitude": 37.64955,
+          "longitude": -122.40567
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.35,
+          "unit": "KM"
+        },
+        "giataId": 172388,
+        "lastUpdate": "2023-06-15T10:01:01"
+      },
+      {
+        "chainCode": "ES",
+        "iataCode": "SFO",
+        "dupeId": 700037120,
+        "name": "EMBASSY SUITES SFO ARPT SOUTH",
+        "hotelId": "ESSFOGA9",
+        "geoCode": {
+          "latitude": 37.65101,
+          "longitude": -122.40516
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.45,
+          "unit": "KM"
+        },
+        "giataId": 67307,
+        "lastUpdate": "2023-06-15T10:00:14"
+      },
+      {
+        "chainCode": "YZ",
+        "iataCode": "SFO",
+        "dupeId": 700070071,
+        "name": "STAYBRIDGE SUITES AIRPORT",
+        "hotelId": "YZSFO504",
+        "geoCode": {
+          "latitude": 37.64058,
+          "longitude": -122.41917
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.58,
+          "unit": "KM"
+        },
+        "giataId": 121107,
+        "lastUpdate": "2023-06-15T10:04:27"
+      },
+      {
+        "chainCode": "HX",
+        "iataCode": "SFO",
+        "dupeId": 700037121,
+        "name": "HAMPTON INN STES SFO AIRPORT",
+        "hotelId": "HXSFO300",
+        "geoCode": {
+          "latitude": 37.65571,
+          "longitude": -122.4017
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.72,
+          "unit": "KM"
+        },
+        "giataId": 67308,
+        "lastUpdate": "2023-06-15T10:01:01"
+      },
+      {
+        "chainCode": "GI",
+        "iataCode": "SFO",
+        "dupeId": 700008149,
+        "name": "HILTON GARDEN INN SFO ARPT N",
+        "hotelId": "GISFO123",
+        "geoCode": {
+          "latitude": 37.65687,
+          "longitude": -122.40122
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.81,
+          "unit": "KM"
+        },
+        "giataId": 13996,
+        "lastUpdate": "2023-06-15T10:00:29"
+      },
+      {
+        "chainCode": "YX",
+        "iataCode": "SFO",
+        "dupeId": 700068825,
+        "name": "LARKSPUR LANDING SOUTH SFO",
+        "hotelId": "YXSFO035",
+        "geoCode": {
+          "latitude": 37.65845,
+          "longitude": -122.39767
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.83,
+          "unit": "KM"
+        },
+        "giataId": 119618,
+        "lastUpdate": "2023-06-15T10:04:43"
+      },
+      {
+        "chainCode": "YX",
+        "iataCode": "SFO",
+        "dupeId": 700011571,
+        "name": "HOTEL MARK TWAIN",
+        "hotelId": "YXSFO070",
+        "geoCode": {
+          "latitude": 37.65845,
+          "longitude": -122.39767
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.83,
+          "unit": "KM"
+        },
+        "giataId": 19869,
+        "lastUpdate": "2023-06-15T10:28:01"
+      },
+      {
+        "chainCode": "YX",
+        "iataCode": "SFO",
+        "dupeId": 700068708,
+        "name": "INN AT OYSTER POINT",
+        "hotelId": "YXSFOOPM",
+        "geoCode": {
+          "latitude": 37.6623,
+          "longitude": -122.38359
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 4.89,
+          "unit": "KM"
+        },
+        "giataId": 119445,
+        "lastUpdate": "2023-06-15T10:04:27"
+      },
+      {
+        "chainCode": "YX",
+        "iataCode": "SFO",
+        "dupeId": 700131300,
+        "name": "AMERICAS BEST VALUE INN",
+        "hotelId": "YXSFOSSF",
+        "geoCode": {
+          "latitude": 37.65865,
+          "longitude": -122.40624
+        },
+        "address": {
+          "countryCode": "US"
+        },
+        "distance": {
+          "value": 5.21,
+          "unit": "KM"
+        },
+        "giataId": 208669,
+        "lastUpdate": "2023-06-15T10:23:03"
+      }
+    ],
+    "meta": {
+      "count": 41,
+      "links": {
+        "self": "https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city?cityCode=SFO&hotelSource=ALL&radius=5&radiusUnit=KM"
+      }
+    }
+  }
