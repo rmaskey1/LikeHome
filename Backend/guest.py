@@ -1,87 +1,15 @@
-from database import auth, pyrebase_auth, db
-from flask import Flask, request, jsonify, render_template
-
-# sign a user
-def hotelLogin(email, password):
-    user = pyrebase_auth.sign_in_with_email_and_password(email, password)
-    return user
-
-def hotel_func(app):
-    @app.route('/hotel_login', methods=['GET', 'POST'])
-    def hotel_login():
-        if request.method == 'POST':
-            email = request.form['email']
-            password = request.form['password']
-            # Check if the input is an email or a phone number
-            if '@' in email:  # Assume it's an email
-                try:
-                    usr = auth.get_user_by_email(email)
-                except auth.UserNotFoundError:
-                    print("No user with that email")
-                    return render_template("guest_login.html", emailError=True)
-            try:
-                # Authenticate the user with email and password
-                userData = hotelLogin(email, password)
-                uid =  auth.get_user_by_email(email).uid
-                # Check if user is hotel owner
-                user_ref = db.collection("user").document(uid)
-                userDoc = user_ref.get().to_dict()
-                if userDoc['accountType'] != 'hotel':
-                    return render_template("guest_login.html", notHotelUserError=True)
-                # Add uid to user's information
-                userData['uid'] = uid
-                # Return user's information
-                return jsonify(userData)
-            
-            except Exception as e:
-                print(e)
-            # Handle incorrect password
-            print("Password does not match")
-            return render_template("guest_login.html", passwordError=True)
-
-        return render_template("guest_login.html")
-    
-    @app.route('/getUid', methods=['GET', 'POST'])
-    def get_Uid():
-        return getUid()
-    
-# Function to return uid of current user
-def getUid():
-    # Get JSON of user's information
-    user_info = pyrebase_auth.current_user
-    user_info = jsonify(user_info)
-    user_data = user_info.get_json()
-    # Get email from JSON
-    id_token = user_data['idToken']
-    
-    try:
-        # Verify the ID token to get its payload
-        decoded_token = auth.verify_id_token(id_token)
-        
-        # Extract the UID from the payload
-        uid = decoded_token.get('uid')
-        
-        return uid
-    except auth.ExpiredIdTokenError:
-        # Handle expired token error
-        return None
-    except auth.InvalidIdTokenError:
-        # Handle other invalid token errors
-        return None
-
-    
 import firebase_admin
 import database
 import pyrebase
 import requests
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import  updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, updateHotelName
+from database import  guestLogin, updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName
 
 
-def hotel_modification_func(app):
-    @app.route('/hotel_modification', methods=['POST', 'GET'])
-    def hotel_modification():
+def guest_modification_func(app):
+    @app.route('/guest_modification', methods=['POST', 'GET'])
+    def guest_modification():
         
 
         # Get current user's uid
@@ -92,7 +20,7 @@ def hotel_modification_func(app):
 
 
             # Define a list of field names you want to extract
-            fields_to_extract = ['firstName', 'lastName', 'email','newPassword', 'phone', 'hotelName']
+            fields_to_extract = ['firstName', 'lastName', 'email','newPassword', 'phone']
 
             # Initialize an empty dictionary to store the extracted fields
             extracted_fields = {}
@@ -110,15 +38,16 @@ def hotel_modification_func(app):
                 if 'email' in extracted_fields and extracted_fields['email']:
                     usr = auth.get_user_by_email(extracted_fields['email']) # Returns auth.UserNotFoundError if email does not exist, jumps to first except block
                     print("Email already in use.")
-                    return render_template("hotel_modification.html", emailError=True) # Returns signup.html page with error message
+                    return render_template("guest_modification.html", emailError=True) # Returns signup.html page with error message
             except auth.UserNotFoundError:
                 pass
+            print("After first Pass")
             try:
                 # Check if entered phone number is already in use
                 if 'phone' in extracted_fields and extracted_fields['phone']:
                     usr = auth.get_user_by_phone_number(extracted_fields['phone']) # Returns auth.UserNotFoundError if email does not exist, jumps to first except block
                     print("Phone number already in use.")
-                    return render_template("hotel_modification.html", phoneError=True) # Returns signup.html page with error message
+                    return render_template("guest_modification.html", phoneError=True) # Returns signup.html page with error message
             except auth.UserNotFoundError:   
                 pass
 
@@ -127,6 +56,7 @@ def hotel_modification_func(app):
                 updateEmail(uid, email = extracted_fields['email'])
                 print('Sucessfully updated email: {0}'.format(uid))
 
+            print("Above phone")
             # Update phone number
             if 'phone' in extracted_fields and extracted_fields['phone']:
                 # Checks if phone number is valid
@@ -135,13 +65,8 @@ def hotel_modification_func(app):
                     updatePhone(uid, extracted_fields['phone'])
                     print('Sucessfully updated phone number: {0}'.format(uid))
                 else:
-                    return render_template("hotel_modification.html", phoneError2=True)
+                    return render_template("guest_modification.html", phoneError2=True)
 
-            # Update hotel name
-            if 'hotelName' in extracted_fields and extracted_fields['hotelName']:
-                updateName(uid, extracted_fields['hotelName'])
-                updateHotelName(uid, extracted_fields['hotelName'])
-                print('Sucessfully updated hotel name: {0}'.format(uid))
 
             # Split name in DB 
             full_name = auth.get_user(uid).display_name
@@ -162,6 +87,7 @@ def hotel_modification_func(app):
                 updateLastName(uid, extracted_fields['lastName'])
                 print('Sucessfully updated last name: {0}'.format(uid))
         
+            print("Above Pass")
             # Update password
             if 'newPassword' in extracted_fields and extracted_fields['newPassword']:
                 # Checks if phone number is valid
@@ -169,15 +95,42 @@ def hotel_modification_func(app):
                     updatePassword(uid, extracted_fields['newPassword'])
                     print('Sucessfully updated password: {0}'.format(uid))
                 else:
-                    return render_template("hotel_modification.html", passwordError=True)
+                    return render_template("guest_modification.html", passwordError=True)
 
-            return render_template("hotel_modification.html")
+            return render_template("guest_modification.html")
         
         else:
-            return render_template("hotel_modification.html", error=False) # Returns signup.html page if no POST request is made yet
+            return render_template("guest_modification.html", error=False) # Returns signup.html page if no POST request is made yet
 
 
+def guest_login_func(app):
+    @app.route('/guest_login', methods=['GET', 'POST'])
+    def guest_login():
+        if request.method == 'POST':
+            email = request.form['email']
+            password = request.form['password']
+            # Check if the input is an email or a phone number
+            if '@' in email:  # Assume it's an email
+                try:
+                    usr = auth.get_user_by_email(email)
+                except auth.UserNotFoundError:
+                    print("No user with that email")
+                    return render_template("guest_login.html", emailError=True)
+        
+        
 
+            try:
+                # Authenticate the user with email and password
+                guestLogin(email, password)
+                # Return user's information
+                return render_template("user_selection.html")
+            except Exception as e:
+                print(e)
+            # Handle incorrect password
+            print("Password does not match")
+            return render_template("guest_login.html", passwordError=True)
+
+        return render_template("guest_login.html")
 
 # Function to verify phone
 def is_valid_phone_number(phone_number):
