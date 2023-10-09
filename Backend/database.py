@@ -44,7 +44,6 @@ def addUser(email, phone, password, firstName, lastName, type, hotel=None): # 'h
             'lastName': lastName,
             'email': email,
             'phone': phone,
-            'password': password,
             'accountType': type
         })
     else:
@@ -53,7 +52,6 @@ def addUser(email, phone, password, firstName, lastName, type, hotel=None): # 'h
             'lastName': lastName,
             'email': email,
             'phone': phone,
-            'password': password,
             'hotelName': hotel,
             'accountType': type
         })
