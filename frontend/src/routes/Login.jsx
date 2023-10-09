@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { ReactComponent as PersonIcon } from "../icons/person-fill.svg";
 import { ReactComponent as KeyIcon } from "../icons/key.svg";
@@ -10,10 +10,11 @@ import { isLoginAtom } from "../atom";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   width: 400px;
   height: 500px;
   margin: 100px auto;
-  padding: 40px;
+  padding: 0 40px;
   border: 1px solid rgba(41, 53, 69, 0.5);
   border-radius: 20px;
 `;
@@ -103,6 +104,7 @@ const ErrorMessageArea = styled.div`
 `;
 
 function Login() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -111,19 +113,9 @@ function Login() {
   } = useForm();
   const [isLogin, setIsLogin] = useRecoilState(isLoginAtom);
   const [isFetching, setIsFetching] = useState(false);
-  const [isAuth, setIsAuth] = useState(true);
-  const [serverErrorMessage, setServerErrorMessage] = useState("");
 
   const handleLogin = (loginData) => {
-    console.log("LOGIN: /auth");
-    setIsFetching(true);
-    setIsAuth(false);
-    toggle();
-  };
-
-  const toggle = () => {
-    setIsLogin((prev) => !prev);
-    resetFields();
+    console.log(loginData);
   };
 
   const resetFields = () => {
@@ -131,42 +123,52 @@ function Login() {
     resetField("password");
   };
 
+  useEffect(() => {
+    isLogin && navigate("/");
+  }, [isLogin, navigate]);
+
   return (
     <Container>
       <FormTitle>Log In</FormTitle>
       <NoAccount>
-        <span>Don't have an acount? </span>
-        <Link to={"register"}>
+        <span>Don't have an account? </span>
+        <Link to={"/register"}>
           <u>Sign Up</u>
         </Link>
       </NoAccount>
-      <Form key={1} onSubmit={handleSubmit(handleLogin)}>
+      <Form onSubmit={handleSubmit(handleLogin)}>
         <Label>Email</Label>
         <InputContainer>
           <PersonIcon />
           <Input
             {...register("email", {
-              required: "This is Required",
+              required: "Please enter email",
+              pattern: {
+                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                message: "Please enter valid email",
+              },
             })}
             placeholder="Enter email"
           />
         </InputContainer>
         {errors.email && (
-          <ErrorMessageArea>Please enter email</ErrorMessageArea>
+          <ErrorMessageArea>{errors.email.message.toString()}</ErrorMessageArea>
         )}
         <Label>Password</Label>
         <InputContainer>
           <KeyIcon />
           <Input
             {...register("password", {
-              required: "This is Required",
+              required: "Please enter password",
             })}
             type="password"
             placeholder="Enter password"
           />
         </InputContainer>
         {errors.password && (
-          <ErrorMessageArea>Please enter password</ErrorMessageArea>
+          <ErrorMessageArea>
+            {errors.password.message.toString()}
+          </ErrorMessageArea>
         )}
         <SubmitBtn type="submit">
           {isFetching ? "loading..." : "Login"}
