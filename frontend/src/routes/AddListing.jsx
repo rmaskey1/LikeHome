@@ -147,6 +147,10 @@ function AddListing() {
   const [uploadedFileName, setUploadedFileName] = useState(null);
   const [mode] = useState("adding");
 
+  const isLetter = (str) => {
+    return /^[A-Za-z]+$/.test(str);
+  };
+
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -172,6 +176,7 @@ function AddListing() {
               {...register("hotelName", { required: "Hotel Name is required" })}
               type="text"
               placeholder="Hotel Name"
+              style={{ color: "black" }}
             />
             {errors.hotelName && (
               <ErrorMessage className="error-text">
@@ -188,6 +193,7 @@ function AddListing() {
               })}
               type="number"
               placeholder="Price"
+              style={{ color: "black" }}
             />
             {errors.price && (
               <ErrorMessage className="error-text">
@@ -203,6 +209,7 @@ function AddListing() {
           })}
           type="text"
           placeholder="Street Name"
+          style={{ color: "black" }}
         />
         {errors.streetName && (
           <ErrorMessage className="error-text">
@@ -215,9 +222,18 @@ function AddListing() {
             <Input
               {...register("city", {
                 required: "City is required",
+                validate: {
+                  validName: (value) => {
+                    if (!isLetter(value)) {
+                      return "Only letters are allowed";
+                    }
+                    return true;
+                  },
+                },
               })}
               type="text"
               placeholder="City"
+              style={{ color: "black" }}
             />
             {errors.city && (
               <ErrorMessage className="error-text">
@@ -229,9 +245,18 @@ function AddListing() {
             <Input
               {...register("state", {
                 required: "State is required",
+                validate: {
+                  validName: (value) => {
+                    if (!isLetter(value)) {
+                      return "Only letters are allowed";
+                    }
+                    return true;
+                  },
+                },
               })}
               type="text"
               placeholder="State"
+              style={{ color: "black" }}
             />
             {errors.state && (
               <ErrorMessage className="error-text">
@@ -251,6 +276,7 @@ function AddListing() {
               })}
               type="number"
               placeholder="Zip Code"
+              style={{ color: "black" }}
             />
             {errors.zipCode && (
               <ErrorMessage className="error-text">
@@ -296,9 +322,18 @@ function AddListing() {
                 <Input
                   {...register("fromMonth", {
                     required: "Month is required",
+                    validate: {
+                      validName: (value) => {
+                        if (!isLetter(value)) {
+                          return "Only letters are allowed";
+                        }
+                        return true;
+                      },
+                    },
                   })}
                   type="text"
                   placeholder="Month"
+                  style={{ color: "black" }}
                 />
                 {errors.fromMonth && (
                   <ErrorMessage className="error-text">
@@ -322,6 +357,7 @@ function AddListing() {
                   })}
                   type="number"
                   placeholder="Day"
+                  style={{ color: "black" }}
                 />
                 {errors.fromDay && (
                   <ErrorMessage className="error-text">
@@ -338,9 +374,18 @@ function AddListing() {
                 <Input
                   {...register("toMonth", {
                     required: "Month is required",
+                    validate: {
+                      validName: (value) => {
+                        if (!isLetter(value)) {
+                          return "Only letters are allowed";
+                        }
+                        return true;
+                      },
+                    },
                   })}
                   type="text"
                   placeholder="Month"
+                  style={{ color: "black" }}
                 />
                 {errors.toMonth && (
                   <ErrorMessage className="error-text">
@@ -364,6 +409,7 @@ function AddListing() {
                   })}
                   type="number"
                   placeholder="Day"
+                  style={{ color: "black" }}
                 />
                 {errors.toDay && (
                   <ErrorMessage className="error-text">
@@ -391,6 +437,7 @@ function AddListing() {
               })}
               type="number"
               placeholder="# of Beds"
+              style={{ color: "black" }}
             />
             {errors.beds && (
               <ErrorMessage className="error-text">
@@ -400,9 +447,20 @@ function AddListing() {
           </div>
           <div style={{ flex: 1 }}>
             <Input
-              {...register("bedType", { required: "Bed Type is required" })}
+              {...register("bedType", {
+                required: "Bed Type is required",
+                validate: {
+                  validName: (value) => {
+                    if (!isLetter(value)) {
+                      return "Only letters are allowed";
+                    }
+                    return true;
+                  },
+                },
+              })}
               type="text"
               placeholder="Bed Type"
+              style={{ color: "black" }}
             />
             {errors.bedType && (
               <ErrorMessage className="error-text">
@@ -424,6 +482,7 @@ function AddListing() {
               })}
               type="number"
               placeholder="# of Guests"
+              style={{ color: "black" }}
             />
             {errors.guests && (
               <ErrorMessage className="error-text">
@@ -443,6 +502,7 @@ function AddListing() {
               })}
               type="number"
               placeholder="# of Bathrooms"
+              style={{ color: "black" }}
             />
             {errors.bathrooms && (
               <ErrorMessage className="error-text">

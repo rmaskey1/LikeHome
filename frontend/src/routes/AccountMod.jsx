@@ -169,6 +169,14 @@ function AddListing() {
       });
     }
 
+    const emailInvalidFormat = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    if (!emailInvalidFormat.test(data.email)) {
+      setError("email", {
+        type: "manual",
+        message: "Invalid email format",
+      });
+    }
+
     //phone number is already taken
     //INTEGRATIONS! Please check through the phonenumber database and ensure that the number they
     //want to change is unique
@@ -196,7 +204,7 @@ function AddListing() {
             control={control}
             render={({ field }) => (
               <>
-                <Input {...field} type="text" />
+                <Input {...field} type="text" style={{ color: "black" }} />
                 {errors.firstName && (
                   <ErrorText>{errors.firstName.message}</ErrorText>
                 )}
@@ -209,7 +217,7 @@ function AddListing() {
             control={control}
             render={({ field }) => (
               <>
-                <Input {...field} type="text" />
+                <Input {...field} type="text" style={{ color: "black" }} />
                 {errors.lastName && (
                   <ErrorText>{errors.lastName.message}</ErrorText>
                 )}
@@ -222,7 +230,7 @@ function AddListing() {
             control={control}
             render={({ field }) => (
               <>
-                <Input {...field} type="text" />
+                <Input {...field} type="email" style={{ color: "black" }} />
                 {errors.email && <ErrorText>{errors.email.message}</ErrorText>}
               </>
             )}
@@ -231,7 +239,9 @@ function AddListing() {
           <Controller
             name="password"
             control={control}
-            render={({ field }) => <Input {...field} type="password" />}
+            render={({ field }) => (
+              <Input {...field} type="password" style={{ color: "black" }} />
+            )}
           />
           <SectionTitle>Phone Number</SectionTitle>
           <Controller
@@ -239,7 +249,7 @@ function AddListing() {
             control={control}
             render={({ field }) => (
               <>
-                <Input {...field} type="text" />
+                <Input {...field} type="number" style={{ color: "black" }} />
                 {errors.phoneNumber && (
                   <ErrorText>{errors.phoneNumber.message}</ErrorText>
                 )}
