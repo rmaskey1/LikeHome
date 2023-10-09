@@ -143,8 +143,6 @@ def updatePassword(uid, newPassword):
     user = auth.update_user(
         uid,
         password='newPassword')
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'password': newPassword })
     
 def updateFirstName(uid, first_name):
     # Update the user's first name in Firestore
@@ -155,6 +153,10 @@ def updateLastName(uid, last_name):
     # Update the user's last name in Firestore
     user_ref = db.collection('user').document(uid)
     user_ref.update({'lastName': last_name})
+
+def updateHotelName(uid, hotel_name):
+    user_ref = db.collection('user').document(uid)
+    user_ref.update({'hotelName': hotel_name})
     
 # Function to modify user's information
 #def changeGuestInfo(email, phone, password, first_name, ):
