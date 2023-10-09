@@ -145,6 +145,8 @@ function AddListing() {
     formState: { errors },
   } = useForm();
   const [uploadedFileName, setUploadedFileName] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
+
   const [mode] = useState("adding");
 
   const isLetter = (str) => {
@@ -154,8 +156,10 @@ function AddListing() {
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setUploadedFile(file);
       setUploadedFileName(file.name);
     } else {
+      setUploadedFile(null);
       setUploadedFileName(null);
     }
   };
@@ -409,9 +413,13 @@ function AddListing() {
                 </UploadButton>
               </>
             )}
+            rules={{
+              validate: (value) => !!value || "Please upload an image",
+            }}
           />
         </div>
         {uploadedFileName && <FileName>{uploadedFileName}</FileName>}
+        {errors.image && <ErrorMessage>{errors.image.message}</ErrorMessage>}
 
         <br />
 

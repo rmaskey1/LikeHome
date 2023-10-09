@@ -19,6 +19,12 @@ const ListingTitle = styled.div`
 
 const SectionTitle = styled.div`
   margin-top: 20px;
+  font-size: 26px;
+  font-weight: 500;
+`;
+
+const SubTitle = styled.div`
+  margin-top: 17px;
   font-size: 22px;
   font-weight: 300;
 `;
@@ -117,13 +123,24 @@ function AddListing() {
   const {
     handleSubmit,
     control,
+    register,
     setError,
     formState: { errors },
   } = useForm();
   const [formData, setFormData] = useState(null);
 
+  const [isHotelOwner, setIsHotelOwner] = useState(false);
+  useEffect(() => {
+    //INTEGRATIONS!! Check the account type if it is a hotel owner HERE!
+    const isHotelOwnerAccount = true; //temporarily set to true for testing, fix later!
+    setIsHotelOwner(isHotelOwnerAccount);
+  }, []);
+
+  const isLetter = (str) => {
+    return /^[A-Za-z]+$/.test(str);
+  };
+
   const validateEmail = (value) => {
-    // Use a regular expression to check the email format
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!emailRegex.test(value)) {
       setError("email", {
@@ -131,7 +148,6 @@ function AddListing() {
         message: "Invalid email format",
       });
     } else {
-      // Clear the email error message if the email format is valid
       setError("email", null);
     }
   };
@@ -170,73 +186,115 @@ function AddListing() {
       <Container>
         <form onSubmit={handleSubmit(onSubmit)}>
           <ListingTitle>Update Profile</ListingTitle>
-          <SectionTitle>First Name</SectionTitle>
-          <Controller
-            name="firstName"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Input {...field} type="text" style={{ color: "black" }} />
-                {errors.firstName && (
-                  <ErrorText>{errors.firstName.message}</ErrorText>
-                )}
-              </>
-            )}
+
+          {isHotelOwner && ( //renders only if the account is a hotel owner
+            <div>
+              <SectionTitle>Hotel Details</SectionTitle>
+              <SubTitle>Hotel Name</SubTitle>
+              <Input
+                {...register("hotelName", {})}
+                type="text"
+                style={{ color: "black" }}
+              />
+
+              <SubTitle>Street Name</SubTitle>
+              <Input
+                {...register("streetName", {})}
+                type="text"
+                style={{ color: "black" }}
+              />
+
+              <div style={{ display: "flex" }}>
+                <div style={{ flex: 1, marginRight: "10px" }}>
+                  <SubTitle>City</SubTitle>
+                  <Input
+                    {...register("city", {})}
+                    type="text"
+                    style={{ color: "black" }}
+                  />
+                </div>
+                <div style={{ flex: 1, marginRight: "10px" }}>
+                  <SubTitle>State</SubTitle>
+                  <Input
+                    {...register("state", {})}
+                    type="text"
+                    style={{ color: "black" }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <SubTitle>Zip Code</SubTitle>
+                  <Input
+                    {...register("zipCode", {
+                      valueAsNumber: true,
+                    })}
+                    type="number"
+                    style={{ color: "black" }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          <br />
+
+          <SectionTitle>Profile Details</SectionTitle>
+
+          <div style={{ display: "flex" }}>
+            <div style={{ flex: 1, marginRight: "10px" }}>
+              <SubTitle>First Name</SubTitle>
+              <Input
+                {...register("firstName", {})}
+                type="text"
+                style={{ color: "black" }}
+              />
+              {errors.firstName && (
+                <ErrorText>{errors.firstName.message}</ErrorText>
+              )}
+            </div>
+            <div style={{ flex: 1 }}>
+              <SubTitle>Last Name</SubTitle>
+              <Input
+                {...register("lastName", {})}
+                type="text"
+                style={{ color: "black" }}
+              />
+              {errors.lastName && (
+                <ErrorText>{errors.lastName.message}</ErrorText>
+              )}
+            </div>
+          </div>
+
+          <SubTitle>Email</SubTitle>
+          <Input
+            {...register("emaill", {
+              pattern: {
+                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                message: "Invalid email format",
+              },
+            })}
+            type="text"
+            style={{ color: "black" }}
+            onBlur={(e) => validateEmail(e.target.value)}
           />
-          <SectionTitle>Last Name</SectionTitle>
-          <Controller
-            name="lastName"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Input {...field} type="text" style={{ color: "black" }} />
-                {errors.lastName && (
-                  <ErrorText>{errors.lastName.message}</ErrorText>
-                )}
-              </>
-            )}
+          {errors.email && <ErrorText>{errors.email.message}</ErrorText>}
+
+          <SubTitle>Password</SubTitle>
+          <Input
+            {...register("password", {})}
+            type="password"
+            style={{ color: "black" }}
           />
-          <SectionTitle>Email</SectionTitle>
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Input
-                  {...field}
-                  type="text"
-                  style={{ color: "black" }}
-                  onBlur={(e) => validateEmail(e.target.value)}
-                />
-                {errors.email && (
-                  <ErrorText style={{ color: "#cf316a" }}>
-                    {errors.email.message}
-                  </ErrorText>
-                )}
-              </>
-            )}
+
+          <SubTitle>Phone Number</SubTitle>
+          <Input
+            {...register("phoneNumber", {})}
+            type="number"
+            style={{ color: "black" }}
           />
-          <SectionTitle>Password</SectionTitle>
-          <Controller
-            name="password"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} type="password" style={{ color: "black" }} />
-            )}
-          />
-          <SectionTitle>Phone Number</SectionTitle>
-          <Controller
-            name="phoneNumber"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Input {...field} type="number" style={{ color: "black" }} />
-                {errors.phoneNumber && (
-                  <ErrorText>{errors.phoneNumber.message}</ErrorText>
-                )}
-              </>
-            )}
-          />
+          {errors.phoneNumber && (
+            <ErrorText>{errors.phoneNumber.message}</ErrorText>
+          )}
+
           <CenteredButtonContainer>
             <SubmitButton type="submit">Update</SubmitButton>
           </CenteredButtonContainer>
