@@ -41,11 +41,7 @@ def home():
 def user_selection():
     if request.method == "POST":
         usertype = request.form['usertype']
-        if usertype == "guest":
-            return redirect(url_for("guest_signup"))
-        elif usertype == "hotel":
-            return redirect(url_for("guest_signup"))
-        elif usertype == "change":
+        if usertype == "change":
             return redirect(url_for("guest_modification"))
         elif usertype == "login":
             return redirect(url_for("guest_login"))
@@ -54,35 +50,6 @@ def user_selection():
     else:
         return render_template("user_selection.html")
     
-@app.route('/guest_signup', methods=['POST', 'GET'])
-def guest_signup():
-    firebase_admin.get_app()
-    if request.method == "POST":
-        # Get form data
-        firstName = request.form['firstName']
-        lastName = request.form['lastName']
-        email = request.form['email']
-        password = request.form['password']
-        phone = request.form['phone']
-
-        # Insert data into the database
-        try: # Check if entered email is already in use
-            usr = auth.get_user_by_email(email) # Returns auth.UserNotFoundError if email does not exist, jumps to first except block
-            print("Email already in use.")
-            return render_template("guest_signup.html", emailError=True) # Returns signup.html page with error message
-        except auth.UserNotFoundError:
-            try: # Check if entered phone number is already in use
-                usr = auth.get_user_by_phone_number(phone) # Returns auth.UserNotFoundError if email does not exist, jumps to second except block
-                print("Phone number already in use.")
-                return render_template("guest_signup.html", phoneError=True) # Returns signup.html page with error message
-            except auth.UserNotFoundError:
-                dispName = firstName + " " + lastName
-                addUser(email, phone, password, dispName) # Adds user to database
-                return redirect(url_for("home")) # Redirects to login page
-    else:
-        return render_template("guest_signup.html", error=False) # Returns signup.html page if no POST request is made yet
-
-
 
 
 if __name__ == '__main__':

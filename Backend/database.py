@@ -32,18 +32,6 @@ pyrebase_auth = firebase.auth()
 def get_auth():
     return pyrebase_auth
 
-# Function to add user to database
-def addUser(email, phone, password, dispName):
-    user = auth.create_user(
-    email=email,
-    phone_number=phone,
-    password=password,
-    display_name=dispName)
-    print('Sucessfully created new user: {0}'.format(user.uid))
-
-# Main method for testing
-def main():
-    addUser("email@email.com", "+15555555555", "password", "Mike mike")
 
 
 def guestLogin(email, password):
