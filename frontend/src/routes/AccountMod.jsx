@@ -35,40 +35,6 @@ const Input = styled.input`
   font-weight: 450;
 `;
 
-const FileInput = styled.input`
-  display: none; /* Hide the file input */
-`;
-
-const UploadButton = styled.label`
-  margin-top: 15px;
-  margin-bottom: 10px;
-  width: 200px;
-  height: 60px;
-  padding: 10px;
-  border-radius: 20px;
-  background-color: #ffffff;
-  color: #cf316a;
-  border: 1px solid;
-  border-color: #cf316a;
-  font-size: 20px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #cf316a;
-    color: #ffffff;
-  }
-`;
-
-const FileName = styled.span`
-  margin-top: 10px;
-  margin-left: 5px;
-`;
-
 const CheckboxGroup = styled.div`
   display: flex;
   flex-direction: row;
@@ -156,6 +122,20 @@ function AddListing() {
   } = useForm();
   const [formData, setFormData] = useState(null);
 
+  const validateEmail = (value) => {
+    // Use a regular expression to check the email format
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailRegex.test(value)) {
+      setError("email", {
+        type: "manual",
+        message: "Invalid email format",
+      });
+    } else {
+      // Clear the email error message if the email format is valid
+      setError("email", null);
+    }
+  };
+
   const onSubmit = (data) => {
     //INTEGRATIONS! Make error msgs for setting first and last names with numbers?
 
@@ -166,14 +146,6 @@ function AddListing() {
       setError("email", {
         type: "manual",
         message: "Email is already taken",
-      });
-    }
-
-    const emailInvalidFormat = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    if (!emailInvalidFormat.test(data.email)) {
-      setError("email", {
-        type: "manual",
-        message: "Invalid email format",
       });
     }
 
@@ -230,8 +202,17 @@ function AddListing() {
             control={control}
             render={({ field }) => (
               <>
-                <Input {...field} type="email" style={{ color: "black" }} />
-                {errors.email && <ErrorText>{errors.email.message}</ErrorText>}
+                <Input
+                  {...field}
+                  type="text"
+                  style={{ color: "black" }}
+                  onBlur={(e) => validateEmail(e.target.value)}
+                />
+                {errors.email && (
+                  <ErrorText style={{ color: "#cf316a" }}>
+                    {errors.email.message}
+                  </ErrorText>
+                )}
               </>
             )}
           />
