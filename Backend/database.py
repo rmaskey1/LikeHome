@@ -1,4 +1,8 @@
 import pyrebase
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+from firebase_admin import auth
 # ----------------IMPORTANT-------------------\
 # pip install pyrebase4        run command
 config = {
@@ -9,12 +13,11 @@ config = {
 "storageBucket": "innsight-87ed1.appspot.com"
 }
 firebase = pyrebase.initialize_app(config)
-auth = firebase.auth()
+pyrebase_auth = firebase.auth()
 
-# created a user
-# auth.create_user_with_email_and_password('test123@email.com', '123456')
+cred = credentials.Certificate("./Backend/serviceAccountKey.json")
+app = firebase_admin.initialize_app(cred)
+db = firestore.client()
 
-# sign a user
-user = auth.sign_in_with_email_and_password('test123@email.com', '123456')
-print(user)
+
 
