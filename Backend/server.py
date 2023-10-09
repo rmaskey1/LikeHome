@@ -29,8 +29,6 @@ from database import addUser, guestLogin, updatePhone, updateEmail, updateName, 
 app = Flask(__name__)
 app.debug = True
 
-from hotel import hotel_func, pyrebase_auth
-hotel_func(app)
 from guest import guest_modification_func, guest_login_func
 guest_login_func(app)
 guest_modification_func(app)
