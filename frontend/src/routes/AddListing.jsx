@@ -139,6 +139,7 @@ function AddListing() {
     formState: { errors },
   } = useForm();
   const [uploadedFileName, setUploadedFileName] = useState(null);
+  const [mode] = useState("adding");
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];

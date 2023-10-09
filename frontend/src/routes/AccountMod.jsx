@@ -157,23 +157,6 @@ function AddListing() {
   const [formData, setFormData] = useState(null);
 
   const onSubmit = (data) => {
-    const previousFirstName = "PreviousFirstName"; //INTEGRATIONS!! please replace with the user's previous first name
-    const previousLastName = "PreviousLastName"; //INTEGRATIONS!! please replace with the user's previous last name
-
-    if (data.firstName === previousFirstName) {
-      setError("firstName", {
-        type: "manual",
-        message: "First name matches the previous first name",
-      });
-    }
-
-    if (data.lastName === previousLastName) {
-      setError("lastName", {
-        type: "manual",
-        message: "Last name matches the previous last name",
-      });
-    }
-
     //email is already taken
     if (data.email === "taken@gmail.com") {
       //INTEGRATIONS! Please replace with user's previous email
