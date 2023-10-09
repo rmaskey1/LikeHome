@@ -185,31 +185,8 @@ function AddListing() {
             <span>{errors.price.message}</span>
           </ErrorMessage>
         )}
-        <div style={{ marginTop: "15px" }}>
-          <Controller
-            name="image"
-            control={control}
-            defaultValue={null}
-            render={({ field }) => (
-              <>
-                <UploadButton>
-                  Upload Image
-                  <FileInput
-                    {...field}
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      field.onChange(e);
-                      handleFileInputChange(e);
-                    }}
-                  />
-                </UploadButton>
-              </>
-            )}
-          />
-        </div>
-        {uploadedFileName && <FileName>{uploadedFileName}</FileName>}
 
+        <br />
         <br />
 
         <SectionTitle>Available Dates</SectionTitle>
@@ -410,6 +387,31 @@ function AddListing() {
             )}
           </div>
         </div>
+
+        <div style={{ marginTop: "15px" }}>
+          <Controller
+            name="image"
+            control={control}
+            defaultValue={null}
+            render={({ field }) => (
+              <>
+                <UploadButton>
+                  Upload Image
+                  <FileInput
+                    {...field}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      field.onChange(e);
+                      handleFileInputChange(e);
+                    }}
+                  />
+                </UploadButton>
+              </>
+            )}
+          />
+        </div>
+        {uploadedFileName && <FileName>{uploadedFileName}</FileName>}
 
         <br />
 
