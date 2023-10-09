@@ -4,7 +4,7 @@ import pyrebase
 import requests
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import addUser, guestLogin, updatePhone, updateEmail, updateName, updatePassword, getUid
+from database import addUser, guestLogin, updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName
 
 
 def guest_modification_func(app):
@@ -74,6 +74,7 @@ def guest_modification_func(app):
             # If first name field is not empty, update display name
             if 'firstName' in extracted_fields and extracted_fields['firstName']:
                 updateName(uid, combine_name(extracted_fields['firstName'], last_name))
+                updateFirstName(uid, extracted_fields['firstName'])
                 print('Sucessfully updated first name: {0}'.format(uid))
 
 
@@ -83,6 +84,7 @@ def guest_modification_func(app):
             # If last name field is not empty, update display name
             if 'lastName' in extracted_fields and extracted_fields['lastName']:
                 updateName(uid, combine_name(first_name, extracted_fields['lastName']))
+                updateLastName(uid, extracted_fields['lastName'])
                 print('Sucessfully updated last name: {0}'.format(uid))
         
             print("Above Pass")

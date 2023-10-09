@@ -67,6 +67,9 @@ def updatePhone(uid, phone):
     user = auth.update_user(
         uid,
         phone_number = phone)
+    # Update the user's phone number in Firestore
+    user_ref = db.collection('user').document(uid)
+    user_ref.update({'phone': phone})
     
 def updateEmail(uid, email):
     user = auth.update_user(
@@ -82,9 +85,22 @@ def updateName(uid, name):
         uid,
         display_name = name)
     
-def updatePassword(uid, password):
+def updatePassword(uid, newPassword):
     user = auth.update_user(
         uid,
         password='newPassword')
+    user_ref = db.collection('user').document(uid)
+    user_ref.update({'password': newPassword })
+    
+def updateFirstName(uid, first_name):
+    # Update the user's first name in Firestore
+    user_ref = db.collection('user').document(uid)
+    user_ref.update({'firstName': first_name})
+
+def updateLastName(uid, last_name):
+    # Update the user's last name in Firestore
+    user_ref = db.collection('user').document(uid)
+    user_ref.update({'lastName': last_name})
+    
 # Function to modify user's information
 #def changeGuestInfo(email, phone, password, first_name, ):

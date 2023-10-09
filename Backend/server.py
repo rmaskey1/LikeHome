@@ -4,7 +4,7 @@ import pyrebase
 import requests
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import addUser, guestLogin, updatePhone, updateEmail, updateName, updatePassword, getUid
+from database import addUser
 
 # -----------IMPORTANT-------------
 # 1. On your terminal execute this command "pip install firebase-admin"
