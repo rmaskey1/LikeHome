@@ -235,15 +235,20 @@ function AddListing() {
           </div>
           <div style={{ flex: 1 }}>
             <Input
-              {...register("county", {
-                required: "County is required",
+              {...register("zipCode", {
+                valueAsNumber: true,
+                min: {
+                  value: 0,
+                  message: "Zip Code must be non-negative",
+                },
+                required: "Zip Code is required",
               })}
-              type="text"
-              placeholder="County"
+              type="number"
+              placeholder="Zip Code"
             />
-            {errors.county && (
+            {errors.zipCode && (
               <ErrorMessage className="error-text">
-                <span>{errors.county.message}</span>
+                <span>{errors.zipCode.message}</span>
               </ErrorMessage>
             )}
           </div>
