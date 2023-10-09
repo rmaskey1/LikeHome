@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import { isLoginAtom } from "../atom";
+import React from "react";
 import { Link } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
 
 const NavbarContainer = styled.nav`
@@ -37,9 +39,9 @@ const Button = styled.button`
 `;
 
 function NavBar() {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useRecoilState(isLoginAtom);
 
-  const logout = () => setIsLogin((prev) => !prev);
+  const logout = () => setIsLogin(false);
 
   return (
     <NavbarContainer>
