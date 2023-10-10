@@ -103,55 +103,6 @@ def guest_modification_func(app):
             return render_template("guest_modification.html", error=False) # Returns signup.html page if no POST request is made yet
 
 
-def guest_login_func(app):
-    @app.route('/guest_login', methods=['GET', 'POST'])
-    def guest_login():
-        if request.method == 'POST':
-            email = request.form['email']
-            password = request.form['password']
-            # Check if the input is an email or a phone number
-            if '@' in email:  # Assume it's an email
-                try:
-                    usr = auth.get_user_by_email(email)
-                except auth.UserNotFoundError:
-                    print("No user with that email")
-                    return render_template("guest_login.html", emailError=True)
-        
-        
-
-            try:
-                # Authenticate the user with email and password
-                guestLogin(email, password)
-                # Return user's information
-                return render_template("user_selection.html")
-            except Exception as e:
-                print(e)
-            # Handle incorrect password
-            print("Password does not match")
-            return render_template("guest_login.html", passwordError=True)
-
-        return render_template("guest_login.html")
-
-# Function to verify phone
-def is_valid_phone_number(phone_number):
-    # Check if the string is exactly 12 characters long and starts with '+'
-    if len(phone_number) == 12 and phone_number[0] == '+':
-        return True
-    else:
-        return False
-
-def is_valid_password(password):
-    return len(password) >= 6
-
-# Function to split full name
-def split_full_name(full_name):
-    name_parts = full_name.split()
-
-    first_name = name_parts[0]
-    last_name = ' '.join(name_parts[1:])
-    
-    return first_name, last_name
-
 # Function to combine first and last name
 def combine_name(first_name, last_name):
     full_name = first_name + " " + last_name
