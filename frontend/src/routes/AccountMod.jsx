@@ -150,8 +150,8 @@ function AddListing() {
   //INTEGRATIONS!! somehow get the user's existing data :D
   const existingData = {
     //if account is hotel user, get their exsiting address:
-    hotelName: "sad hotel",
-    streetName: "123 Sample Street Name",
+    hotelName: "Sad Hotel",
+    streetName: "1st Depression Ave",
     city: "San Jose",
     zipCode: 95122,
     state: "CA",
