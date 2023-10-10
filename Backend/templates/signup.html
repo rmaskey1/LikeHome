@@ -65,6 +65,18 @@
                     <p>Phone number is already in use, please try another one.</p>
                 </div>
                 {% endif %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="usertype" id="guest" value="guest">
+                    <label class="form-check-label" for="guest">
+                        Guest
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="usertype" id="hotel" value="hotel">
+                    <label class="form-check-label" for="hotel">
+                        Hotel
+                    </label>
+                </div>
                 <button type="submit" class="btn btn-primary">Sign Up</button>
             </form>
         </div>
