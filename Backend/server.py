@@ -98,7 +98,7 @@ def hotel_signup():
 
 def login_user(email, password):
     user = pyrebase_auth.sign_in_with_email_and_password(email, password)
-    return jsonify({"uid": user.uid})
+    return user
 
 @app.route('/login', methods=['POST'])
 def login():
