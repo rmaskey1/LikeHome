@@ -5,7 +5,7 @@ import requests
 import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import  guestLogin, updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, addBooking
+from database import  guestLogin, updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, getAccountType, getUserInfo
 
 
 def guest_modification_func(app):
@@ -33,6 +33,9 @@ def guest_modification_func(app):
                     extracted_fields[field_name] = field_value
                     print(field_name + " : " + field_value)
 
+            # Get JSON data from frontent 
+            data = request.get_json() 
+            
 
             # Check if email or phone is in availble
             try: # Check if entered email is already in use
@@ -104,34 +107,6 @@ def guest_modification_func(app):
             return render_template("guest_modification.html", error=False) # Returns signup.html page if no POST request is made yet
 
 
-def guest_login_func(app):
-    @app.route('/guest_login', methods=['GET', 'POST'])
-    def guest_login():
-        if request.method == 'POST':
-            email = request.form['email']
-            password = request.form['password']
-            # Check if the input is an email or a phone number
-            if '@' in email:  # Assume it's an email
-                try:
-                    usr = auth.get_user_by_email(email)
-                except auth.UserNotFoundError:
-                    print("No user with that email")
-                    return render_template("guest_login.html", emailError=True)
-        
-        
-
-            try:
-                # Authenticate the user with email and password
-                guestLogin(email, password)
-                # Return user's information
-                return render_template("user_selection.html")
-            except Exception as e:
-                print(e)
-            # Handle incorrect password
-            print("Password does not match")
-            return render_template("guest_login.html", passwordError=True)
-
-        return render_template("guest_login.html")
 
 # Function to verify phone
 def is_valid_phone_number(phone_number):

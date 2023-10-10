@@ -58,6 +58,11 @@
                     <p>User is not a Hotel Owner!</p>
                 </div>
                 {% endif %}
+                {% if notGuestUserError == True %}
+                <div class="error">
+                    <p>User is not a guest!</p>
+                </div>
+                {% endif %}
                 <button type="submit" class="btn btn-primary">Sign Up</button>
             </form>
         </div>

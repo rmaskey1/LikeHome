@@ -77,8 +77,8 @@ def addUser(email, phone, password, firstName, lastName, type, hotel=None): # 'h
     print('Sucessfully created new user: {0}'.format(user.uid))
 
 def addBooking(uid, rid, start_date, end_date):
-    doc_ref = db.collection("booking").document(uid).set({
-            'rid': rid,
+    doc_ref = db.collection("booking").document(rid).set({
+            'uid': uid,
             'startDate': start_date,
             'endDate': end_date,
         })
@@ -98,9 +98,6 @@ def main():
     addBooking('efjnejrgndfs', 'egfnejsgrnsjfn', datetime.datetime(2023, 10, 6, 20, 0, 0) , datetime.datetime(2023, 10, 7, 10, 0, 0))
 
 
-def guestLogin(email, password):
-    user = pyrebase_auth.sign_in_with_email_and_password(email, password)
-
 # Function to return uid of current user
 def getUid():
     # Get JSON of user's information
@@ -109,7 +106,6 @@ def getUid():
     user_data = user_info.get_json()
     # Get id token from JSON
     id_token = user_data['idToken']
-    print("idToken: " + id_token)
     
     try:
         # Verify the ID token to get its payload
@@ -126,6 +122,13 @@ def getUid():
         # Handle other invalid token errors
         return None
 
+def getUserInfo():
+    user_info = pyrebase_auth.current_user
+    user_info = jsonify(user_info)
+    user_data = user_info.get_json()
+    uid = getUid()
+    user_data['uid'] = uid
+    return user_data
 
 def updatePhone(uid, phone):
     user = auth.update_user(
@@ -168,5 +171,10 @@ def updateHotelName(uid, hotel_name):
     user_ref = db.collection('user').document(uid)
     user_ref.update({'hotelName': hotel_name})
     
+def getAccountType():
+    user_ref = db.collection("user").document(getUid())
+    userDoc = user_ref.get().to_dict()
+    accountType = userDoc['accountType']
+    return accountType
 # Function to modify user's information
 #def changeGuestInfo(email, phone, password, first_name, ):

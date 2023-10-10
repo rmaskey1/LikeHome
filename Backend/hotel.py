@@ -1,5 +1,13 @@
 from database import auth, pyrebase_auth, db
 from flask import Flask, request, jsonify, render_template
+import firebase_admin
+import database
+import pyrebase
+import requests
+from firebase_admin import credentials, firestore, auth
+from flask import Flask, request, jsonify, render_template, redirect, url_for
+from database import  updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, updateHotelName, getAccountType,getUserInfo
+
 
 # sign a user
 def hotelLogin(email, password):
@@ -22,16 +30,13 @@ def hotel_func(app):
             try:
                 # Authenticate the user with email and password
                 userData = hotelLogin(email, password)
-                uid =  auth.get_user_by_email(email).uid
                 # Check if user is hotel owner
-                user_ref = db.collection("user").document(uid)
-                userDoc = user_ref.get().to_dict()
-                if userDoc['accountType'] != 'hotel':
+                account_type = getAccountType()
+                if account_type != 'hotel':
                     return render_template("guest_login.html", notHotelUserError=True)
-                # Add uid to user's information
-                userData['uid'] = uid
+                
                 # Return user's information
-                return jsonify(userData)
+                return getUserInfo()
             
             except Exception as e:
                 print(e)
@@ -70,15 +75,6 @@ def getUid():
         return None
 
     
-import firebase_admin
-import database
-import pyrebase
-import requests
-from firebase_admin import credentials, firestore, auth
-from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import  updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, updateHotelName
-
-
 def hotel_modification_func(app):
     @app.route('/hotel_modification', methods=['POST', 'GET'])
     def hotel_modification():
