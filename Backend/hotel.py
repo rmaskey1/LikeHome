@@ -1,54 +1,9 @@
 from database import auth, pyrebase_auth, db
 from flask import Flask, request, jsonify, render_template
 import firebase_admin
-import database
-import pyrebase
-import requests
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import  updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, updateHotelName, getAccountType,getUserInfo
-
-
-# sign a user
-def hotelLogin(email, password):
-    user = pyrebase_auth.sign_in_with_email_and_password(email, password)
-    return user
-
-def hotel_func(app):
-    @app.route('/hotel_login', methods=['GET', 'POST'])
-    def hotel_login():
-        if request.method == 'POST':
-            email = request.form['email']
-            password = request.form['password']
-            # Check if the input is an email or a phone number
-            if '@' in email:  # Assume it's an email
-                try:
-                    usr = auth.get_user_by_email(email)
-                except auth.UserNotFoundError:
-                    print("No user with that email")
-                    return render_template("guest_login.html", emailError=True)
-            try:
-                # Authenticate the user with email and password
-                userData = hotelLogin(email, password)
-                # Check if user is hotel owner
-                account_type = getAccountType()
-                if account_type != 'hotel':
-                    return render_template("guest_login.html", notHotelUserError=True)
-                
-                # Return user's information
-                return getUserInfo()
-            
-            except Exception as e:
-                print(e)
-            # Handle incorrect password
-            print("Password does not match")
-            return render_template("guest_login.html", passwordError=True)
-
-        return render_template("guest_login.html")
-    
-    @app.route('/getUid', methods=['GET', 'POST'])
-    def get_Uid():
-        return getUid()
+from database import  updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, updateHotelName
     
 # Function to return uid of current user
 def getUid():
@@ -74,7 +29,6 @@ def getUid():
         # Handle other invalid token errors
         return None
 
-    
 def hotel_modification_func(app):
     @app.route('/hotel_modification', methods=['POST', 'GET'])
     def hotel_modification():
