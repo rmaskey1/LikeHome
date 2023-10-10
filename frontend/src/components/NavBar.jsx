@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import { isLoginAtom } from "../atom";
+import { useRecoilState } from "recoil";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
@@ -37,10 +39,10 @@ const Button = styled.button`
 `;
 
 function NavBar() {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useRecoilState(isLoginAtom);
   const location = useLocation();
 
-  const logout = () => setIsLogin((prev) => !prev);
+  const logout = () => setIsLogin(false);
 
   //show "Back" or "Home" based on the route -- used for add listing
   const renderLeftBox = () => {
