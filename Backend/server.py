@@ -61,22 +61,22 @@ def signup():
     try: # Check if entered email is already in use
         usr = auth.get_user_by_email(email) # Returns auth.UserNotFoundError if email does not exist, jumps to first except block
         print("Email already in use.")
-        return None # Returns signup.html page with error message
+        return jsonify({"message": "Email already in use", "status": 409}) # Returns signup.html page with error message
     except auth.UserNotFoundError:
         try: # Check if entered phone number is already in use
             usr = auth.get_user_by_phone_number(phone) # Returns auth.UserNotFoundError if email does not exist, jumps to second except block
             print("Phone number already in use.")
-            return None # Returns signup.html page with error message
+            return jsonify({"message": "Phone number already in use", "status": 409})  # Returns signup.html page with error message
         except auth.UserNotFoundError:
             if usertype == "Guest": # If the input is 'guest', redirect to guest signup page
                 user = addUser(email, phone, password, firstName, lastName, "guest")
-                return user.uid
+                return jsonify({"uid": user.uid, "usertype": "guest"})
             if usertype == "Hotel": # If the input is 'hotel', redirect to hotel signup page
                 user = addUser(email, phone, password, firstName, lastName, "hotel")
-                return user.uid
+                return jsonify({"uid": user.uid, "usertype": "hotel"})
             if usertype == "Admin": # If the input is 'guest', redirect to guest signup page
                 user = addUser(email, phone, password, firstName, lastName, "admin")
-                return user.uid
+                return jsonify({"uid": user.uid, "usertype": "admin"})
                 # Adds user to database
             return None # Redirects to login page
     # else:
@@ -94,27 +94,11 @@ def hotel_signup():
     state = data['phoneNumber']
     country = data['role']
     addHotelInfo(userId, hotelName, street, city, zipcode, state, country)
-    return userId
+    return jsonify({"uid": userId})
 
-@app.route('/signup/<uid>', methods=['POST', 'GET'])
-def hotel_signup(userId):
-    # firebase_admin.get_app()
-    if request.method == "POST":
-        # Get form data
-        hotelName = request.form['hotelName']
-        street = request.form['email']
-        city = request.form['password']
-        zip = request.form['phone']
-        state = request.form['phone']
-        country = request.form['phone']
-        addHotelInfo(userId, hotelName, street, city, zip, state, country)
-        return redirect(url_for("guest_login"))
-    else:
-        return render_template("hotel_signup.html", error=False) # Returns hotel_signup.html page if no POST request is made yet
-    
 def login_user(email, password):
     user = pyrebase_auth.sign_in_with_email_and_password(email, password)
-    return user
+    return jsonify({"uid": user.uid})
 
 @app.route('/login', methods=['POST'])
 def login():
