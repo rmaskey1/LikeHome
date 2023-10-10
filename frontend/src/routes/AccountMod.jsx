@@ -19,6 +19,12 @@ const ListingTitle = styled.div`
 
 const SectionTitle = styled.div`
   margin-top: 20px;
+  font-size: 26px;
+  font-weight: 500;
+`;
+
+const SubTitle = styled.div`
+  margin-top: 17px;
   font-size: 22px;
   font-weight: 300;
 `;
@@ -33,40 +39,6 @@ const Input = styled.input`
   color: #888888;
   font-size: 18px;
   font-weight: 450;
-`;
-
-const FileInput = styled.input`
-  display: none; /* Hide the file input */
-`;
-
-const UploadButton = styled.label`
-  margin-top: 15px;
-  margin-bottom: 10px;
-  width: 200px;
-  height: 60px;
-  padding: 10px;
-  border-radius: 20px;
-  background-color: #ffffff;
-  color: #cf316a;
-  border: 1px solid;
-  border-color: #cf316a;
-  font-size: 20px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #cf316a;
-    color: #ffffff;
-  }
-`;
-
-const FileName = styled.span`
-  margin-top: 10px;
-  margin-left: 5px;
 `;
 
 const CheckboxGroup = styled.div`
@@ -151,10 +123,34 @@ function AddListing() {
   const {
     handleSubmit,
     control,
+    register,
     setError,
     formState: { errors },
   } = useForm();
   const [formData, setFormData] = useState(null);
+
+  const [isHotelOwner, setIsHotelOwner] = useState(false);
+  useEffect(() => {
+    //INTEGRATIONS!! Check the account type if it is a hotel owner HERE!
+    const isHotelOwnerAccount = true; //temporarily set to true for testing, fix later!
+    setIsHotelOwner(isHotelOwnerAccount);
+  }, []);
+
+  const isLetter = (str) => {
+    return /^[A-Za-z]+$/.test(str);
+  };
+
+  const validateEmail = (value) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailRegex.test(value)) {
+      setError("email", {
+        type: "manual",
+        message: "Invalid email format",
+      });
+    } else {
+      setError("email", null);
+    }
+  };
 
   const onSubmit = (data) => {
     //INTEGRATIONS! Make error msgs for setting first and last names with numbers?
@@ -166,14 +162,6 @@ function AddListing() {
       setError("email", {
         type: "manual",
         message: "Email is already taken",
-      });
-    }
-
-    const emailInvalidFormat = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    if (!emailInvalidFormat.test(data.email)) {
-      setError("email", {
-        type: "manual",
-        message: "Invalid email format",
       });
     }
 
@@ -198,64 +186,117 @@ function AddListing() {
       <Container>
         <form onSubmit={handleSubmit(onSubmit)}>
           <ListingTitle>Update Profile</ListingTitle>
-          <SectionTitle>First Name</SectionTitle>
-          <Controller
-            name="firstName"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Input {...field} type="text" style={{ color: "black" }} />
-                {errors.firstName && (
-                  <ErrorText>{errors.firstName.message}</ErrorText>
-                )}
-              </>
-            )}
+
+          {isHotelOwner && ( //renders only if the account is a hotel owner
+            <div>
+              <SectionTitle>Hotel Details</SectionTitle>
+              <SubTitle>Hotel Name</SubTitle>
+              <Input
+                {...register("hotelName", {})}
+                type="text"
+                style={{ color: "black" }}
+              />
+
+              <SubTitle>Street Name</SubTitle>
+              <Input
+                {...register("streetName", {})}
+                type="text"
+                style={{ color: "black" }}
+              />
+
+              <div style={{ display: "flex" }}>
+                <div style={{ flex: 1, marginRight: "10px" }}>
+                  <SubTitle>City</SubTitle>
+                  <Input
+                    {...register("city", {})}
+                    type="text"
+                    style={{ color: "black" }}
+                  />
+                </div>
+                <div style={{ flex: 1, marginRight: "10px" }}>
+                  <SubTitle>State</SubTitle>
+                  <Input
+                    {...register("state", {})}
+                    type="text"
+                    style={{ color: "black" }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <SubTitle>Zip Code</SubTitle>
+                  <Input
+                    {...register("zipCode", {
+                      valueAsNumber: true,
+                    })}
+                    type="number"
+                    style={{ color: "black" }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          <br />
+
+          <SectionTitle>Profile Details</SectionTitle>
+
+          <div style={{ display: "flex" }}>
+            <div style={{ flex: 1, marginRight: "10px" }}>
+              <SubTitle>First Name</SubTitle>
+              <Input
+                {...register("firstName", {})}
+                type="text"
+                style={{ color: "black" }}
+              />
+              {errors.firstName && (
+                <ErrorText>{errors.firstName.message.toString()}</ErrorText>
+              )}
+            </div>
+            <div style={{ flex: 1 }}>
+              <SubTitle>Last Name</SubTitle>
+              <Input
+                {...register("lastName", {})}
+                type="text"
+                style={{ color: "black" }}
+              />
+              {errors.lastName && (
+                <ErrorText>{errors.lastName.message.toString()}</ErrorText>
+              )}
+            </div>
+          </div>
+
+          <SubTitle>Email</SubTitle>
+          <Input
+            {...register("emaill", {
+              pattern: {
+                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                message: "Invalid email format",
+              },
+            })}
+            type="text"
+            style={{ color: "black" }}
+            onBlur={(e) => validateEmail(e.target.value)}
           />
-          <SectionTitle>Last Name</SectionTitle>
-          <Controller
-            name="lastName"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Input {...field} type="text" style={{ color: "black" }} />
-                {errors.lastName && (
-                  <ErrorText>{errors.lastName.message}</ErrorText>
-                )}
-              </>
-            )}
+          {errors.email && (
+            <ErrorText>{errors.email.message.toString()}</ErrorText>
+          )}
+
+          <SubTitle>Password</SubTitle>
+          <Input
+            {...register("password", {})}
+            type="password"
+            style={{ color: "black" }}
           />
-          <SectionTitle>Email</SectionTitle>
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Input {...field} type="email" style={{ color: "black" }} />
-                {errors.email && <ErrorText>{errors.email.message}</ErrorText>}
-              </>
-            )}
+
+          <SubTitle>Phone Number</SubTitle>
+          <Input
+            {...register("phoneNumber", {})}
+            type="number"
+            style={{ color: "black" }}
           />
-          <SectionTitle>Password</SectionTitle>
-          <Controller
-            name="password"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} type="password" style={{ color: "black" }} />
-            )}
-          />
-          <SectionTitle>Phone Number</SectionTitle>
-          <Controller
-            name="phoneNumber"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Input {...field} type="number" style={{ color: "black" }} />
-                {errors.phoneNumber && (
-                  <ErrorText>{errors.phoneNumber.message}</ErrorText>
-                )}
-              </>
-            )}
-          />
+          {errors.phoneNumber && (
+            <ErrorText>{errors.phoneNumber.message.toString()}</ErrorText>
+          )}
+
           <CenteredButtonContainer>
             <SubmitButton type="submit">Update</SubmitButton>
           </CenteredButtonContainer>

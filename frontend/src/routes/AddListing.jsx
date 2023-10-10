@@ -145,6 +145,8 @@ function AddListing() {
     formState: { errors },
   } = useForm();
   const [uploadedFileName, setUploadedFileName] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
+
   const [mode] = useState("adding");
 
   const isLetter = (str) => {
@@ -154,8 +156,10 @@ function AddListing() {
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setUploadedFile(file);
       setUploadedFileName(file.name);
     } else {
+      setUploadedFile(null);
       setUploadedFileName(null);
     }
   };
@@ -182,7 +186,7 @@ function AddListing() {
         />
         {errors.price && (
           <ErrorMessage className="error-text">
-            <span>{errors.price.message}</span>
+            <span>{errors.price.message.toString()}</span>
           </ErrorMessage>
         )}
 
@@ -213,7 +217,7 @@ function AddListing() {
                 />
                 {errors.fromMonth && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.fromMonth.message}</span>
+                    <span>{errors.fromMonth.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
@@ -237,7 +241,7 @@ function AddListing() {
                 />
                 {errors.fromDay && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.fromDay.message}</span>
+                    <span>{errors.fromDay.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
@@ -265,7 +269,7 @@ function AddListing() {
                 />
                 {errors.toMonth && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.toMonth.message}</span>
+                    <span>{errors.toMonth.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
@@ -289,7 +293,7 @@ function AddListing() {
                 />
                 {errors.toDay && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.toDay.message}</span>
+                    <span>{errors.toDay.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
@@ -317,7 +321,7 @@ function AddListing() {
             />
             {errors.beds && (
               <ErrorMessage className="error-text">
-                <span>{errors.beds.message}</span>
+                <span>{errors.beds.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -340,7 +344,7 @@ function AddListing() {
             />
             {errors.bedType && (
               <ErrorMessage className="error-text">
-                <span>{errors.bedType.message}</span>
+                <span>{errors.bedType.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -362,7 +366,7 @@ function AddListing() {
             />
             {errors.guests && (
               <ErrorMessage className="error-text">
-                <span>{errors.guests.message}</span>
+                <span>{errors.guests.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -382,7 +386,7 @@ function AddListing() {
             />
             {errors.bathrooms && (
               <ErrorMessage className="error-text">
-                <span>{errors.bathrooms.message}</span>
+                <span>{errors.bathrooms.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -409,9 +413,15 @@ function AddListing() {
                 </UploadButton>
               </>
             )}
+            rules={{
+              validate: (value) => !!value || "Please upload an image",
+            }}
           />
         </div>
         {uploadedFileName && <FileName>{uploadedFileName}</FileName>}
+        {errors.image && (
+          <ErrorMessage>{errors.image.message.toString()}</ErrorMessage>
+        )}
 
         <br />
 

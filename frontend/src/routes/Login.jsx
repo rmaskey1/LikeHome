@@ -115,7 +115,26 @@ function Login() {
   const [isFetching, setIsFetching] = useState(false);
 
   const handleLogin = (loginData) => {
-    console.log(loginData);
+    setIsFetching(true);
+    fetch("http://127.0.0.1:5000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setIsLogin(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        resetFields();
+        setIsFetching(false);
+      });
   };
 
   const resetFields = () => {
