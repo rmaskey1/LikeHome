@@ -116,17 +116,17 @@ function Login() {
 
   const handleLogin = (loginData) => {
     setIsFetching(true);
-    fetch("http://localhost:5000/login", {
+    fetch("http://127.0.0.1:5000/login", {
       method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(loginData),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         console.log(data);
-        setIsLogin(true)
+        setIsLogin(true);
       })
       .catch((error) => {
         console.log(error);

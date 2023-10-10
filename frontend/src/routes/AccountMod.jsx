@@ -136,8 +136,32 @@ function AddListing() {
     setIsHotelOwner(isHotelOwnerAccount);
   }, []);
 
+  const validateLettersWithSpaces = (value) => {
+    if (/^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/.test(value)) {
+      return true;
+    }
+    return "Only letters and spaces are allowed";
+  };
+
   const isLetter = (str) => {
     return /^[A-Za-z]+$/.test(str);
+  };
+
+  //INTEGRATIONS!! somehow get the user's existing data :D
+  const existingData = {
+    //if account is hotel user, get their exsiting address:
+    hotelName: "Sad Hotel",
+    streetName: "1st Depression Ave",
+    city: "San Jose",
+    zipCode: 95122,
+    state: "CA",
+    country: "USA",
+
+    //load exiting user data
+    firstName: "SampleFirst",
+    lastName: "SampleLast",
+    email: "sampleemail@gmail.com",
+    phoneNumber: +1234567809,
   };
 
   const validateEmail = (value) => {
@@ -192,44 +216,120 @@ function AddListing() {
               <SectionTitle>Hotel Details</SectionTitle>
               <SubTitle>Hotel Name</SubTitle>
               <Input
-                {...register("hotelName", {})}
+                {...register("hotelName", {
+                  required: "Hotel Name is required",
+                  validate: validateLettersWithSpaces,
+                })}
                 type="text"
                 style={{ color: "black" }}
+                defaultValue={existingData.hotelName}
               />
+              {errors.hotelName && (
+                <ErrorText className="error-text">
+                  <span>{errors.hotelName.message.toString()}</span>
+                </ErrorText>
+              )}
 
               <SubTitle>Street Name</SubTitle>
               <Input
-                {...register("streetName", {})}
+                {...register("streetName", {
+                  required: "Street Name is required",
+                })}
                 type="text"
                 style={{ color: "black" }}
+                defaultValue={existingData.streetName}
               />
+              {errors.streetName && (
+                <ErrorText className="error-text">
+                  <span>{errors.streetName.message.toString()}</span>
+                </ErrorText>
+              )}
 
               <div style={{ display: "flex" }}>
                 <div style={{ flex: 1, marginRight: "10px" }}>
                   <SubTitle>City</SubTitle>
                   <Input
-                    {...register("city", {})}
+                    {...register("city", {
+                      required: "City is required",
+                      validate: validateLettersWithSpaces,
+                    })}
                     type="text"
                     style={{ color: "black" }}
+                    defaultValue={existingData.city}
                   />
-                </div>
-                <div style={{ flex: 1, marginRight: "10px" }}>
-                  <SubTitle>State</SubTitle>
-                  <Input
-                    {...register("state", {})}
-                    type="text"
-                    style={{ color: "black" }}
-                  />
+                  {errors.city && (
+                    <ErrorText className="error-text">
+                      <span>{errors.city.message.toString()}</span>
+                    </ErrorText>
+                  )}
                 </div>
                 <div style={{ flex: 1 }}>
                   <SubTitle>Zip Code</SubTitle>
                   <Input
                     {...register("zipCode", {
                       valueAsNumber: true,
+                      required: "Zip Code is required",
                     })}
                     type="number"
                     style={{ color: "black" }}
+                    defaultValue={existingData.zipCode}
                   />
+                  {errors.zipCode && (
+                    <ErrorText className="error-text">
+                      <span>{errors.zipCode.message.toString()}</span>
+                    </ErrorText>
+                  )}
+                </div>
+              </div>
+
+              <div style={{ display: "flex" }}>
+                <div style={{ flex: 1, marginRight: "10px" }}>
+                  <SubTitle>State</SubTitle>
+                  <Input
+                    {...register("state", {
+                      required: "State is required",
+                      validate: {
+                        validName: (value) => {
+                          if (!isLetter(value)) {
+                            return "Only letters are allowed";
+                          }
+                          return true;
+                        },
+                      },
+                    })}
+                    type="text"
+                    style={{ color: "black" }}
+                    defaultValue={existingData.state}
+                  />
+                  {errors.state && (
+                    <ErrorText className="error-text">
+                      <span>{errors.state.message.toString()}</span>
+                    </ErrorText>
+                  )}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <SubTitle>Country</SubTitle>
+                  <Input
+                    {...register("country", {
+                      required: "Country is required",
+                      validate: {
+                        validName: (value) => {
+                          if (!isLetter(value)) {
+                            return "Only letters are allowed";
+                          }
+                          return true;
+                        },
+                      },
+                    })}
+                    type="text"
+                    style={{ color: "black" }}
+                    defaultValue={existingData.country}
+                  />
+                  {errors.country && (
+                    <ErrorText className="error-text">
+                      <span>{errors.country.message.toString()}</span>
+                    </ErrorText>
+                  )}
                 </div>
               </div>
             </div>
@@ -243,9 +343,20 @@ function AddListing() {
             <div style={{ flex: 1, marginRight: "10px" }}>
               <SubTitle>First Name</SubTitle>
               <Input
-                {...register("firstName", {})}
+                {...register("firstName", {
+                  required: "First Name is required",
+                  validate: {
+                    validName: (value) => {
+                      if (!isLetter(value)) {
+                        return "Only letters are allowed";
+                      }
+                      return true;
+                    },
+                  },
+                })}
                 type="text"
                 style={{ color: "black" }}
+                defaultValue={existingData.firstName}
               />
               {errors.firstName && (
                 <ErrorText>{errors.firstName.message.toString()}</ErrorText>
@@ -254,9 +365,20 @@ function AddListing() {
             <div style={{ flex: 1 }}>
               <SubTitle>Last Name</SubTitle>
               <Input
-                {...register("lastName", {})}
+                {...register("lastName", {
+                  required: "Last Name is required",
+                  validate: {
+                    validName: (value) => {
+                      if (!isLetter(value)) {
+                        return "Only letters are allowed";
+                      }
+                      return true;
+                    },
+                  },
+                })}
                 type="text"
                 style={{ color: "black" }}
+                defaultValue={existingData.lastName}
               />
               {errors.lastName && (
                 <ErrorText>{errors.lastName.message.toString()}</ErrorText>
@@ -266,7 +388,8 @@ function AddListing() {
 
           <SubTitle>Email</SubTitle>
           <Input
-            {...register("emaill", {
+            {...register("email", {
+              required: "Email is required",
               pattern: {
                 value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
                 message: "Invalid email format",
@@ -274,9 +397,12 @@ function AddListing() {
             })}
             type="text"
             style={{ color: "black" }}
-            onBlur={(e) => validateEmail(e.target.value)}
+            //onBlur={(e) => validateEmail(e.target.value)}
+            defaultValue={existingData.email}
           />
-          {errors.email && <ErrorText>{errors.email.message.toString()}</ErrorText>}
+          {errors.email && (
+            <ErrorText>{errors.email.message.toString()}</ErrorText>
+          )}
 
           <SubTitle>Password</SubTitle>
           <Input
@@ -287,9 +413,12 @@ function AddListing() {
 
           <SubTitle>Phone Number</SubTitle>
           <Input
-            {...register("phoneNumber", {})}
+            {...register("phoneNumber", {
+              required: "Phone Number is required",
+            })}
             type="number"
             style={{ color: "black" }}
+            defaultValue={existingData.phoneNumber}
           />
           {errors.phoneNumber && (
             <ErrorText>{errors.phoneNumber.message.toString()}</ErrorText>
