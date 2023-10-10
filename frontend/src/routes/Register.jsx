@@ -121,13 +121,27 @@ function Register() {
   const [isFetching, setIsFetching] = useState(false);
 
   const handleSignup = (signupData) => {
-    console.log(signupData);
+    //console.log(signupData);
+    fetch('http://localhost:5000/api/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(signupData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => console.error('Error:', error));
+  
   };
 
   const resetFields = () => {
     resetField("username");
     resetField("password");
   };
+
 
   return (
     <Container>
