@@ -19,6 +19,7 @@ const NavbarContainer = styled.nav`
     rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
   font-size: 16px;
   font-weight: 500;
+  z-index: 500;
 `;
 
 const LeftBox = styled.div`
