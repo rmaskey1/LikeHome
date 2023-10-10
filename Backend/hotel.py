@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify, render_template
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import  updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, updateHotelName
+from database import  updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, updateHotelName, updateCountry, updateCity, updateState, updateStreet, updateZip, updateInfomation, updateHotelDetails
     
 # Function to return uid of current user
 def getUid():
@@ -30,7 +30,7 @@ def getUid():
         return None
 
 def hotel_modification_func(app):
-    @app.route('/hotel_modification', methods=['POST', 'GET'])
+    @app.route('/AccountMod', methods=['POST', 'GET'])
     def hotel_modification():
         
 
@@ -70,7 +70,7 @@ def hotel_modification_func(app):
             # Checks if phone number is valid
             print("In first if for phone")
             if is_valid_phone_number(data['phoneNumber']):
-                updatePhone(uid, data['phoneNumber'])
+                updatePhone(uid, "+" + data['phoneNumber'])
                 print('Sucessfully updated phone number: {0}'.format(uid))
             else:
                 return "Please enter a valid phone number."
@@ -95,7 +95,6 @@ def hotel_modification_func(app):
             updateLastName(uid, data['lastName'])
             print('Sucessfully updated last name: {0}'.format(uid))
     
-        print("Above Pass")
         # Update password
         if 'newPassword' in data and data['password']:
             # Checks if phone number is valid
@@ -104,6 +103,49 @@ def hotel_modification_func(app):
                 print('Sucessfully updated password: {0}'.format(uid))
             else:
                 return "Please enter a valid phone number"
+            
+        # Update hotel name
+        if 'hotelName' in data and data['hotelName']:
+            updateHotelName(uid, data['hotelName'])
+            print('Sucessfully updated hotel name: {0}'.format(uid))
+
+
+        # Update street
+        if 'street' in data and data['street'] != '':
+            updateStreet(uid, data['street'])
+            print('Sucessfully updated street: {0}'.format(uid))
+
+        # Update city
+        if 'city' in data and data['city']:
+            updateCity(uid, data['city'])
+            print('Sucessfully updated city: {0}'.format(uid))
+
+        # Update zip
+        if 'zip' in data and data['zip']:
+            updateZip(uid, data['zip'])
+            print('Sucessfully updated zip: {0}'.format(uid))
+
+        # Update state
+        if 'state' in data and data['state']:
+            updateState(uid, data['state'])
+            print('Sucessfully updated state: {0}'.format(uid))
+        
+        # Update country
+        if 'country' in data and data['country']:
+            updateCountry(uid, data['country'])
+            print('Sucessfully updated country: {0}'.format(uid))
+
+        #TODO: Delete if info is not automatically filled
+        #!if is_valid_phone_number(data['phoneNumber'].strip()):
+        #!    updateInfomation(uid, data['email'].strip(), "+" + data['phoneNumber'], data['firstName'].strip(), data['lastName'].strip())
+
+        #TODO: Delete if info is not automatically filled
+        # Check if street is not only space
+        #!if data['street'] != '':
+        #!    updateHotelDetails(uid, data['hotelName'].strip(), data['street'].strip(), data['city'].strip(), data['zip'], data['state'].strip, data['country'].strip())
+        #!else: 
+        #!    return "Invalid street name"
+        
 
         
 

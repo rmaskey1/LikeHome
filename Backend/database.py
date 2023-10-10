@@ -177,7 +177,48 @@ def updateLastName(uid, last_name):
 def updateHotelName(uid, hotel_name):
     user_ref = db.collection('user').document(uid)
     user_ref.update({'hotelName': hotel_name})
+
+def updateStreet(uid, street):
+    user_ref = db.collection('user').document(uid)
+    user_ref.update({'street': street})
+
+def updateCity(uid, city):
+    user_ref = db.collection('user').document(uid)
+    user_ref.update({'city': city})
+
+def updateZip(uid, zip):
+    user_ref = db.collection('user').document(uid)
+    user_ref.update({'zip': zip})
+
+def updateState(uid, state):
+    user_ref = db.collection('user').document(uid)
+    user_ref.update({'state': state})
+
+def updateCountry(uid, country):
+    user_ref = db.collection('user').document(uid)
+    user_ref.update({'country': country})
     
+def updateInfomation(uid, email, phone, password, firstName, lastName):
+    doc_ref = db.collection("user").document(uid)
+    doc_ref.update({
+       'firstName': firstName,
+        'lastName': lastName,
+        'email': email,
+        'phone': phone,
+        'password': password
+    })
+
+def updateHotelDetails(uid, hotelName, street, city, zip, state, country):
+    doc_ref = db.collection("user").document(uid)
+    doc_ref.update({
+        "hotelName": hotelName,
+        "street": street,
+        "city": city,
+        "zip": zip,
+        "state": state,
+        "country": country
+    })
+
 def getAccountType():
     user_ref = db.collection("user").document(getUid())
     userDoc = user_ref.get().to_dict()

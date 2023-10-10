@@ -5,11 +5,11 @@ import requests
 import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName
+from database import updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, updateInfomation
 
 
 def guest_modification_func(app):
-    @app.route('/guest_modification', methods=['POST', 'GET'])
+    @app.route('/AccountMod', methods=['POST', 'GET'])
     def guest_modification():
         
         # Get current user's uid
@@ -40,15 +40,14 @@ def guest_modification_func(app):
 
         # Update email 
         if 'email' in data and data['email']:
-            updateEmail(uid, email = data['email'])
+            updateEmail(uid, data['email'].strip())
             print('Sucessfully updated email: {0}'.format(uid))
 
         # Update phone number
         if 'phoneNumber' in data and data['phoneNumber']:
             # Checks if phone number is valid
-            print("In first if for phone")
-            if is_valid_phone_number(data['phoneNumber']):
-                updatePhone(uid, data['phoneNumber'])
+            if is_valid_phone_number(data['phoneNumber'].strip()):
+                updatePhone(uid, "+" + data['phoneNumber'])
                 print('Sucessfully updated phone number: {0}'.format(uid))
             else:
                 return "Please enter a valid phone number."
@@ -59,7 +58,7 @@ def guest_modification_func(app):
         first_name, last_name = split_full_name(full_name)
         # If first name field is not empty, update display name
         if 'firstName' in data and data['firstName']:
-            updateName(uid, combine_name(data['firstName'], last_name))
+            updateName(uid, combine_name(data['firstName'].strip(), last_name))
             updateFirstName(uid, data['firstName'])
             print('Sucessfully updated first name: {0}'.format(uid))
 
@@ -69,9 +68,11 @@ def guest_modification_func(app):
         first_name, last_name = split_full_name(full_name)
         # If last name field is not empty, update display name
         if 'lastName' in data and data['lastName']:
-            updateName(uid, combine_name(first_name, data['lastName']))
+            updateName(uid, combine_name(first_name, data['lastName'].strip()))
             updateLastName(uid, data['lastName'])
             print('Sucessfully updated last name: {0}'.format(uid))
+
+        
     
         print("Above Pass")
         # Update password
@@ -81,7 +82,13 @@ def guest_modification_func(app):
                 updatePassword(uid, data['password'])
                 print('Sucessfully updated password: {0}'.format(uid))
             else:
-                return "Please enter a valid phone number"
+                return "Password should be at least 6 characters"
+            
+        #TODO: Delete if info is not automatically filled
+        #!if is_valid_phone_number(data['phoneNumber'].strip()):
+        #!    updateInfomation(uid, data['email'].strip(), "+" + data['phoneNumber'], data['firstName'].strip(), data['lastName'].strip())
+            
+        
 
         
 
@@ -90,7 +97,7 @@ def guest_modification_func(app):
 # Function to verify phone
 def is_valid_phone_number(phone_number):
     # Check if the string is exactly 12 characters long and starts with '+'
-    if len(phone_number) == 12 and phone_number[0] == '+':
+    if len(phone_number) == 11:
         return True
     else:
         return False
