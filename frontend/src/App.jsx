@@ -10,6 +10,7 @@ import Profile from "routes/Profile";
 import Register from "routes/Register";
 import AddListing from "routes/AddListing";
 import AccountMod from "routes/AccountMod";
+import RegisterHotel from "routes/RegisterHotel";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/register/hotel" element={<RegisterHotel />} />
         <Route path="/hotel/:id" element={<Details />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/add_listing" element={<AddListing />} />
