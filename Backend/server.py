@@ -83,7 +83,7 @@ def signup():
     #     return render_template("signup.html", error=False) # Returns signup.html page if no POST request is made yet
     
 
-@app.route('/hotel_signup', methods=['POST', 'GET']) # ?uid=<uid>
+@app.route('/signup', methods=['POST', 'GET']) # ?uid=<uid>
 def hotel_signup():
     data = request.get_json()  # Assuming JSON data is sent
     userId = request.args['uid']
@@ -96,7 +96,7 @@ def hotel_signup():
     addHotelInfo(userId, hotelName, street, city, zipcode, state, country)
     return userId
 
-@app.route('/hotel_signup/<uid>', methods=['POST', 'GET'])
+@app.route('/signup/<uid>', methods=['POST', 'GET'])
 def hotel_signup(userId):
     # firebase_admin.get_app()
     if request.method == "POST":

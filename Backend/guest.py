@@ -5,7 +5,7 @@ import requests
 import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, updateInfomation
+from database import  updatePassword, getUid, updateInfomation
 
 
 def guest_modification_func(app):
@@ -27,54 +27,17 @@ def guest_modification_func(app):
         try: # Check if entered email is already in use
             if 'email' in data and data['email']:
                 usr = auth.get_user_by_email(data['email'])
-                return "Email already in use."
+                return {"message" : "Email number is already in use", "status" : 409}
         except auth.UserNotFoundError:
             pass
         try:
             # Check if entered phone number is already in use
             if 'phone' in data and data['phone']:
-                usr = auth.get_user_by_phone_number(data['phone']) 
-                return "Phone number already in use."
+                usr = auth.get_user_by_phone_number("+" + data['phone']) 
+                return {"message" : "Phone number is already in use", "status" : 409}
         except auth.UserNotFoundError:   
             pass
 
-        # Update email 
-        if 'email' in data and data['email']:
-            updateEmail(uid, data['email'].strip())
-            print('Sucessfully updated email: {0}'.format(uid))
-
-        # Update phone number
-        if 'phoneNumber' in data and data['phoneNumber']:
-            # Checks if phone number is valid
-            if is_valid_phone_number(data['phoneNumber'].strip()):
-                updatePhone(uid, "+" + data['phoneNumber'])
-                print('Sucessfully updated phone number: {0}'.format(uid))
-            else:
-                return "Please enter a valid phone number."
-
-
-        # Split name in DB 
-        full_name = auth.get_user(uid).display_name
-        first_name, last_name = split_full_name(full_name)
-        # If first name field is not empty, update display name
-        if 'firstName' in data and data['firstName']:
-            updateName(uid, combine_name(data['firstName'].strip(), last_name))
-            updateFirstName(uid, data['firstName'])
-            print('Sucessfully updated first name: {0}'.format(uid))
-
-
-        # Split name in DB 
-        full_name = auth.get_user(uid).display_name
-        first_name, last_name = split_full_name(full_name)
-        # If last name field is not empty, update display name
-        if 'lastName' in data and data['lastName']:
-            updateName(uid, combine_name(first_name, data['lastName'].strip()))
-            updateLastName(uid, data['lastName'])
-            print('Sucessfully updated last name: {0}'.format(uid))
-
-        
-    
-        print("Above Pass")
         # Update password
         if 'newPassword' in data and data['password']:
             # Checks if phone number is valid
@@ -82,12 +45,13 @@ def guest_modification_func(app):
                 updatePassword(uid, data['password'])
                 print('Sucessfully updated password: {0}'.format(uid))
             else:
-                return "Password should be at least 6 characters"
+                return {"message" : "Please enter a valid password", "status" : 409}
             
-        #TODO: Delete if info is not automatically filled
-        #!if is_valid_phone_number(data['phoneNumber'].strip()):
-        #!    updateInfomation(uid, data['email'].strip(), "+" + data['phoneNumber'], data['firstName'].strip(), data['lastName'].strip())
-            
+        
+        if is_valid_phone_number(data['phoneNumber'].strip()):
+            updateInfomation(uid, data['email'].strip(), "+" + data['phoneNumber'], data['firstName'].strip(), data['lastName'].strip())
+        else:
+            return {"message" : "Please enter a valid phone number", "status" : 409} 
         
 
         
@@ -105,18 +69,5 @@ def is_valid_phone_number(phone_number):
 def is_valid_password(password):
     return len(password) >= 6
 
-# Function to split full name
-def split_full_name(full_name):
-    name_parts = full_name.split()
-
-    first_name = name_parts[0]
-    last_name = ' '.join(name_parts[1:])
-    
-    return first_name, last_name
-
-# Function to combine first and last name
-def combine_name(first_name, last_name):
-    full_name = first_name + " " + last_name
-    return full_name
 
 

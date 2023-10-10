@@ -137,77 +137,31 @@ def getUserInfo():
     user_data['uid'] = uid
     return user_data
 
-def updatePhone(uid, phone):
-    user = auth.update_user(
-        uid,
-        phone_number = phone)
-    # Update the user's phone number in Firestore
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'phone': phone})
-    
-def updateEmail(uid, email):
-    user = auth.update_user(
-        uid,
-        email = email)
-    
-    # Update the user's email in Firestore
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'email': email})
-    
-def updateName(uid, name):
-    user = auth.update_user(
-        uid,
-        display_name = name)
-    
+
+# Update password on Authenication
 def updatePassword(uid, newPassword):
     user = auth.update_user(
         uid,
         password='newPassword')
-    
-def updateFirstName(uid, first_name):
-    # Update the user's first name in Firestore
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'firstName': first_name})
 
-def updateLastName(uid, last_name):
-    # Update the user's last name in Firestore
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'lastName': last_name})
-
-def updateHotelName(uid, hotel_name):
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'hotelName': hotel_name})
-
-def updateStreet(uid, street):
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'street': street})
-
-def updateCity(uid, city):
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'city': city})
-
-def updateZip(uid, zip):
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'zip': zip})
-
-def updateState(uid, state):
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'state': state})
-
-def updateCountry(uid, country):
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'country': country})
-    
-def updateInfomation(uid, email, phone, password, firstName, lastName):
+# Update basic user information
+def updateInfomation(uid, email, phone, firstName, lastName):
+    # Firestore Database
     doc_ref = db.collection("user").document(uid)
     doc_ref.update({
        'firstName': firstName,
         'lastName': lastName,
         'email': email,
-        'phone': phone,
-        'password': password
+        'phone': phone
     })
-
+    # Authenication 
+    user = auth.update_user(
+        uid,
+        email = email,
+        phone_number = phone,
+        display_name = firstName + " " + lastName)
+    
+# Update hotel name and hotel address
 def updateHotelDetails(uid, hotelName, street, city, zip, state, country):
     doc_ref = db.collection("user").document(uid)
     doc_ref.update({
