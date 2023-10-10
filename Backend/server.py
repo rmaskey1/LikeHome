@@ -4,7 +4,7 @@ import database
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
-from database import addUser, addHotelInfo
+from database import addUser, addHotelInfo, pyrebase_auth, db
 
 
 app = Flask(__name__)
@@ -14,13 +14,11 @@ CORS(app)
 def home():
     return redirect(url_for("user_selection"))
 
-from guest import guest_modification_func, guest_login_func
-guest_login_func(app)
+from guest import guest_modification_func
 guest_modification_func(app)
 
-from hotel import hotel_modification_func, hotel_func
+from hotel import hotel_modification_func
 hotel_modification_func(app)
-hotel_func(app)
 
 # User Type Selection Function
 @app.route('/user_selection', methods=['POST', 'GET'])
@@ -97,6 +95,41 @@ def hotel_signup():
     country = data['role']
     addHotelInfo(userId, hotelName, street, city, zipcode, state, country)
     return userId
+
+@app.route('/hotel_signup/<uid>', methods=['POST', 'GET'])
+def hotel_signup(userId):
+    # firebase_admin.get_app()
+    if request.method == "POST":
+        # Get form data
+        hotelName = request.form['hotelName']
+        street = request.form['email']
+        city = request.form['password']
+        zip = request.form['phone']
+        state = request.form['phone']
+        country = request.form['phone']
+        addHotelInfo(userId, hotelName, street, city, zip, state, country)
+        return redirect(url_for("guest_login"))
+    else:
+        return render_template("hotel_signup.html", error=False) # Returns hotel_signup.html page if no POST request is made yet
+    
+def login_user(email, password):
+    user = pyrebase_auth.sign_in_with_email_and_password(email, password)
+    return user
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    try:
+        # Authenticate the user with email and password
+        userData = login_user(data['email'], data['password'])
+        user_ref = db.collection("user").document(userData['localId'])
+        userData['info'] = user_ref.get().to_dict()
+        # Return user's information
+        return jsonify(userData)
+    except Exception as e:
+        return jsonify({
+            "msg": e
+        })
 
 if __name__ == '__main__':
     app.debug = True

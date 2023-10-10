@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
 
 import { ReactComponent as PersonIcon } from "../icons/person-fill.svg";
 import { ReactComponent as BedIcon } from "../icons/bed.svg";
@@ -106,10 +108,121 @@ const DetailItem = styled.div`
   }
 `;
 
+const Dropdown = styled.div`
+  cursor: pointer;
+  user-select: none;
+  font-size: 30px;
+  font-weight: 600;
+  position: relative;
+`;
+
+const DropdownContent = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 5px;
+  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  font-size: 18px;
+  font-weight: 400;
+`;
+
+const DropdownItem = styled.div`
+  padding: 10px 15px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #cf316a;
+    color: #ffffff;
+  }
+`;
+
+const Buttons = styled.label`
+  margin-top: 15px;
+  margin-bottom: 10px;
+  width: 100px;
+  height: 50px;
+  padding: 10px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  color: #cf316a;
+  border: 1px solid;
+  border-color: #cf316a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 17px;
+  font-weight: 600;
+
+  &:hover {
+    background-color: #cf316a;
+    color: #ffffff;
+  }
+`;
+
+const SectionTitle = styled.div`
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: 600;
+`;
+
 function Details() {
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const navigate = useNavigate();
+  // Function to handle the "Edit Listing" click event
+  const handleEditListingClick = () => {
+    // Use navigate to navigate to the desired route
+    navigate(`/hotel/:id/modify_listing`);
+  };
+
+  const toggleDropdown = () => {
+    setDropdownOpen((prevOpen) => !prevOpen);
+  };
+
+  const openDeleteModal = () => {
+    setDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+  };
+
   return (
     <Container>
-      <HotelName>Hotel Room</HotelName>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div style={{ marginRight: "590px" }}>
+          <HotelName>Hotel Room</HotelName>
+        </div>
+        <div>
+          <Dropdown onClick={toggleDropdown}>
+            . . .
+            <DropdownContent isOpen={isDropdownOpen}>
+              <DropdownItem onClick={handleEditListingClick}>
+                Edit Listing
+              </DropdownItem>
+              <DropdownItem onClick={openDeleteModal}>
+                Delete Listing
+              </DropdownItem>
+            </DropdownContent>
+          </Dropdown>
+        </div>
+      </div>
+
       <Location>123 Street, San Jose, California</Location>
       <Summary>4 Guests - 2 Beds - 1 Bath</Summary>
       <Board>
@@ -156,6 +269,49 @@ function Details() {
           <span>Microwave</span>
         </DetailItem>
       </Detail>
+
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onRequestClose={closeDeleteModal}
+        contentLabel="Delete Listing Modal"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1000,
+          },
+          content: {
+            width: "400px",
+            height: "fit-content",
+            margin: "auto",
+            borderRadius: "10px",
+            padding: "20px",
+            textAlign: "center",
+            backgroundColor: "#fff",
+            border: "none",
+          },
+        }}
+      >
+        <SectionTitle>
+          Are you sure you want to delete this listing?
+        </SectionTitle>
+        <br />
+        <p>This action is irreversible.</p>
+        <br />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div style={{ marginLeft: "60px" }}>
+            <Buttons>Yes</Buttons>
+          </div>
+          <div style={{ marginRight: "60px" }}>
+            <Buttons onClick={closeDeleteModal}>No</Buttons>
+          </div>
+        </div>
+      </Modal>
     </Container>
   );
 }

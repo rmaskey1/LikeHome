@@ -19,6 +19,12 @@ const ListingTitle = styled.div`
 
 const SectionTitle = styled.div`
   margin-top: 20px;
+  font-size: 26px;
+  font-weight: 500;
+`;
+
+const SubTitle = styled.div`
+  margin-top: 17px;
   font-size: 22px;
   font-weight: 300;
 `;
@@ -33,40 +39,6 @@ const Input = styled.input`
   color: #888888;
   font-size: 18px;
   font-weight: 450;
-`;
-
-const FileInput = styled.input`
-  display: none; /* Hide the file input */
-`;
-
-const UploadButton = styled.label`
-  margin-top: 15px;
-  margin-bottom: 10px;
-  width: 200px;
-  height: 60px;
-  padding: 10px;
-  border-radius: 20px;
-  background-color: #ffffff;
-  color: #cf316a;
-  border: 1px solid;
-  border-color: #cf316a;
-  font-size: 20px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #cf316a;
-    color: #ffffff;
-  }
-`;
-
-const FileName = styled.span`
-  margin-top: 10px;
-  margin-left: 5px;
 `;
 
 const CheckboxGroup = styled.div`
@@ -151,10 +123,58 @@ function AddListing() {
   const {
     handleSubmit,
     control,
+    register,
     setError,
     formState: { errors },
   } = useForm();
   const [formData, setFormData] = useState(null);
+
+  const [isHotelOwner, setIsHotelOwner] = useState(false);
+  useEffect(() => {
+    //INTEGRATIONS!! Check the account type if it is a hotel owner HERE!
+    const isHotelOwnerAccount = true; //temporarily set to true for testing, fix later!
+    setIsHotelOwner(isHotelOwnerAccount);
+  }, []);
+
+  const validateLettersWithSpaces = (value) => {
+    if (/^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/.test(value)) {
+      return true;
+    }
+    return "Only letters and spaces are allowed";
+  };
+
+  const isLetter = (str) => {
+    return /^[A-Za-z]+$/.test(str);
+  };
+
+  //INTEGRATIONS!! somehow get the user's existing data :D
+  const existingData = {
+    //if account is hotel user, get their exsiting address:
+    hotelName: "Sad Hotel",
+    streetName: "1st Depression Ave",
+    city: "San Jose",
+    zipCode: 95122,
+    state: "CA",
+    country: "USA",
+
+    //load exiting user data
+    firstName: "SampleFirst",
+    lastName: "SampleLast",
+    email: "sampleemail@gmail.com",
+    phoneNumber: +1234567809,
+  };
+
+  const validateEmail = (value) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailRegex.test(value)) {
+      setError("email", {
+        type: "manual",
+        message: "Invalid email format",
+      });
+    } else {
+      setError("email", null);
+    }
+  };
 
   const onSubmit = (data) => {
     //INTEGRATIONS! Make error msgs for setting first and last names with numbers?
@@ -166,14 +186,6 @@ function AddListing() {
       setError("email", {
         type: "manual",
         message: "Email is already taken",
-      });
-    }
-
-    const emailInvalidFormat = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    if (!emailInvalidFormat.test(data.email)) {
-      setError("email", {
-        type: "manual",
-        message: "Invalid email format",
       });
     }
 
@@ -198,64 +210,220 @@ function AddListing() {
       <Container>
         <form onSubmit={handleSubmit(onSubmit)}>
           <ListingTitle>Update Profile</ListingTitle>
-          <SectionTitle>First Name</SectionTitle>
-          <Controller
-            name="firstName"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Input {...field} type="text" style={{ color: "black" }} />
-                {errors.firstName && (
-                  <ErrorText>{errors.firstName.message}</ErrorText>
-                )}
-              </>
-            )}
+
+          {isHotelOwner && ( //renders only if the account is a hotel owner
+            <div>
+              <SectionTitle>Hotel Details</SectionTitle>
+              <SubTitle>Hotel Name</SubTitle>
+              <Input
+                {...register("hotelName", {
+                  required: "Hotel Name is required",
+                  validate: validateLettersWithSpaces,
+                })}
+                type="text"
+                style={{ color: "black" }}
+                defaultValue={existingData.hotelName}
+              />
+              {errors.hotelName && (
+                <ErrorText className="error-text">
+                  <span>{errors.hotelName.message.toString()}</span>
+                </ErrorText>
+              )}
+
+              <SubTitle>Street Name</SubTitle>
+              <Input
+                {...register("streetName", {
+                  required: "Street Name is required",
+                })}
+                type="text"
+                style={{ color: "black" }}
+                defaultValue={existingData.streetName}
+              />
+              {errors.streetName && (
+                <ErrorText className="error-text">
+                  <span>{errors.streetName.message.toString()}</span>
+                </ErrorText>
+              )}
+
+              <div style={{ display: "flex" }}>
+                <div style={{ flex: 1, marginRight: "10px" }}>
+                  <SubTitle>City</SubTitle>
+                  <Input
+                    {...register("city", {
+                      required: "City is required",
+                      validate: validateLettersWithSpaces,
+                    })}
+                    type="text"
+                    style={{ color: "black" }}
+                    defaultValue={existingData.city}
+                  />
+                  {errors.city && (
+                    <ErrorText className="error-text">
+                      <span>{errors.city.message.toString()}</span>
+                    </ErrorText>
+                  )}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <SubTitle>Zip Code</SubTitle>
+                  <Input
+                    {...register("zipCode", {
+                      valueAsNumber: true,
+                      required: "Zip Code is required",
+                    })}
+                    type="number"
+                    style={{ color: "black" }}
+                    defaultValue={existingData.zipCode}
+                  />
+                  {errors.zipCode && (
+                    <ErrorText className="error-text">
+                      <span>{errors.zipCode.message.toString()}</span>
+                    </ErrorText>
+                  )}
+                </div>
+              </div>
+
+              <div style={{ display: "flex" }}>
+                <div style={{ flex: 1, marginRight: "10px" }}>
+                  <SubTitle>State</SubTitle>
+                  <Input
+                    {...register("state", {
+                      required: "State is required",
+                      validate: {
+                        validName: (value) => {
+                          if (!isLetter(value)) {
+                            return "Only letters are allowed";
+                          }
+                          return true;
+                        },
+                      },
+                    })}
+                    type="text"
+                    style={{ color: "black" }}
+                    defaultValue={existingData.state}
+                  />
+                  {errors.state && (
+                    <ErrorText className="error-text">
+                      <span>{errors.state.message.toString()}</span>
+                    </ErrorText>
+                  )}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <SubTitle>Country</SubTitle>
+                  <Input
+                    {...register("country", {
+                      required: "Country is required",
+                      validate: {
+                        validName: (value) => {
+                          if (!isLetter(value)) {
+                            return "Only letters are allowed";
+                          }
+                          return true;
+                        },
+                      },
+                    })}
+                    type="text"
+                    style={{ color: "black" }}
+                    defaultValue={existingData.country}
+                  />
+                  {errors.country && (
+                    <ErrorText className="error-text">
+                      <span>{errors.country.message.toString()}</span>
+                    </ErrorText>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <br />
+
+          <SectionTitle>Profile Details</SectionTitle>
+
+          <div style={{ display: "flex" }}>
+            <div style={{ flex: 1, marginRight: "10px" }}>
+              <SubTitle>First Name</SubTitle>
+              <Input
+                {...register("firstName", {
+                  required: "First Name is required",
+                  validate: {
+                    validName: (value) => {
+                      if (!isLetter(value)) {
+                        return "Only letters are allowed";
+                      }
+                      return true;
+                    },
+                  },
+                })}
+                type="text"
+                style={{ color: "black" }}
+                defaultValue={existingData.firstName}
+              />
+              {errors.firstName && (
+                <ErrorText>{errors.firstName.message.toString()}</ErrorText>
+              )}
+            </div>
+            <div style={{ flex: 1 }}>
+              <SubTitle>Last Name</SubTitle>
+              <Input
+                {...register("lastName", {
+                  required: "Last Name is required",
+                  validate: {
+                    validName: (value) => {
+                      if (!isLetter(value)) {
+                        return "Only letters are allowed";
+                      }
+                      return true;
+                    },
+                  },
+                })}
+                type="text"
+                style={{ color: "black" }}
+                defaultValue={existingData.lastName}
+              />
+              {errors.lastName && (
+                <ErrorText>{errors.lastName.message.toString()}</ErrorText>
+              )}
+            </div>
+          </div>
+
+          <SubTitle>Email</SubTitle>
+          <Input
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                message: "Invalid email format",
+              },
+            })}
+            type="text"
+            style={{ color: "black" }}
+            //onBlur={(e) => validateEmail(e.target.value)}
+            defaultValue={existingData.email}
           />
-          <SectionTitle>Last Name</SectionTitle>
-          <Controller
-            name="lastName"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Input {...field} type="text" style={{ color: "black" }} />
-                {errors.lastName && (
-                  <ErrorText>{errors.lastName.message}</ErrorText>
-                )}
-              </>
-            )}
+          {errors.email && (
+            <ErrorText>{errors.email.message.toString()}</ErrorText>
+          )}
+
+          <SubTitle>Password</SubTitle>
+          <Input
+            {...register("password", {})}
+            type="password"
+            style={{ color: "black" }}
           />
-          <SectionTitle>Email</SectionTitle>
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Input {...field} type="email" style={{ color: "black" }} />
-                {errors.email && <ErrorText>{errors.email.message}</ErrorText>}
-              </>
-            )}
+
+          <SubTitle>Phone Number</SubTitle>
+          <Input
+            {...register("phoneNumber", {
+              required: "Phone Number is required",
+            })}
+            type="number"
+            style={{ color: "black" }}
+            defaultValue={existingData.phoneNumber}
           />
-          <SectionTitle>Password</SectionTitle>
-          <Controller
-            name="password"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} type="password" style={{ color: "black" }} />
-            )}
-          />
-          <SectionTitle>Phone Number</SectionTitle>
-          <Controller
-            name="phoneNumber"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Input {...field} type="number" style={{ color: "black" }} />
-                {errors.phoneNumber && (
-                  <ErrorText>{errors.phoneNumber.message}</ErrorText>
-                )}
-              </>
-            )}
-          />
+          {errors.phoneNumber && (
+            <ErrorText>{errors.phoneNumber.message.toString()}</ErrorText>
+          )}
+
           <CenteredButtonContainer>
             <SubmitButton type="submit">Update</SubmitButton>
           </CenteredButtonContainer>

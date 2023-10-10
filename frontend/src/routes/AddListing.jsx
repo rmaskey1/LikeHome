@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import styled from "styled-components";
+import { Link, useLocation } from "react-router-dom";
 
 const Container = styled.main`
   display: center;
@@ -145,7 +146,14 @@ function AddListing() {
     formState: { errors },
   } = useForm();
   const [uploadedFileName, setUploadedFileName] = useState(null);
-  const [mode] = useState("adding");
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const location = useLocation();
+  const [listing, setListing] = useState("");
+
+  useEffect(() => {
+    setListing(location.pathname.substring(1));
+    console.log(listing);
+  }, [listing, location.pathname]);
 
   const isLetter = (str) => {
     return /^[A-Za-z]+$/.test(str);
@@ -154,8 +162,10 @@ function AddListing() {
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setUploadedFile(file);
       setUploadedFileName(file.name);
     } else {
+      setUploadedFile(null);
       setUploadedFileName(null);
     }
   };
@@ -168,7 +178,9 @@ function AddListing() {
   return (
     <Container>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <ListingTitle>Add a new listing:</ListingTitle>
+        <ListingTitle>
+          {listing === "add_listing" ? "Add a new listing:" : "Modify listing"}
+        </ListingTitle>
         <SectionTitle>Basic Information</SectionTitle>
         <Input
           {...register("price", {
@@ -182,13 +194,11 @@ function AddListing() {
         />
         {errors.price && (
           <ErrorMessage className="error-text">
-            <span>{errors.price.message}</span>
+            <span>{errors.price.message.toString()}</span>
           </ErrorMessage>
         )}
-
         <br />
         <br />
-
         <SectionTitle>Available Dates</SectionTitle>
         <div style={{ display: "flex" }}>
           <div style={{ flex: 1, marginRight: "10px" }}>
@@ -213,7 +223,7 @@ function AddListing() {
                 />
                 {errors.fromMonth && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.fromMonth.message}</span>
+                    <span>{errors.fromMonth.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
@@ -237,7 +247,7 @@ function AddListing() {
                 />
                 {errors.fromDay && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.fromDay.message}</span>
+                    <span>{errors.fromDay.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
@@ -265,7 +275,7 @@ function AddListing() {
                 />
                 {errors.toMonth && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.toMonth.message}</span>
+                    <span>{errors.toMonth.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
@@ -289,16 +299,14 @@ function AddListing() {
                 />
                 {errors.toDay && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.toDay.message}</span>
+                    <span>{errors.toDay.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
             </div>
           </div>
         </div>
-
         <br />
-
         <SectionTitle>Room Details</SectionTitle>
         <div style={{ display: "flex" }}>
           <div style={{ flex: 1, marginRight: "10px" }}>
@@ -317,7 +325,7 @@ function AddListing() {
             />
             {errors.beds && (
               <ErrorMessage className="error-text">
-                <span>{errors.beds.message}</span>
+                <span>{errors.beds.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -340,7 +348,7 @@ function AddListing() {
             />
             {errors.bedType && (
               <ErrorMessage className="error-text">
-                <span>{errors.bedType.message}</span>
+                <span>{errors.bedType.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -362,7 +370,7 @@ function AddListing() {
             />
             {errors.guests && (
               <ErrorMessage className="error-text">
-                <span>{errors.guests.message}</span>
+                <span>{errors.guests.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -382,12 +390,11 @@ function AddListing() {
             />
             {errors.bathrooms && (
               <ErrorMessage className="error-text">
-                <span>{errors.bathrooms.message}</span>
+                <span>{errors.bathrooms.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
         </div>
-
         <div style={{ marginTop: "15px" }}>
           <Controller
             name="image"
@@ -409,12 +416,17 @@ function AddListing() {
                 </UploadButton>
               </>
             )}
+            rules={{
+              validate: (value) => !!value || "Image upload required",
+            }}
           />
         </div>
         {uploadedFileName && <FileName>{uploadedFileName}</FileName>}
+        {errors.image && (
+          <ErrorMessage>{errors.image.message.toString()}</ErrorMessage>
+        )}
 
         <br />
-
         <SectionTitle>Amenities Offered</SectionTitle>
         <CheckboxGroup>
           <CheckboxItem>
@@ -548,9 +560,10 @@ function AddListing() {
             </Label>
           </CheckboxItem>
         </CheckboxGroup>
-
         <CenteredButtonContainer>
-          <SubmitButton type="submit">Add</SubmitButton>
+          <SubmitButton type="submit">
+            {listing === "add_listing" ? "Add" : "Save"}
+          </SubmitButton>
         </CenteredButtonContainer>
       </form>
     </Container>

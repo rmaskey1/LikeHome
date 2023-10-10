@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -8,7 +8,6 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 400px;
-  height: 550px;
   margin: 100px auto;
   padding: 0 40px;
   border: 1px solid rgba(41, 53, 69, 0.5);
@@ -19,6 +18,7 @@ const FormTitle = styled.div`
   font-size: 35px;
   font-weight: 700;
   color: #293545;
+  margin-top: 30px;
 `;
 
 const NoAccount = styled.span`
@@ -90,6 +90,7 @@ const SubmitBtn = styled.button`
   height: 42px;
   margin: 0 auto;
   margin-top: 25px;
+  margin-bottom: 30px;
   background: rgb(207, 49, 106);
   border-radius: 20px;
   font-size: 16px;
@@ -112,6 +113,7 @@ const ErrorMessageArea = styled.div`
 `;
 
 function Register() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -120,21 +122,34 @@ function Register() {
   } = useForm();
   const [isFetching, setIsFetching] = useState(false);
 
-  const handleSignup = (signupData) => {
-    //console.log(signupData);
-    fetch('http://localhost:5000/api/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(signupData)
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch(error => console.error('Error:', error));
-  
+  const handleSignup = async (signupData) => {
+    /* HOTEL Sign up */
+    if (signupData.usertype === "hotel") {
+      navigate("hotel", {
+        state: signupData,
+      });
+    } else {
+      /* GUEST, ADMIN Sign up */
+      setIsFetching(true);
+
+      fetch("http://127.0.0.1:5000/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(signupData),
+      })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          setIsFetching(false);
+          resetFields();
+        });
+    }
   };
 
   const resetFields = () => {
@@ -158,14 +173,14 @@ function Register() {
             <Label>First Name</Label>
             <InputContainer style={{ width: "160px" }}>
               <Input
-                {...register("firstname", {
+                {...register("firstName", {
                   required: "Please enter first name",
                 })}
               />
             </InputContainer>
-            {errors.firstname && (
+            {errors.firstName && (
               <ErrorMessageArea>
-                {errors.firstname.message.toString()}
+                {errors.firstName.message.toString()}
               </ErrorMessageArea>
             )}
           </div>
@@ -173,14 +188,14 @@ function Register() {
             <Label>Last Name</Label>
             <InputContainer style={{ width: "160px" }}>
               <Input
-                {...register("lastname", {
+                {...register("lastName", {
                   required: "Please enter last name",
                 })}
               />
             </InputContainer>
-            {errors.lastname && (
+            {errors.lastName && (
               <ErrorMessageArea>
-                {errors.lastname.message.toString()}
+                {errors.lastName.message.toString()}
               </ErrorMessageArea>
             )}
           </div>
@@ -192,7 +207,7 @@ function Register() {
             {...register("email", {
               required: "Please enter email",
               pattern: {
-                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
                 message: "Please enter valid email",
               },
             })}
@@ -220,39 +235,45 @@ function Register() {
         <Label>Phone Number</Label>
         <InputContainer>
           <Input
-            {...register("phoneNumber", {
+            {...register("phone", {
               required: "Please enter phone number",
-              pattern: { value: /^[0-9]/, message: "Please enter numbers" },
+              // pattern: { value: /^[0-9]/, message: "Please enter numbers" },
             })}
           />
         </InputContainer>
-        {errors.phoneNumber && (
-          <ErrorMessageArea>
-            {errors.phoneNumber.message.toString()}
-          </ErrorMessageArea>
+        {errors.phone && (
+          <ErrorMessageArea>{errors.phone.message.toString()}</ErrorMessageArea>
         )}
 
         <Label>Who are you?</Label>
+        {errors.usertype && (
+          <ErrorMessageArea>
+            {errors.usertype.message.toString()}
+          </ErrorMessageArea>
+        )}
         <RadioContainer>
           <input
-            {...register("role", { required: "Please select who you are" })}
+            {...register("usertype", { required: "Please select who you are" })}
             type="radio"
-            value="Guest"
+            value="guest"
           />
           <span>Guest</span>
         </RadioContainer>
         <RadioContainer>
           <input
-            {...register("role", { required: "Please select who you are" })}
+            {...register("usertype", { required: "Please select who you are" })}
             type="radio"
-            value="Hotel"
+            value="hotel"
           />
           <span>Hotel</span>
-          {errors.role && (
-            <ErrorMessageArea>
-              {errors.role.message.toString()}
-            </ErrorMessageArea>
-          )}
+        </RadioContainer>
+        <RadioContainer>
+          <input
+            {...register("usertype", { required: "Please select who you are" })}
+            type="radio"
+            value="admin"
+          />
+          <span>Admin</span>
         </RadioContainer>
         <SubmitBtn type="submit">
           {isFetching ? "loading..." : "Sign Up"}
