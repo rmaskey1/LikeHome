@@ -22,36 +22,8 @@
             </div>
             <form method="post">
                 <div class="mb-3">
-                    <label for="firstName" class="form-label">First Name</label>
-                    <input type="firstName" class="form-control" id="firstName" name="firstName" placeholder="Enter your first name" required>
-                </div>
-                <div class="mb-3">
-                    <label for="lastName" class="form-label">Last Name</label>
-                    <input type="lastName" class="form-control" id="lastName" name="lastName" placeholder="Enter your last name" required>
-                </div>
-                <div class="mb-3">
-                    <label for="lastName" class="form-label">Last Name</label>
-                    <input type="lastName" class="form-control" id="lastName" name="lastName" placeholder="Enter your last name" required>
-                </div>
-                <div class="mb-3">
-                    <label for="lastName" class="form-label">Last Name</label>
-                    <input type="lastName" class="form-control" id="lastName" name="lastName" placeholder="Enter your last name" required>
-                </div>
-                <div class="mb-3">
-                    <label for="lastName" class="form-label">Last Name</label>
-                    <input type="lastName" class="form-control" id="lastName" name="lastName" placeholder="Enter your last name" required>
-                </div>
-                <div class="mb-3">
-                    <label for="lastName" class="form-label">Last Name</label>
-                    <input type="lastName" class="form-control" id="lastName" name="lastName" placeholder="Enter your last name" required>
-                </div>
-                <div class="mb-3">
-                    <label for="phone" class="form-label">Phone Number</label>
-                    <input type="phone" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
-                </div>
-                <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email or phone number" >
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
@@ -73,18 +45,19 @@
                 </div>
                 {% if emailError == True %}
                 <div class="error">
-                    <p>Email is already in use, please try another one.</p>
+                    <p>No existing email in db</p>
                 </div>
                 {% endif %}
-                {% if phoneError == True %}
+                {% if passwordError == True %}
                 <div class="error">
-                    <p>Phone number is already in use, please try another one.</p>
+                    <p>Incorrect password</p>
                 </div>
                 {% endif %}
-                <div class="mb-3">
-                    <label for="hotelName" class="form-label">Hotel Name</label>
-                    <input type="hotelName" class="form-control" id="hotelName" name="hotelName" placeholder="Enter your hotel name" required>
+                {% if notHotelUserError == True %}
+                <div class="error">
+                    <p>User is not a Hotel Owner!</p>
                 </div>
+                {% endif %}
                 <button type="submit" class="btn btn-primary">Sign Up</button>
             </form>
         </div>
