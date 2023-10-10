@@ -6,6 +6,7 @@ import FavoriteFilled from "../icons/favorite-filled.svg";
 
 const StyledP = styled.p`
   font-family: Rubik, sans-serif;
+  color: #293545;
   font-weight: lighter;
   margin-top: 0px;
   margin-bottom: 5px;
@@ -144,7 +145,7 @@ function PreviewCard({ previewCard, onClick }) {
             width: "300px",
           }}
         >
-          <StyledP style={{ fontWeight: "bold" }}>{location}</StyledP>
+          <StyledP style={{ fontWeight: "500" }}>{location}</StyledP>
           <div style={{ display: "flex", alignItems: "center" }}>
             <img
               src={Rating}
@@ -158,8 +159,8 @@ function PreviewCard({ previewCard, onClick }) {
         <StyledP>
           {formatMonthAndDate(startDate)} - {formatMonthAndDate(endDate)}
         </StyledP>
-        <StyledP style={{ fontWeight: "bold", marginTop: "10px" }}>
-          ${price} night
+        <StyledP style={{ marginTop: "10px", fontWeight: "400" }}>
+          <span style={{ fontWeight: "500" }}>${price}</span> night
         </StyledP>
       </StyledCardDetails>
     </StyledCard>

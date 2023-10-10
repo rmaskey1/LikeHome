@@ -1,44 +1,16 @@
 import React from "react";
 import PreviewCard from "./PreviewCard";
 import styled from "styled-components";
-// import { firestore } from '../firebase';
 
 const StyledCardsListing = styled.div`
   display: flex;
+  justify-content: space-around;
   flex-wrap: wrap;
   padding: 10px 50px;
   gap: 25px;
 `;
 
 function PreviewCardsListing() {
-  // const [previewCards, setPreviewCards] = useState([]);
-
-  // useEffect(() => {
-  //   const fetchPreviewCards = async () => {
-  //     try {
-  //       const previewCardData = await firestore.collection('previewCards').get();
-  //       const previewCardList = previewCardData.docs.map((doc) => {
-  //         const data = doc.data();
-  //         const previewCard = {
-  //           id: doc.id,
-  //           name: data.location || '',
-  //           rating: data.rating || 0,
-  //           description: data.description || '',
-  //           startDate: data.startDate.toDate() || null,
-  //           endDate: data.endDate.toDate() || null,
-  //           price: data.price || 0,
-  //           imageUrls: data.imageUrls || [],
-  //         };
-  //         return previewCard;
-  //       });
-  //       setPreviewCards(previewCardList);
-  //     } catch (error) {
-  //       console.error('Error fetching preview cards:', error);
-  //     }
-  //   };
-  //   fetchPreviewCards();
-  // }, []);
-
   // example previewCards
   const previewCards = [
     {
@@ -134,7 +106,16 @@ function PreviewCardsListing() {
 
   return (
     <div>
-      <h1 style={{ padding: "10px 50px" }}>Start your journey here.</h1>
+      <h1
+        style={{
+          padding: "10px 50px",
+          fontWeight: "bold",
+          fontSize: "26px",
+          marginTop: "20px",
+        }}
+      >
+        Start your journey here.
+      </h1>
       <StyledCardsListing>
         {previewCards.map((previewCard) => (
           <PreviewCard

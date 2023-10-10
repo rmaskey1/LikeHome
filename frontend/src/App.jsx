@@ -14,6 +14,14 @@ import RegisterHotel from "routes/RegisterHotel";
 import PreviewCardsListing from "components/PreviewCardsListing";
 
 function App() {
+  const handleCancelDelete = () => {
+    console.log("Cancel");
+  };
+
+  const handleConfirmDelete = () => {
+    console.log("Account deleted");
+  };
+
   return (
     <BrowserRouter>
       <NavBar />
@@ -28,7 +36,7 @@ function App() {
         <Route path="/hotel/:id/modify_listing" element={<AddListing />} />
         <Route path="/account_modification" element={<AccountMod />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="/home" element={<PreviewCardsListing />} />
+        <Route path="/previewCards" element={<PreviewCardsListing />} />
       </Routes>
     </BrowserRouter>
   );
