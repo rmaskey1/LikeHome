@@ -276,7 +276,9 @@ function AddListing() {
             style={{ color: "black" }}
             onBlur={(e) => validateEmail(e.target.value)}
           />
-          {errors.email && <ErrorText>{errors.email.message.toString()}</ErrorText>}
+          {errors.email && (
+            <ErrorText>{errors.email.message.toString()}</ErrorText>
+          )}
 
           <SubTitle>Password</SubTitle>
           <Input
