@@ -248,7 +248,7 @@ function AddListing() {
                 style={{ color: "black" }}
               />
               {errors.firstName && (
-                <ErrorText>{errors.firstName.message}</ErrorText>
+                <ErrorText>{errors.firstName.message.toString()}</ErrorText>
               )}
             </div>
             <div style={{ flex: 1 }}>
@@ -259,7 +259,7 @@ function AddListing() {
                 style={{ color: "black" }}
               />
               {errors.lastName && (
-                <ErrorText>{errors.lastName.message}</ErrorText>
+                <ErrorText>{errors.lastName.message.toString()}</ErrorText>
               )}
             </div>
           </div>
@@ -276,7 +276,7 @@ function AddListing() {
             style={{ color: "black" }}
             onBlur={(e) => validateEmail(e.target.value)}
           />
-          {errors.email && <ErrorText>{errors.email.message}</ErrorText>}
+          {errors.email && <ErrorText>{errors.email.message.toString()}</ErrorText>}
 
           <SubTitle>Password</SubTitle>
           <Input
@@ -292,7 +292,7 @@ function AddListing() {
             style={{ color: "black" }}
           />
           {errors.phoneNumber && (
-            <ErrorText>{errors.phoneNumber.message}</ErrorText>
+            <ErrorText>{errors.phoneNumber.message.toString()}</ErrorText>
           )}
 
           <CenteredButtonContainer>
