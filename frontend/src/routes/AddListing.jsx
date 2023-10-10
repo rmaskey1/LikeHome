@@ -22,6 +22,12 @@ const SectionTitle = styled.div`
   font-weight: 500;
 `;
 
+const SubTitle = styled.div`
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: 300;
+`;
+
 const Input = styled.input`
   margin-top: 15px;
   width: 100%;
@@ -139,13 +145,21 @@ function AddListing() {
     formState: { errors },
   } = useForm();
   const [uploadedFileName, setUploadedFileName] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
+
   const [mode] = useState("adding");
+
+  const isLetter = (str) => {
+    return /^[A-Za-z]+$/.test(str);
+  };
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setUploadedFile(file);
       setUploadedFileName(file.name);
     } else {
+      setUploadedFile(null);
       setUploadedFileName(null);
     }
   };
@@ -160,49 +174,223 @@ function AddListing() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <ListingTitle>Add a new listing:</ListingTitle>
         <SectionTitle>Basic Information</SectionTitle>
+        <Input
+          {...register("price", {
+            valueAsNumber: true,
+            min: { value: 0, message: "Price must be non-negative" },
+            required: "Price is required",
+          })}
+          type="number"
+          placeholder="Price"
+          style={{ color: "black" }}
+        />
+        {errors.price && (
+          <ErrorMessage className="error-text">
+            <span>{errors.price.message}</span>
+          </ErrorMessage>
+        )}
+
+        <br />
+        <br />
+
+        <SectionTitle>Available Dates</SectionTitle>
+        <div style={{ display: "flex" }}>
+          <div style={{ flex: 1, marginRight: "10px" }}>
+            <SubTitle>From:</SubTitle>
+            <div style={{ display: "flex" }}>
+              <div style={{ flex: 1, marginRight: "10px" }}>
+                <Input
+                  {...register("fromMonth", {
+                    required: "Month is required",
+                    validate: {
+                      validName: (value) => {
+                        if (!isLetter(value)) {
+                          return "Only letters are allowed";
+                        }
+                        return true;
+                      },
+                    },
+                  })}
+                  type="text"
+                  placeholder="Month"
+                  style={{ color: "black" }}
+                />
+                {errors.fromMonth && (
+                  <ErrorMessage className="error-text">
+                    <span>{errors.fromMonth.message}</span>
+                  </ErrorMessage>
+                )}
+              </div>
+              <div style={{ flex: 1 }}>
+                <Input
+                  {...register("fromDay", {
+                    valueAsNumber: true,
+                    max: {
+                      value: 31,
+                      message: "Day is at most 31",
+                    },
+                    min: {
+                      value: 1,
+                      message: "Day must be at least 1",
+                    },
+                    required: "Day is required",
+                  })}
+                  type="number"
+                  placeholder="Day"
+                  style={{ color: "black" }}
+                />
+                {errors.fromDay && (
+                  <ErrorMessage className="error-text">
+                    <span>{errors.fromDay.message}</span>
+                  </ErrorMessage>
+                )}
+              </div>
+            </div>
+          </div>
+          <div style={{ flex: 1 }}>
+            <SubTitle>To:</SubTitle>
+            <div style={{ display: "flex" }}>
+              <div style={{ flex: 1, marginRight: "10px" }}>
+                <Input
+                  {...register("toMonth", {
+                    required: "Month is required",
+                    validate: {
+                      validName: (value) => {
+                        if (!isLetter(value)) {
+                          return "Only letters are allowed";
+                        }
+                        return true;
+                      },
+                    },
+                  })}
+                  type="text"
+                  placeholder="Month"
+                  style={{ color: "black" }}
+                />
+                {errors.toMonth && (
+                  <ErrorMessage className="error-text">
+                    <span>{errors.toMonth.message}</span>
+                  </ErrorMessage>
+                )}
+              </div>
+              <div style={{ flex: 1 }}>
+                <Input
+                  {...register("toDay", {
+                    valueAsNumber: true,
+                    max: {
+                      value: 31,
+                      message: "Day is at most 31",
+                    },
+                    min: {
+                      value: 1,
+                      message: "Day must be at least 1",
+                    },
+                    required: "Day is required",
+                  })}
+                  type="number"
+                  placeholder="Day"
+                  style={{ color: "black" }}
+                />
+                {errors.toDay && (
+                  <ErrorMessage className="error-text">
+                    <span>{errors.toDay.message}</span>
+                  </ErrorMessage>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <br />
+
+        <SectionTitle>Room Details</SectionTitle>
         <div style={{ display: "flex" }}>
           <div style={{ flex: 1, marginRight: "10px" }}>
             <Input
-              {...register("hotelName", { required: "Hotel Name is required" })}
-              type="text"
-              placeholder="Hotel Name"
+              {...register("beds", {
+                valueAsNumber: true,
+                min: {
+                  value: 0,
+                  message: "Number of Beds must be non-negative",
+                },
+                required: "Number of Beds is required",
+              })}
+              type="number"
+              placeholder="# of Beds"
+              style={{ color: "black" }}
             />
-            {errors.hotelName && (
+            {errors.beds && (
               <ErrorMessage className="error-text">
-                <span>{errors.hotelName.message}</span>
+                <span>{errors.beds.message}</span>
               </ErrorMessage>
             )}
           </div>
           <div style={{ flex: 1 }}>
             <Input
-              {...register("price", {
-                valueAsNumber: true,
-                min: { value: 0, message: "Price must be non-negative" },
-                required: "Price is required",
+              {...register("bedType", {
+                required: "Bed Type is required",
+                validate: {
+                  validName: (value) => {
+                    if (!isLetter(value)) {
+                      return "Only letters are allowed";
+                    }
+                    return true;
+                  },
+                },
               })}
-              type="number"
-              placeholder="Price"
+              type="text"
+              placeholder="Bed Type"
+              style={{ color: "black" }}
             />
-            {errors.price && (
+            {errors.bedType && (
               <ErrorMessage className="error-text">
-                <span>{errors.price.message}</span>
+                <span>{errors.bedType.message}</span>
               </ErrorMessage>
             )}
           </div>
         </div>
-
-        <Input
-          {...register("hotelLocation", {
-            required: "Hotel Location is required",
-          })}
-          type="text"
-          placeholder="Hotel Location"
-        />
-        {errors.hotelLocation && (
-          <ErrorMessage className="error-text">
-            <span>{errors.hotelLocation.message}</span>
-          </ErrorMessage>
-        )}
+        <div style={{ display: "flex" }}>
+          <div style={{ flex: 1, marginRight: "10px" }}>
+            <Input
+              {...register("guests", {
+                valueAsNumber: true,
+                min: {
+                  value: 1,
+                  message: "Number of Guests must be greater than 0",
+                },
+                required: "Number of Guests is required",
+              })}
+              type="number"
+              placeholder="# of Guests"
+              style={{ color: "black" }}
+            />
+            {errors.guests && (
+              <ErrorMessage className="error-text">
+                <span>{errors.guests.message}</span>
+              </ErrorMessage>
+            )}
+          </div>
+          <div style={{ flex: 1 }}>
+            <Input
+              {...register("bathrooms", {
+                valueAsNumber: true,
+                min: {
+                  value: 0,
+                  message: "Number of Bathrooms must be non-negative",
+                },
+                required: "Number of Bathrooms is required",
+              })}
+              type="number"
+              placeholder="# of Bathrooms"
+              style={{ color: "black" }}
+            />
+            {errors.bathrooms && (
+              <ErrorMessage className="error-text">
+                <span>{errors.bathrooms.message}</span>
+              </ErrorMessage>
+            )}
+          </div>
+        </div>
 
         <div style={{ marginTop: "15px" }}>
           <Controller
@@ -225,86 +413,13 @@ function AddListing() {
                 </UploadButton>
               </>
             )}
+            rules={{
+              validate: (value) => !!value || "Please upload an image",
+            }}
           />
         </div>
         {uploadedFileName && <FileName>{uploadedFileName}</FileName>}
-
-        <br />
-
-        <SectionTitle>Room Details</SectionTitle>
-        <div style={{ display: "flex" }}>
-          <div style={{ flex: 1, marginRight: "10px" }}>
-            <Input
-              {...register("beds", {
-                valueAsNumber: true,
-                min: {
-                  value: 0,
-                  message: "Number of Beds must be non-negative",
-                },
-                required: "Number of Beds is required",
-              })}
-              type="number"
-              placeholder="# of Beds"
-            />
-            {errors.beds && (
-              <ErrorMessage className="error-text">
-                <span>{errors.beds.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
-          <div style={{ flex: 1 }}>
-            <Input
-              {...register("bedType", { required: "Bed Type is required" })}
-              type="text"
-              placeholder="Bed Type"
-            />
-            {errors.bedType && (
-              <ErrorMessage className="error-text">
-                <span>{errors.bedType.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
-        </div>
-        <div style={{ display: "flex" }}>
-          <div style={{ flex: 1, marginRight: "10px" }}>
-            <Input
-              {...register("guests", {
-                valueAsNumber: true,
-                min: {
-                  value: 1,
-                  message: "Number of Guests must be greater than 0",
-                },
-                required: "Number of Guests is required",
-              })}
-              type="number"
-              placeholder="# of Guests"
-            />
-            {errors.guests && (
-              <ErrorMessage className="error-text">
-                <span>{errors.guests.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
-          <div style={{ flex: 1 }}>
-            <Input
-              {...register("bathrooms", {
-                valueAsNumber: true,
-                min: {
-                  value: 0,
-                  message: "Number of Bathrooms must be non-negative",
-                },
-                required: "Number of Bathrooms is required",
-              })}
-              type="number"
-              placeholder="# of Bathrooms"
-            />
-            {errors.bathrooms && (
-              <ErrorMessage className="error-text">
-                <span>{errors.bathrooms.message}</span>
-              </ErrorMessage>
-            )}
-          </div>
-        </div>
+        {errors.image && <ErrorMessage>{errors.image.message}</ErrorMessage>}
 
         <br />
 
