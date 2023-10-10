@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
+import axios from "axios";
 
 const Container = styled.main`
   display: center;
@@ -149,10 +150,56 @@ function AddListing() {
   const [uploadedFile, setUploadedFile] = useState(null);
   const location = useLocation();
   const [listing, setListing] = useState("");
+  const [setExistingData] = useState(null); // State to hold existing data
+
+  //INTEGRATIONS!! somehow get the listings's existing data :D
+  const existingData = {
+    price: 100,
+    fromMonth: "Jan",
+    fromDay: 15,
+    toMonth: "Feb",
+    toDay: 16,
+    beds: 3,
+    guests: 3,
+    bathrooms: 2,
+    bedType: "Double",
+    image: "download.png",
+    amenities: [
+      { freeWifi: false },
+      { pool: true },
+      { tv: false },
+      { freeWasherInUnit: false },
+      { freeDryerInUnit: true },
+      { freeParking: false },
+      { airConditioning: false },
+      { freeBreakfast: false },
+      { freeLunch: false },
+      { freeDinner: false },
+      { microwave: false },
+      { refrigerator: true },
+      { petFriendly: true },
+      { spa: false },
+    ],
+  };
 
   useEffect(() => {
     setListing(location.pathname.substring(1));
     console.log(listing);
+
+    // Fetch existing data if the listing is not "add_listing"
+    if (listing !== "add_listing") {
+      // Make an API request to fetch existing data based on the listing identifier
+      axios
+        .get(`/api/listings/${listing}`)
+        .then((response) => {
+          // Set the fetched data in the state
+          setExistingData(response.data);
+        })
+        .catch((error) => {
+          // Handle errors
+          console.error("Error fetching data:", error);
+        });
+    }
   }, [listing, location.pathname]);
 
   const isLetter = (str) => {
@@ -191,6 +238,9 @@ function AddListing() {
           type="number"
           placeholder="Price"
           style={{ color: "black" }}
+          defaultValue={
+            listing === "add_listing" ? undefined : existingData.price
+          }
         />
         {errors.price && (
           <ErrorMessage className="error-text">
