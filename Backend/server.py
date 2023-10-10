@@ -41,39 +41,60 @@ def user_selection():
 # Guest Sign Up Function   
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
-    # firebase_admin.get_app()
-    if request.method == "POST":
-        # Get form data
-        firstName = request.form['firstName']
-        lastName = request.form['lastName']
-        email = request.form['email']
-        password = request.form['password']
-        phone = request.form['phone']
-        usertype = request.form['usertype'] # User chooses what type of user they are (guest or hotel)
+    # # firebase_admin.get_app()
+    # if request.method == "POST":
+    #     # Get form data
+    #     firstName = request.form['firstName']
+    #     lastName = request.form['lastName']
+    #     email = request.form['email']
+    #     password = request.form['password']
+    #     phone = request.form['phone']
+    #     usertype = request.form['usertype'] # User chooses what type of user they are (guest or hotel)
+    data = request.get_json()  # Assuming JSON data is sent
+    firstName = data['firstname']
+    lastName = data['lastname']
+    email = data['email']
+    password = data['password']
+    phone = data['phoneNumber']
+    usertype = data['role']
 
-        try: # Check if entered email is already in use
-            usr = auth.get_user_by_email(email) # Returns auth.UserNotFoundError if email does not exist, jumps to first except block
-            print("Email already in use.")
-            return render_template("guest_signup.html", emailError=True) # Returns signup.html page with error message
+    try: # Check if entered email is already in use
+        usr = auth.get_user_by_email(email) # Returns auth.UserNotFoundError if email does not exist, jumps to first except block
+        print("Email already in use.")
+        return None # Returns signup.html page with error message
+    except auth.UserNotFoundError:
+        try: # Check if entered phone number is already in use
+            usr = auth.get_user_by_phone_number(phone) # Returns auth.UserNotFoundError if email does not exist, jumps to second except block
+            print("Phone number already in use.")
+            return None # Returns signup.html page with error message
         except auth.UserNotFoundError:
-            try: # Check if entered phone number is already in use
-                usr = auth.get_user_by_phone_number(phone) # Returns auth.UserNotFoundError if email does not exist, jumps to second except block
-                print("Phone number already in use.")
-                return render_template("guest_signup.html", phoneError=True) # Returns signup.html page with error message
-            except auth.UserNotFoundError:
-                if usertype == "guest": # If the input is 'guest', redirect to guest signup page
-                    addUser(email, phone, password, firstName, lastName, "guest")
-                    return redirect(url_for("guest_login"))
-                if usertype == "hotel": # If the input is 'hotel', redirect to hotel signup page
-                    user = addUser(email, phone, password, firstName, lastName, "hotel")
-                    return redirect(url_for("hotel_signup", userId=user.uid))
-                if usertype == "admin": # If the input is 'guest', redirect to guest signup page
-                    addUser(email, phone, password, firstName, lastName, "admin")
-                    return redirect(url_for("guest_login"))
-                 # Adds user to database
-                return render_template("guest_signup.html", error=False) # Redirects to login page
-    else:
-        return render_template("signup.html", error=False) # Returns signup.html page if no POST request is made yet
+            if usertype == "Guest": # If the input is 'guest', redirect to guest signup page
+                user = addUser(email, phone, password, firstName, lastName, "guest")
+                return user.uid
+            if usertype == "Hotel": # If the input is 'hotel', redirect to hotel signup page
+                user = addUser(email, phone, password, firstName, lastName, "hotel")
+                return user.uid
+            if usertype == "Admin": # If the input is 'guest', redirect to guest signup page
+                user = addUser(email, phone, password, firstName, lastName, "admin")
+                return user.uid
+                # Adds user to database
+            return None # Redirects to login page
+    # else:
+    #     return render_template("signup.html", error=False) # Returns signup.html page if no POST request is made yet
+    
+
+@app.route('/hotel_signup', methods=['POST', 'GET']) # ?uid=<uid>
+def hotel_signup():
+    data = request.get_json()  # Assuming JSON data is sent
+    userId = request.args['uid']
+    hotelName = data['firstname']
+    street = data['lastname']
+    city = data['email']
+    zipcode = data['password']
+    state = data['phoneNumber']
+    country = data['role']
+    addHotelInfo(userId, hotelName, street, city, zipcode, state, country)
+    return userId
 
 @app.route('/hotel_signup/<uid>', methods=['POST', 'GET'])
 def hotel_signup(userId):
