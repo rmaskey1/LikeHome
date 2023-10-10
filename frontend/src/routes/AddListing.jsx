@@ -169,7 +169,7 @@ function AddListing() {
             />
             {errors.hotelName && (
               <ErrorMessage className="error-text">
-                <span>{errors.hotelName.message}</span>
+                <span>{errors.hotelName.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -185,7 +185,7 @@ function AddListing() {
             />
             {errors.price && (
               <ErrorMessage className="error-text">
-                <span>{errors.price.message}</span>
+                <span>{errors.price.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -200,7 +200,7 @@ function AddListing() {
         />
         {errors.hotelLocation && (
           <ErrorMessage className="error-text">
-            <span>{errors.hotelLocation.message}</span>
+            <span>{errors.hotelLocation.message.toString()}</span>
           </ErrorMessage>
         )}
 
@@ -248,7 +248,7 @@ function AddListing() {
             />
             {errors.beds && (
               <ErrorMessage className="error-text">
-                <span>{errors.beds.message}</span>
+                <span>{errors.beds.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -260,7 +260,7 @@ function AddListing() {
             />
             {errors.bedType && (
               <ErrorMessage className="error-text">
-                <span>{errors.bedType.message}</span>
+                <span>{errors.bedType.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -281,7 +281,7 @@ function AddListing() {
             />
             {errors.guests && (
               <ErrorMessage className="error-text">
-                <span>{errors.guests.message}</span>
+                <span>{errors.guests.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -300,7 +300,7 @@ function AddListing() {
             />
             {errors.bathrooms && (
               <ErrorMessage className="error-text">
-                <span>{errors.bathrooms.message}</span>
+                <span>{errors.bathrooms.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>

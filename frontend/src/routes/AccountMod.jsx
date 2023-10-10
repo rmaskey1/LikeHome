@@ -194,7 +194,7 @@ function AddListing() {
               <>
                 <Input {...field} type="text" />
                 {errors.firstName && (
-                  <ErrorText>{errors.firstName.message}</ErrorText>
+                  <ErrorText>{errors.firstName.message.toString()}</ErrorText>
                 )}
               </>
             )}
@@ -207,7 +207,7 @@ function AddListing() {
               <>
                 <Input {...field} type="text" />
                 {errors.lastName && (
-                  <ErrorText>{errors.lastName.message}</ErrorText>
+                  <ErrorText>{errors.lastName.message.toString()}</ErrorText>
                 )}
               </>
             )}
@@ -219,7 +219,9 @@ function AddListing() {
             render={({ field }) => (
               <>
                 <Input {...field} type="text" />
-                {errors.email && <ErrorText>{errors.email.message}</ErrorText>}
+                {errors.email && (
+                  <ErrorText>{errors.email.message.toString()}</ErrorText>
+                )}
               </>
             )}
           />
@@ -237,7 +239,7 @@ function AddListing() {
               <>
                 <Input {...field} type="text" />
                 {errors.phoneNumber && (
-                  <ErrorText>{errors.phoneNumber.message}</ErrorText>
+                  <ErrorText>{errors.phoneNumber.message.toString()}</ErrorText>
                 )}
               </>
             )}
