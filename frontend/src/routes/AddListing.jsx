@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import styled from "styled-components";
+import { Link, useLocation } from "react-router-dom";
 
 const Container = styled.main`
   display: center;
@@ -146,8 +147,13 @@ function AddListing() {
   } = useForm();
   const [uploadedFileName, setUploadedFileName] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
+  const location = useLocation();
+  const [listing, setListing] = useState("");
 
-  const [mode] = useState("adding");
+  useEffect(() => {
+    setListing(location.pathname.substring(1));
+    console.log(listing);
+  }, [listing, location.pathname]);
 
   const isLetter = (str) => {
     return /^[A-Za-z]+$/.test(str);
@@ -167,12 +173,28 @@ function AddListing() {
   const onSubmit = (data) => {
     //Handle form submission here!! <3
     console.log(data);
+    fetch("http://127.0.0.1:5000/addRoomListing", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   };
 
   return (
     <Container>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <ListingTitle>Add a new listing:</ListingTitle>
+        <ListingTitle>
+          {listing === "add_listing" ? "Add a new listing:" : "Modify listing"}
+        </ListingTitle>
         <SectionTitle>Basic Information</SectionTitle>
         <Input
           {...register("price", {
@@ -189,10 +211,8 @@ function AddListing() {
             <span>{errors.price.message.toString()}</span>
           </ErrorMessage>
         )}
-
         <br />
         <br />
-
         <SectionTitle>Available Dates</SectionTitle>
         <div style={{ display: "flex" }}>
           <div style={{ flex: 1, marginRight: "10px" }}>
@@ -300,9 +320,7 @@ function AddListing() {
             </div>
           </div>
         </div>
-
         <br />
-
         <SectionTitle>Room Details</SectionTitle>
         <div style={{ display: "flex" }}>
           <div style={{ flex: 1, marginRight: "10px" }}>
@@ -391,7 +409,6 @@ function AddListing() {
             )}
           </div>
         </div>
-
         <div style={{ marginTop: "15px" }}>
           <Controller
             name="image"
@@ -414,7 +431,7 @@ function AddListing() {
               </>
             )}
             rules={{
-              validate: (value) => !!value || "Please upload an image",
+              validate: (value) => !!value || "Image upload required",
             }}
           />
         </div>
@@ -424,7 +441,6 @@ function AddListing() {
         )}
 
         <br />
-
         <SectionTitle>Amenities Offered</SectionTitle>
         <CheckboxGroup>
           <CheckboxItem>
@@ -558,9 +574,10 @@ function AddListing() {
             </Label>
           </CheckboxItem>
         </CheckboxGroup>
-
         <CenteredButtonContainer>
-          <SubmitButton type="submit">Add</SubmitButton>
+          <SubmitButton type="submit">
+            {listing === "add_listing" ? "Add" : "Save"}
+          </SubmitButton>
         </CenteredButtonContainer>
       </form>
     </Container>

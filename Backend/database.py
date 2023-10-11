@@ -67,6 +67,7 @@ def addUser(email, phone, password, firstName, lastName, type): # 'hotel' is an 
         'phone': phone,
         'accountType': type
     })
+
     print('Sucessfully created new user: {0}'.format(user.uid))
     return user
 

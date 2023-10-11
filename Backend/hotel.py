@@ -4,30 +4,8 @@ import firebase_admin
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from database import  updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, updateHotelName
-    
-# Function to return uid of current user
-def getUid():
-    # Get JSON of user's information
-    user_info = pyrebase_auth.current_user
-    user_info = jsonify(user_info)
-    user_data = user_info.get_json()
-    # Get email from JSON
-    id_token = user_data['idToken']
-    
-    try:
-        # Verify the ID token to get its payload
-        decoded_token = auth.verify_id_token(id_token)
-        
-        # Extract the UID from the payload
-        uid = decoded_token.get('uid')
-        
-        return uid
-    except auth.ExpiredIdTokenError:
-        # Handle expired token error
-        return None
-    except auth.InvalidIdTokenError:
-        # Handle other invalid token errors
-        return None
+import secrets
+import string
 
 def hotel_modification_func(app):
     @app.route('/hotel_modification', methods=['POST', 'GET'])
@@ -126,8 +104,52 @@ def hotel_modification_func(app):
         else:
             return render_template("hotel_modification.html", error=False) # Returns signup.html page if no POST request is made yet
 
+    @app.route('/addRoomListing', methods=['POST'])
+    def hotel_add_listing():
+        roomData = request.get_json()
+        # Generate rid and get amenities
+        autoId = generate_random_id(20)
+        amenities = []
+        for dict in roomData['amenities']:
+            key = list(dict.keys())[0]
+            if dict[key] == True:
+                amenities.append(key)
+        # Add listing to room collection
+        
+        try:
+            uid = getUid()
+            hotel_ref = db.collection('user').document(uid)
+            hotelDoc = hotel_ref.get().to_dict()
+            if hotelDoc['accountType'] != 'hotel':
+                return jsonify({
+                    "errorMsg": "User is not a hotel owner!"
+                })
+            db.collection('room').document(autoId).set({
+                    "hotelName": hotelDoc['hotelName'],
+                    "street_name": hotelDoc['street'],
+                    "zipCode": hotelDoc['zip'],
+                    "city": hotelDoc['city'],
+                    "state": hotelDoc['state'],
+                    "country": hotelDoc['country'],
+                    "price": roomData['price'],
+                    "numberOfBeds": roomData['beds'],
+                    "bedType": roomData['bedType'],
+                    "numberGuests": roomData['guests'],
+                    "numberOfBathrooms": roomData['bathrooms'],
+                    "Amenities": amenities,
+                    "startDate": f"{roomData['fromMonth']} {roomData['fromDay']}, 2023",
+                    "endDate": f"{roomData['toMonth']} {roomData['toDay']}, 2023",
+                    "imageUrl": roomData['image']
+            })
+            return jsonify({"msg": "Listing Successfuly Created"})
+        except Exception as e:
+            return jsonify({
+                "errorMsg": str(e)
+            })
 
-
+def generate_random_id(length):
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(length))
 
 # Function to verify phone
 def is_valid_phone_number(phone_number):
