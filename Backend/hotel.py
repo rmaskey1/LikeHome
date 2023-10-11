@@ -98,7 +98,7 @@ def hotel_modification_func(app):
             db.collection('room').document(autoId).set({
                     "hotelName": hotelDoc['hotelName'],
                     "street_name": hotelDoc['street'],
-                    "zipCode": hotelDoc['zip'],
+                    "zipCode": hotelDoc['zipcode'],
                     "city": hotelDoc['city'],
                     "state": hotelDoc['state'],
                     "country": hotelDoc['country'],
@@ -112,6 +112,13 @@ def hotel_modification_func(app):
                     "endDate": f"{roomData['toMonth']} {roomData['toDay']}, {current_year}",
                     "imageUrl": roomData['image']
             })
+            # If first time making listing for a hotel owner
+            print(hotelDoc['listedRooms'][0])
+            if hotelDoc['listedRooms'][0] == 0:
+                hotel_ref.update({"listedRooms": [autoId]})
+            else: # Already have made a listing for this hotel owner
+                hotel_ref.update({"listedRooms": firestore.ArrayUnion([autoId])})
+            print(autoId)
             return jsonify({"msg": "Listing Successfuly Created"})
         except Exception as e:
             return jsonify({
