@@ -100,7 +100,7 @@ def addHotelInfo(userId, hotelName, street, city, zipcode, state, country):
         "state": state,
         "country": country
     })
-    return doc_ref
+    return doc_ref.get().to_dict()
 
 def addBooking(uid, rid, start_date, end_date):
     doc_ref = db.collection("booking").document(rid).set({
@@ -207,6 +207,7 @@ def updateHotelDetails(uid, hotelName, street, city, zip, state, country):
         "country": country
     })
 
+# Update room listing
 def update_room(rid, amenities, bedType, city, country, endDate, hotelName, imageUrl, numberGuests, numberOfBathrooms, numberOfBeds, price, startDate, state, street_name, zipcode):
     room_ref = db.collection("room").document(rid)
 

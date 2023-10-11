@@ -2,9 +2,18 @@ from database import auth, pyrebase_auth, db
 from flask import Flask, request, jsonify, render_template, make_response, abort
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
+<<<<<<< HEAD
 from flask import Flask, request, jsonify
 from database import  updatePassword, getUid, updateInfomation, updateHotelDetails, getUserEmail, getUserPhone, isBooked
     
+=======
+from flask import Flask, request, jsonify, render_template, redirect, url_for
+import secrets
+import string
+from database import  updatePassword, getUid, updateInfomation, updateHotelDetails, getUserEmail, getUserPhone
+import datetime
+
+>>>>>>> c4f5c7987c74beebb3eabd84aac33cca05187484
 
 
 def hotel_modification_func(app):
@@ -65,9 +74,67 @@ def hotel_modification_func(app):
         else:
             abort(make_response(jsonify(message="Cannot update hotel information because there are bookings at the hotel."), 409))
 
-        
 
+    @app.route('/addRoomListing', methods=['POST'])
+    def hotel_add_listing():
+        roomData = request.get_json()
+        # Generate rid and get amenities
+        autoId = generate_random_id(20)
+        amenities = []
+        for dict in roomData['amenities']:
+            key = list(dict.keys())[0]
+            if dict[key] == True:
+                amenities.append(key)
+        try:
+            uid = getUid()
+            hotel_ref = db.collection('user').document(uid)
+            hotelDoc = hotel_ref.get().to_dict()
+            # Ensure authenticated user is a hotel owner
+            if hotelDoc['accountType'] != 'hotel':
+                return jsonify({
+                    "errorMsg": "User is not a hotel owner!"
+                })
+            # Ensure listing is between 2023-2024
+            current_year = datetime.datetime.now().year
+            if current_year < 2023 or current_year > 2024:
+                return jsonify({
+                    "errorMsg": "Listing must be available between 2023-2024"
+                })
+            # Add listing to room collection
+            print(f"The current year is: {current_year}")
+            db.collection('room').document(autoId).set({
+                    "hotelName": hotelDoc['hotelName'],
+                    "street_name": hotelDoc['street'],
+                    "zipCode": hotelDoc['zipcode'],
+                    "city": hotelDoc['city'],
+                    "state": hotelDoc['state'],
+                    "country": hotelDoc['country'],
+                    "price": roomData['price'],
+                    "numberOfBeds": roomData['beds'],
+                    "bedType": roomData['bedType'],
+                    "numberGuests": roomData['guests'],
+                    "numberOfBathrooms": roomData['bathrooms'],
+                    "Amenities": amenities,
+                    "startDate": f"{roomData['fromMonth']} {roomData['fromDay']}, {current_year}",
+                    "endDate": f"{roomData['toMonth']} {roomData['toDay']}, {current_year}",
+                    "imageUrl": roomData['image']
+            })
+            # If first time making listing for a hotel owner
+            print(hotelDoc['listedRooms'][0])
+            if hotelDoc['listedRooms'][0] == 0:
+                hotel_ref.update({"listedRooms": [autoId]})
+            else: # Already have made a listing for this hotel owner
+                hotel_ref.update({"listedRooms": firestore.ArrayUnion([autoId])})
+            print(autoId)
+            return jsonify({"msg": "Listing Successfuly Created"})
+        except Exception as e:
+            return jsonify({
+                "errorMsg": str(e)
+            })
 
+def generate_random_id(length):
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(length))
 
 # Function to verify phone
 def is_valid_phone_number(phone_number):
