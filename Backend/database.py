@@ -66,7 +66,6 @@ def addUser(email, phone, password, firstName, lastName, type): # 'hotel' is an 
         'lastName': lastName,
         'email': email,
         'phone': phone,
-        'password': password,
         'accountType': type
     })
 

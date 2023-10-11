@@ -34,7 +34,7 @@ def guest_modification_func(app):
             # Check if entered phone number is already in use
             if 'phone' in data and data['phone']:
                 usr = auth.get_user_by_phone_number("+" + data['phone']) 
-                return {"message" : "Phone number is already in use", "status" : 409}
+                abort(make_response(jsonify(message="Phone number already in use"), 409))
         except auth.UserNotFoundError:   
             pass
 

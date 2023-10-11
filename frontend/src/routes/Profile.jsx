@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import DeleteAccountWarning from "components/DeleteAccountWarning";
 
 const Container = styled.div`
   position: relative;
@@ -68,6 +69,21 @@ const DeleteBtn = styled.div`
 `;
 
 function Profile() {
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+
+  const handleDeleteClick = () => {
+    setShowDeleteConfirmation(true);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteConfirmation(false);
+  };
+
+  const handleConfirmDelete = () => {
+    console.log("Account deleted");
+    setShowDeleteConfirmation(false);
+  };
+
   return (
     <Container>
       <ProfileBox>
@@ -84,7 +100,13 @@ function Profile() {
         <Content>408-123-4567</Content>
       </ProfileBox>
       <EditBtn>Edit Profile</EditBtn>
-      <DeleteBtn>Delete Account</DeleteBtn>
+      <DeleteBtn onClick={handleDeleteClick}>Delete Account</DeleteBtn>
+      {showDeleteConfirmation && (
+        <DeleteAccountWarning
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
     </Container>
   );
 }
