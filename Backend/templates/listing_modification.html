@@ -22,12 +22,36 @@
             </div>
             <form method="post">
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email or phone number" >
+                    <label for="hotelName" class="form-label">Hotel Name</label>
+                    <input type="hotelName" class="form-control" id="hotelName" name="hotelName" placeholder="Enter your first name" >
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                    <label for="Price" class="form-label">Price</label>
+                    <input type="Price" class="form-control" id="Price" name="Price" placeholder="Enter your last name" >
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="phone" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" >
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" >
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Old Password</label>
+                    <input type="password" class="form-control" id="password" name="old password" placeholder="Enter your Old password">
+                    <div style="padding-top: 5px">
+                        <input type="checkbox" class="form-check-input" id="showpass" onclick="showPassword()">
+                        <label class="check" for="showpass" style="font-family: 'Space Grotesk', sans-serif;">Show Password</label>
+                    </div>
+                    <label for="newPassword" class="form-label">New Password</label>
+                    <input type="newPassword" class="form-control" id="newPassword" name="newPassword" placeholder="Enter your new password" >
+                    <div style="padding-top: 5px">
+                        <input type="checkbox" class="form-check-input" id="showpass" onclick="showPassword()">
+                        <label class="check" for="showpass" style="font-family: 'Space Grotesk', sans-serif;">Show Password</label>
+                    </div>
+                    <label for="password" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="password" name="confirm password" placeholder="Reenter new password" >
                     <div style="padding-top: 5px">
                         <input type="checkbox" class="form-check-input" id="showpass" onclick="showPassword()">
                         <label class="check" for="showpass" style="font-family: 'Space Grotesk', sans-serif;">Show Password</label>
@@ -45,12 +69,22 @@
                 </div>
                 {% if emailError == True %}
                 <div class="error">
-                    <p>No existing email in db</p>
+                    <p>Email is already in use, please try another one.</p>
+                </div>
+                {% endif %}
+                {% if phoneError == True %}
+                <div class="error">
+                    <p>Phone number is already in use, please try another one.</p>
+                </div>
+                {% endif %}
+                {% if phoneError2 == True %}
+                <div class="error">
+                    <p>Phone number is invalid, please try another one</p>
                 </div>
                 {% endif %}
                 {% if passwordError == True %}
                 <div class="error">
-                    <p>Incorrect password</p>
+                    <p>Password is invalid, please try another one</p>
                 </div>
                 {% endif %}
                 <button type="submit" class="btn btn-primary">Sign Up</button>
