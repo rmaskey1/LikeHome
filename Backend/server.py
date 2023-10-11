@@ -4,7 +4,7 @@ import database
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
-from database import addUser, addHotelInfo, pyrebase_auth, db, getUid
+from database import addUser, addHotelInfo, pyrebase_auth, db
 
 
 app = Flask(__name__)

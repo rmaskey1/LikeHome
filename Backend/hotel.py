@@ -2,8 +2,8 @@ from database import auth, pyrebase_auth, db
 from flask import Flask, request, jsonify, render_template, make_response, abort
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
-from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import  updatePassword, getUid, updateInfomation, updateHotelDetails, getUserEmail, getUserPhone
+from flask import Flask, request, jsonify
+from database import  updatePassword, getUid, updateInfomation, updateHotelDetails, getUserEmail, getUserPhone, isBooked
     
 
 
@@ -50,19 +50,20 @@ def hotel_modification_func(app):
             else:
                 abort(make_response(jsonify(message="Password should be at least 6 characters"), 400))
             
-        
-        
-        # Update hotel user information
-        if is_valid_phone_number(data['phoneNumber'].strip()):
-            updateInfomation(uid, data['email'].strip(), "+" + data['phoneNumber'], data['firstName'].strip(), data['lastName'].strip())
+        # Update info only if no users have booked it
+        if(isBooked() == False):
+            # Update hotel user information
+            if is_valid_phone_number(data['phoneNumber'].strip()):
+                updateInfomation(uid, data['email'].strip(), "+" + data['phoneNumber'], data['firstName'].strip(), data['lastName'].strip())
+            else:
+                abort(make_response(jsonify(message="Please enter valid phone number"), 400))
+            # Check if street name is not only space
+            if data['street'] != '':
+                updateHotelDetails(uid, data['hotelName'].strip(), data['street'].strip(), data['city'].strip(), data['zip'], data['state'].strip, data['country'].strip())
+            else: 
+                abort(make_response(jsonify(message="Please enter valid street name"), 400))
         else:
-            abort(make_response(jsonify(message="Please enter valid phone number"), 400))
-        # Check if street name is not only space
-        if data['street'] != '':
-            updateHotelDetails(uid, data['hotelName'].strip(), data['street'].strip(), data['city'].strip(), data['zip'], data['state'].strip, data['country'].strip())
-        else: 
-            abort(make_response(jsonify(message="Please enter valid street name"), 400))
-        
+            abort(make_response(jsonify(message="Cannot update hotel information because there are bookings at the hotel."), 409))
 
         
 
@@ -71,7 +72,7 @@ def hotel_modification_func(app):
 # Function to verify phone
 def is_valid_phone_number(phone_number):
     # Check if the string is exactly 12 characters long and starts with '+'
-    if len(phone_number) == 12 and phone_number[0] == '+':
+    if len(phone_number) == 11:
         return True
     else:
         return False

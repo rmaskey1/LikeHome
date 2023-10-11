@@ -174,15 +174,65 @@ def updateInfomation(uid, email, phone, firstName, lastName):
     
 # Update hotel name and hotel address
 def updateHotelDetails(uid, hotelName, street, city, zip, state, country):
-    doc_ref = db.collection("user").document(uid)
-    doc_ref.update({
-        "hotelName": hotelName,
-        "street": street,
-        "city": city,
-        "zip": zip,
-        "state": state,
-        "country": country
-    })
+    if(isBooked == False):
+        # Update hotel name for all room listing
+        updateHotelForRoom(hotelName)
+
+        # Update all hotel details
+        doc_ref = db.collection("user").document(uid)
+        doc_ref.update({
+            "hotelName": hotelName,
+            "street": street,
+            "city": city,
+            "zip": zip,
+            "state": state,
+            "country": country
+        })
+        return True
+    else: 
+        return False
+
+
+
+# Update hotel name for room collection if it is not booked
+def updateHotelForRoom(new_hotel_name):
+    room_ids = getRoomIds
+    # For each room listing, change the naem
+    for rids in room_ids:
+        room_ref = db.collection("room").document(rids)
+
+        # Update the hotelName field in the room document
+        room_ref.update({"hotelName": new_hotel_name})
+
+
+# Checks if any user has booked the hotel 
+def isBooked():
+    room_ids = getRoomIds
+    # Checks if there is no room ids connected
+    if(room_ids[0] != 0):
+        return True
+    else:
+        False
+
+# Get room ids array from hotel user 
+def getRoomIds():
+    # Get hotel information
+    doc_ref = db.collection("user").document(getUid)
+    doc_data = doc_ref.get().to_dict()
+
+    # Get the 'roomIds' array field
+    room_ids = doc_data.get('roomIds', [])
+    return room_ids
+
+
+
+
+def getHotelName():
+    user_ref = db.collection("user").document(getUid())
+    user_data = user_ref.get().to_dict()
+    hotel_name = user_data['hotelName']
+    return hotel_name
+
 
 def getAccountType():
     user_ref = db.collection("user").document(getUid())
