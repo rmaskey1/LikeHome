@@ -4,7 +4,7 @@ import database
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
-from database import addUser, addHotelInfo, pyrebase_auth, db
+from database import addUser, addHotelInfo, pyrebase_auth, db, getUid
 
 
 app = Flask(__name__)
@@ -83,7 +83,7 @@ def signup():
     #     return render_template("signup.html", error=False) # Returns signup.html page if no POST request is made yet
     
 
-@app.route('/hotel_signup', methods=['POST', 'GET']) # ?uid=<uid>
+@app.route('/signup', methods=['POST', 'GET']) # ?uid=<uid>
 def hotel_signup():
     data = request.get_json()  # Assuming JSON data is sent
     userId = request.args['uid']

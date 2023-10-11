@@ -27,29 +27,31 @@ data = json.load(f)
 # def generate_random_id(length):
 #     alphabet = string.ascii_letters + string.digits
 #     return ''.join(secrets.choice(alphabet) for _ in range(length))
+# hotel_ref = db.collection('hotelApi').stream()
+# for doc in hotel_ref:
+#     if len(doc.to_dict()['roomIds']) == 1:
+#         print(f"{doc.id} => {doc.to_dict()['roomIds']}")
+#         autoId = generate_random_id(20)
+#         ref = db.collection('room').document(autoId).set({
+#             "hotelName": doc.id,
+#             "street_name": doc.to_dict()['streetName'],
+#             "zipcode": doc.to_dict()['zipCode'],
+#             "city": doc.to_dict()['city'],
+#             "state": doc.to_dict()['state'],
+#             "country": doc.to_dict()['country'],
+#             "price": 90,
+#             "numberOfBeds": 2,
+#             "bedType": "Twin Bed",
+#             "numberGuests": 2,
+#             "numberOfBathrooms": 1,
+#             "Amenities": ['Air Conditioning', 'Refrigerator', 'Free Wifi', 'TV'],
+#             "startDate": "Nov 1, 2023",
+#             "endDate": "Nov 2, 2023",
+#             "imageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSceNmRMTfozNwoBpoYdcpdZH-WMWRv49AtwdkFaePcY3ucKtYG"
+#         })
+#         hotel = db.collection('hotelApi').document(doc.id)
+#         hotel.update({"roomIds": [autoId]})
 
-# hotel_ref = db.collection('hotelApi').document('Everbright Convention & Exhibition Centre International Hotel')
-# data = hotel_ref.get().to_dict()
-# autoId = generate_random_id(20)
-# ref = db.collection('room').document(autoId).set({
-#     "hotelName": "Everbright Convention & Exhibition Centre International Hotel",
-#     "street_name": data['streetName'],
-#     "zipcode": data['zipCode'],
-#     "city": data['city'],
-#     "state": data['state'],
-#     "country": data['country'],
-#     "price": 90,
-#     "numberOfBeds": 2,
-#     "bedType": "Twin Bed",
-#     "numberGuests": 2,
-#     "numberOfBathrooms": 1,
-#     "Amenities": ['Air Conditioning', 'Refrigerator', 'Free Wifi', 'TV'],
-#     "startDate": "Nov 1",
-#     "endDate": "Nov, 2",
-#     "imageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSceNmRMTfozNwoBpoYdcpdZH-WMWRv49AtwdkFaePcY3ucKtYG"
-# })
-# hotel_ref.update({"roomIds": firestore.ArrayUnion([autoId])})
-    
- 
+
 # Closing file
 f.close()

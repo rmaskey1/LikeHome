@@ -2,7 +2,8 @@ import firebase_admin
 from firebase_admin import credentials, firestore, auth, exceptions
 import pyrebase
 import jwt
-from flask import Flask, request, jsonify
+import datetime
+from flask import Flask, request, jsonify, make_response, abort
 from datetime import timedelta
 
 # -----------IMPORTANT-------------
@@ -83,6 +84,13 @@ def addHotelInfo(userId, hotelName, street, city, zip, state, country):
         "country": country
     })
 
+def addBooking(uid, rid, start_date, end_date):
+    doc_ref = db.collection("booking").document(rid).set({
+            'uid': uid,
+            'startDate': start_date,
+            'endDate': end_date,
+        })
+
 # Main method for testing
 def main():
     # addUser("gmail@email.com", "+15555555557", "password", "Mike", "Mike", "guest")
@@ -95,9 +103,8 @@ def main():
     if user2.custom_claims.get('guest') == True:
         print("works")
 
+    addBooking('efjnejrgndfs', 'egfnejsgrnsjfn', datetime.datetime(2023, 10, 6, 20, 0, 0) , datetime.datetime(2023, 10, 7, 10, 0, 0))
 
-def guestLogin(email, password):
-    user = pyrebase_auth.sign_in_with_email_and_password(email, password)
 
 # Function to return uid of current user
 def getUid():
@@ -107,7 +114,6 @@ def getUid():
     user_data = user_info.get_json()
     # Get id token from JSON
     id_token = user_data['idToken']
-    print("idToken: " + id_token)
     
     try:
         # Verify the ID token to get its payload
@@ -124,47 +130,64 @@ def getUid():
         # Handle other invalid token errors
         return None
 
+def getUserInfo():
+    user_info = pyrebase_auth.current_user
+    user_info = jsonify(user_info)
+    user_data = user_info.get_json()
+    uid = getUid()
+    user_data['uid'] = uid
+    return user_data
 
-def updatePhone(uid, phone):
-    user = auth.update_user(
-        uid,
-        phone_number = phone)
-    # Update the user's phone number in Firestore
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'phone': phone})
-    
-def updateEmail(uid, email):
-    user = auth.update_user(
-        uid,
-        email = email)
-    
-    # Update the user's email in Firestore
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'email': email})
-    
-def updateName(uid, name):
-    user = auth.update_user(
-        uid,
-        display_name = name)
-    
+def getUserEmail():
+    user = auth.get_user(getUid)
+    email = user.email
+    return email
+
+def getUserPhone():
+    user = auth.get_user(getUid)
+    phone = user.phone_number
+    return phone
+
+
+# Update password on Authenication
 def updatePassword(uid, newPassword):
     user = auth.update_user(
         uid,
         password='newPassword')
-    
-def updateFirstName(uid, first_name):
-    # Update the user's first name in Firestore
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'firstName': first_name})
 
-def updateLastName(uid, last_name):
-    # Update the user's last name in Firestore
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'lastName': last_name})
-
-def updateHotelName(uid, hotel_name):
-    user_ref = db.collection('user').document(uid)
-    user_ref.update({'hotelName': hotel_name})
+# Update basic user information
+def updateInfomation(uid, email, phone, firstName, lastName):
+    # Firestore Database
+    doc_ref = db.collection("user").document(uid)
+    doc_ref.update({
+       'firstName': firstName,
+        'lastName': lastName,
+        'email': email,
+        'phone': phone
+    })
+    # Authenication 
+    user = auth.update_user(
+        uid,
+        email = email,
+        phone_number = phone,
+        display_name = firstName + " " + lastName)
     
+# Update hotel name and hotel address
+def updateHotelDetails(uid, hotelName, street, city, zip, state, country):
+    doc_ref = db.collection("user").document(uid)
+    doc_ref.update({
+        "hotelName": hotelName,
+        "street": street,
+        "city": city,
+        "zip": zip,
+        "state": state,
+        "country": country
+    })
+
+def getAccountType():
+    user_ref = db.collection("user").document(getUid())
+    userDoc = user_ref.get().to_dict()
+    accountType = userDoc['accountType']
+    return accountType
 # Function to modify user's information
 #def changeGuestInfo(email, phone, password, first_name, ):

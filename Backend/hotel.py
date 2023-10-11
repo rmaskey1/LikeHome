@@ -1,108 +1,72 @@
 from database import auth, pyrebase_auth, db
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, make_response, abort
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import  updatePhone, updateEmail, updateName, updatePassword, getUid, updateLastName, updateFirstName, updateHotelName
 import secrets
 import string
+from database import  updatePassword, getUid, updateInfomation, updateHotelDetails, getUserEmail, getUserPhone
+import datetime
+
+
 
 def hotel_modification_func(app):
-    @app.route('/hotel_modification', methods=['POST', 'GET'])
+    @app.route('/AccountMod', methods=['POST', 'GET'])
     def hotel_modification():
         
 
         # Get current user's uid
         uid = getUid()
+        print("UID: " + uid)
         #get uid in db
         firebase_admin.get_app()
-        if request.method == "POST":
+       
+
+        # Get JSON data from frontent 
+        data = request.get_json() 
 
 
-            # Define a list of field names you want to extract
-            fields_to_extract = ['firstName', 'lastName', 'email','newPassword', 'phone', 'hotelName']
+        # Check if email or phone is in availble
+        try: # Check if entered email is already in use
+            if getUserEmail != data['email']:
+                if 'email' in data and data['email']:
+                    usr = auth.get_user_by_email(data['email'])
+                    abort(make_response(jsonify(message="Email already in use"), 409))
+        except auth.UserNotFoundError:
+            pass
+        try:
+            # Check if entered phone number is already in use
+            if getUserPhone != "+" + data['phone']:
+                if 'phone' in data and data['phone']:
+                    usr = auth.get_user_by_phone_number("+" + data['phone']) 
+                    abort(make_response(jsonify(message="Phone number already in use"), 409))
+        except auth.UserNotFoundError:   
+            pass
 
-            # Initialize an empty dictionary to store the extracted fields
-            extracted_fields = {}
-
-            # Iterate through the field names and extract them if they exist and are not empty
-            for field_name in fields_to_extract:
-                field_value = request.form.get(field_name)
-                if field_value:
-                    extracted_fields[field_name] = field_value
-                    print(field_name + " : " + field_value)
-
-
-            # Check if email or phone is in availble
-            try: # Check if entered email is already in use
-                if 'email' in extracted_fields and extracted_fields['email']:
-                    usr = auth.get_user_by_email(extracted_fields['email']) # Returns auth.UserNotFoundError if email does not exist, jumps to first except block
-                    print("Email already in use.")
-                    return render_template("hotel_modification.html", emailError=True) # Returns signup.html page with error message
-            except auth.UserNotFoundError:
-                pass
-            try:
-                # Check if entered phone number is already in use
-                if 'phone' in extracted_fields and extracted_fields['phone']:
-                    usr = auth.get_user_by_phone_number(extracted_fields['phone']) # Returns auth.UserNotFoundError if email does not exist, jumps to first except block
-                    print("Phone number already in use.")
-                    return render_template("hotel_modification.html", phoneError=True) # Returns signup.html page with error message
-            except auth.UserNotFoundError:   
-                pass
-
-            # Update email 
-            if 'email' in extracted_fields and extracted_fields['email']:
-                updateEmail(uid, email = extracted_fields['email'])
-                print('Sucessfully updated email: {0}'.format(uid))
-
-            # Update phone number
-            if 'phone' in extracted_fields and extracted_fields['phone']:
-                # Checks if phone number is valid
-                print("In first if for phone")
-                if is_valid_phone_number(extracted_fields['phone']):
-                    updatePhone(uid, extracted_fields['phone'])
-                    print('Sucessfully updated phone number: {0}'.format(uid))
-                else:
-                    return render_template("hotel_modification.html", phoneError2=True)
-
-            # Update hotel name
-            if 'hotelName' in extracted_fields and extracted_fields['hotelName']:
-                updateName(uid, extracted_fields['hotelName'])
-                updateHotelName(uid, extracted_fields['hotelName'])
-                print('Sucessfully updated hotel name: {0}'.format(uid))
-
-            # Split name in DB 
-            full_name = auth.get_user(uid).display_name
-            first_name, last_name = split_full_name(full_name)
-            # If first name field is not empty, update display name
-            if 'firstName' in extracted_fields and extracted_fields['firstName']:
-                updateName(uid, combine_name(extracted_fields['firstName'], last_name))
-                updateFirstName(uid, extracted_fields['firstName'])
-                print('Sucessfully updated first name: {0}'.format(uid))
-
-
-            # Split name in DB 
-            full_name = auth.get_user(uid).display_name
-            first_name, last_name = split_full_name(full_name)
-            # If last name field is not empty, update display name
-            if 'lastName' in extracted_fields and extracted_fields['lastName']:
-                updateName(uid, combine_name(first_name, extracted_fields['lastName']))
-                updateLastName(uid, extracted_fields['lastName'])
-                print('Sucessfully updated last name: {0}'.format(uid))
         
-            # Update password
-            if 'newPassword' in extracted_fields and extracted_fields['newPassword']:
-                # Checks if phone number is valid
-                if is_valid_password(extracted_fields['newPassword']):
-                    updatePassword(uid, extracted_fields['newPassword'])
-                    print('Sucessfully updated password: {0}'.format(uid))
-                else:
-                    return render_template("hotel_modification.html", passwordError=True)
-
-            return render_template("hotel_modification.html")
+        # Update password
+        if 'password' in data and data['password']:
+            # Checks if phone number is valid
+            if is_valid_password(data['password']):
+                updatePassword(uid, data['password'])
+                print('Sucessfully updated password: {0}'.format(uid))
+            else:
+                abort(make_response(jsonify(message="Password should be at least 6 characters"), 400))
+            
         
+        
+        # Update hotel user information
+        if is_valid_phone_number(data['phoneNumber'].strip()):
+            updateInfomation(uid, data['email'].strip(), "+" + data['phoneNumber'], data['firstName'].strip(), data['lastName'].strip())
         else:
-            return render_template("hotel_modification.html", error=False) # Returns signup.html page if no POST request is made yet
+            abort(make_response(jsonify(message="Please enter valid phone number"), 400))
+        # Check if street name is not only space
+        if data['street'] != '':
+            updateHotelDetails(uid, data['hotelName'].strip(), data['street'].strip(), data['city'].strip(), data['zip'], data['state'].strip, data['country'].strip())
+        else: 
+            abort(make_response(jsonify(message="Please enter valid street name"), 400))
+        
+
 
     @app.route('/addRoomListing', methods=['POST'])
     def hotel_add_listing():
@@ -114,16 +78,23 @@ def hotel_modification_func(app):
             key = list(dict.keys())[0]
             if dict[key] == True:
                 amenities.append(key)
-        # Add listing to room collection
-        
         try:
             uid = getUid()
             hotel_ref = db.collection('user').document(uid)
             hotelDoc = hotel_ref.get().to_dict()
+            # Ensure authenticated user is a hotel owner
             if hotelDoc['accountType'] != 'hotel':
                 return jsonify({
                     "errorMsg": "User is not a hotel owner!"
                 })
+            # Ensure listing is between 2023-2024
+            current_year = datetime.datetime.now().year
+            if current_year < 2023 or current_year > 2024:
+                return jsonify({
+                    "errorMsg": "Listing must be available between 2023-2024"
+                })
+            # Add listing to room collection
+            print(f"The current year is: {current_year}")
             db.collection('room').document(autoId).set({
                     "hotelName": hotelDoc['hotelName'],
                     "street_name": hotelDoc['street'],
@@ -137,8 +108,8 @@ def hotel_modification_func(app):
                     "numberGuests": roomData['guests'],
                     "numberOfBathrooms": roomData['bathrooms'],
                     "Amenities": amenities,
-                    "startDate": f"{roomData['fromMonth']} {roomData['fromDay']}, 2023",
-                    "endDate": f"{roomData['toMonth']} {roomData['toDay']}, 2023",
+                    "startDate": f"{roomData['fromMonth']} {roomData['fromDay']}, {current_year}",
+                    "endDate": f"{roomData['toMonth']} {roomData['toDay']}, {current_year}",
                     "imageUrl": roomData['image']
             })
             return jsonify({"msg": "Listing Successfuly Created"})
@@ -161,19 +132,5 @@ def is_valid_phone_number(phone_number):
 
 def is_valid_password(password):
     return len(password) >= 6
-
-# Function to split full name
-def split_full_name(full_name):
-    name_parts = full_name.split()
-
-    first_name = name_parts[0]
-    last_name = ' '.join(name_parts[1:])
-    
-    return first_name, last_name
-
-# Function to combine first and last name
-def combine_name(first_name, last_name):
-    full_name = first_name + " " + last_name
-    return full_name
 
 
