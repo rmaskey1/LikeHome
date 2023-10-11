@@ -44,52 +44,70 @@ def addUser(email, phone, password, firstName, lastName, type): # 'hotel' is an 
         password=password,
         display_name=dispName
     )
-    # Setting access rights for added user
+    # Setting access rights for added user and creating user documents for "user database"
     if type == "guest":
         auth.set_custom_user_claims(user.uid, {
             'guest': True,
             'hotel': False
+        })
+        doc_ref = db.collection("user").document(user.uid).set({
+            'firstName': firstName,
+            'lastName': lastName,
+            'email': email,
+            'phone': phone,
+            'accountType': type,
+            'rewardPoints': 0,
+            'bookedRooms': []
         })
     elif type == "hotel":
         auth.set_custom_user_claims(user.uid, {
             'guest': False,
             'hotel': True
         })
+        doc_ref = db.collection("user").document(user.uid).set({
+            'firstName': firstName,
+            'lastName': lastName,
+            'email': email,
+            'phone': phone,
+            'accountType': type,
+            'rewardPoints': 0,
+            "listedRooms": [0]
+        })
     elif type == "admin":
         auth.set_custom_user_claims(user.uid, {
             'guest': True,
             'hotel': True
         })
-    # Adding user to custom "user" database
-    doc_ref = db.collection("user").document(user.uid).set({
-        'firstName': firstName,
-        'lastName': lastName,
-        'email': email,
-        'phone': phone,
-        'accountType': type
-    })
+        doc_ref = db.collection("user").document(user.uid).set({
+            'firstName': firstName,
+            'lastName': lastName,
+            'email': email,
+            'phone': phone,
+            'accountType': type
+        })
 
     print('Sucessfully created new user: {0}'.format(user.uid))
     return user
 
 # Adding hotel information to "hotel" type user document
-def addHotelInfo(userId, hotelName, street, city, zip, state, country):
+def addHotelInfo(userId, hotelName, street, city, zipcode, state, country):
     doc_ref = db.collection("user").document(userId)
     doc_ref.update({
         "hotelName": hotelName,
         "street": street,
         "city": city,
-        "zip": zip,
+        "zipcode": zipcode,
         "state": state,
         "country": country
     })
+    return doc_ref
 
 def addBooking(uid, rid, start_date, end_date):
     doc_ref = db.collection("booking").document(rid).set({
-            'uid': uid,
-            'startDate': start_date,
-            'endDate': end_date,
-        })
+        'uid': uid,
+        'startDate': start_date,
+        'endDate': end_date,
+    })
 
 # Main method for testing
 def main():
