@@ -173,6 +173,20 @@ function AddListing() {
   const onSubmit = (data) => {
     //Handle form submission here!! <3
     console.log(data);
+    fetch("http://127.0.0.1:5000/addRoomListing", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   };
 
   return (
