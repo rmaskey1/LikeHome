@@ -174,24 +174,45 @@ def updateInfomation(uid, email, phone, firstName, lastName):
     
 # Update hotel name and hotel address
 def updateHotelDetails(uid, hotelName, street, city, zip, state, country):
-    if(isBooked == False):
-        # Update hotel name for all room listing
-        updateHotelForRoom(hotelName)
+ 
+    # Update hotel name for all room listing
+    updateHotelForRoom(hotelName)
 
-        # Update all hotel details
-        doc_ref = db.collection("user").document(uid)
-        doc_ref.update({
-            "hotelName": hotelName,
-            "street": street,
-            "city": city,
-            "zip": zip,
-            "state": state,
-            "country": country
-        })
-        return True
-    else: 
-        return False
+    # Update all hotel details
+    doc_ref = db.collection("user").document(uid)
+    doc_ref.update({
+        "hotelName": hotelName,
+        "street": street,
+        "city": city,
+        "zip": zip,
+        "state": state,
+        "country": country
+    })
 
+def update_room(rid, amenities, bedType, city, country, endDate, hotelName, imageUrl, numberGuests, numberOfBathrooms, numberOfBeds, price, startDate, state, street_name, zipcode):
+    room_ref = db.collection("room").document(rid)
+
+    # Create a dictionary with the provided input
+    updated_data = {
+        "Amenities": amenities,
+        "bedType": bedType,
+        "city": city,
+        "country": country,
+        "endDate": endDate,
+        "hotelName": hotelName,
+        "imageUrl": imageUrl,
+        "numberGuests": numberGuests,
+        "numberOfBathrooms": numberOfBathrooms,
+        "numberOfBeds": numberOfBeds,
+        "price": price,
+        "startDate": startDate,
+        "state": state,
+        "street_name": street_name,
+        "zipcode": zipcode
+    }
+
+    # Update the document with the provided data
+    room_ref.update(updated_data)
 
 
 # Update hotel name for room collection if it is not booked
