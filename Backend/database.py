@@ -138,6 +138,16 @@ def getUserInfo():
     user_data['uid'] = uid
     return user_data
 
+def getUserEmail():
+    user = auth.get_user(getUid)
+    email = user.email
+    return email
+
+def getUserPhone():
+    user = auth.get_user(getUid)
+    phone = user.phone_number
+    return phone
+
 
 # Update password on Authenication
 def updatePassword(uid, newPassword):

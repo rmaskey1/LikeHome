@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify, render_template, make_response, abort
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
-from database import  updatePassword, getUid, updateInfomation, updateHotelDetails
+from database import  updatePassword, getUid, updateInfomation, updateHotelDetails, getUserEmail, getUserPhone
     
 
 
@@ -25,16 +25,18 @@ def hotel_modification_func(app):
 
         # Check if email or phone is in availble
         try: # Check if entered email is already in use
-            if 'email' in data and data['email']:
-                usr = auth.get_user_by_email(data['email'])
-                abort(make_response(jsonify(message="Email already in use"), 409))
+            if getUserEmail != data['email']:
+                if 'email' in data and data['email']:
+                    usr = auth.get_user_by_email(data['email'])
+                    abort(make_response(jsonify(message="Email already in use"), 409))
         except auth.UserNotFoundError:
             pass
         try:
             # Check if entered phone number is already in use
-            if 'phone' in data and data['phone']:
-                usr = auth.get_user_by_phone_number("+" + data['phone']) 
-                abort(make_response(jsonify(message="Phone number already in use"), 409))
+            if getUserPhone != "+" + data['phone']:
+                if 'phone' in data and data['phone']:
+                    usr = auth.get_user_by_phone_number("+" + data['phone']) 
+                    abort(make_response(jsonify(message="Phone number already in use"), 409))
         except auth.UserNotFoundError:   
             pass
 
@@ -49,7 +51,7 @@ def hotel_modification_func(app):
                 abort(make_response(jsonify(message="Password should be at least 6 characters"), 400))
             
         
-
+        
         # Update hotel user information
         if is_valid_phone_number(data['phoneNumber'].strip()):
             updateInfomation(uid, data['email'].strip(), "+" + data['phoneNumber'], data['firstName'].strip(), data['lastName'].strip())
