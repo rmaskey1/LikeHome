@@ -80,7 +80,7 @@ def signup():
                 # Adds user to database
     abort(make_response(jsonify(message="User role not found."), 409))    # else:
 
-@app.route('/signup', methods=['POST', 'GET']) # ?uid=<uid>
+@app.route('/hotel_signup', methods=['POST', 'GET']) # ?uid=<uid>
 def hotel_signup():
     data = request.get_json()  # Assuming JSON data is sent
     userId = request.args['uid']
