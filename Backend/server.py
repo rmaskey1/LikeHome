@@ -4,7 +4,7 @@ import database
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
-from database import addUser, addHotelInfo, pyrebase_auth, db
+from database import addUser, addHotelInfo, pyrebase_auth, db, getUid
 
 
 app = Flask(__name__)
@@ -98,7 +98,7 @@ def hotel_signup():
 
 def login_user(email, password):
     user = pyrebase_auth.sign_in_with_email_and_password(email, password)
-    return jsonify({"uid": user.uid})
+    return user
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -112,7 +112,7 @@ def login():
         return jsonify(userData)
     except Exception as e:
         return jsonify({
-            "msg": e
+            "msg": str(e)
         })
 
 if __name__ == '__main__':

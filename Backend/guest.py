@@ -4,7 +4,7 @@ import pyrebase
 import requests
 import datetime
 from firebase_admin import credentials, firestore, auth
-from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask import Flask, request, jsonify, make_response, abort
 from database import  updatePassword, getUid, updateInfomation
 
 
@@ -27,7 +27,7 @@ def guest_modification_func(app):
         try: # Check if entered email is already in use
             if 'email' in data and data['email']:
                 usr = auth.get_user_by_email(data['email'])
-                return {"message" : "Email number is already in use", "status" : 409}
+                abort(make_response(jsonify(message="Email already in use"), 409))
         except auth.UserNotFoundError:
             pass
         try:
@@ -45,13 +45,12 @@ def guest_modification_func(app):
                 updatePassword(uid, data['password'])
                 print('Sucessfully updated password: {0}'.format(uid))
             else:
-                return {"message" : "Please enter a valid password", "status" : 409}
-            
+                abort(make_response(jsonify(message="Password should be at least 6 characters"), 400))
         
         if is_valid_phone_number(data['phoneNumber'].strip()):
             updateInfomation(uid, data['email'].strip(), "+" + data['phoneNumber'], data['firstName'].strip(), data['lastName'].strip())
         else:
-            return {"message" : "Please enter a valid phone number", "status" : 409} 
+            abort(make_response(jsonify(message="Please enter valid phone number"), 400))
         
 
         

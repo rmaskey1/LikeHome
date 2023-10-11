@@ -1,5 +1,5 @@
 from database import auth, pyrebase_auth, db
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, make_response, abort
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, render_template, redirect, url_for
@@ -27,14 +27,14 @@ def hotel_modification_func(app):
         try: # Check if entered email is already in use
             if 'email' in data and data['email']:
                 usr = auth.get_user_by_email(data['email'])
-                return {"message" : "Email number is already in use", "status" : 409}
+                abort(make_response(jsonify(message="Email already in use"), 409))
         except auth.UserNotFoundError:
             pass
         try:
             # Check if entered phone number is already in use
             if 'phone' in data and data['phone']:
                 usr = auth.get_user_by_phone_number("+" + data['phone']) 
-                return {"message" : "Phone number is already in use", "status" : 409}
+                abort(make_response(jsonify(message="Phone number already in use"), 409))
         except auth.UserNotFoundError:   
             pass
 
@@ -46,21 +46,20 @@ def hotel_modification_func(app):
                 updatePassword(uid, data['password'])
                 print('Sucessfully updated password: {0}'.format(uid))
             else:
-                return {"message" : "Please enter a valid password", "status" : 409}
+                abort(make_response(jsonify(message="Password should be at least 6 characters"), 400))
             
         
 
         # Update hotel user information
         if is_valid_phone_number(data['phoneNumber'].strip()):
             updateInfomation(uid, data['email'].strip(), "+" + data['phoneNumber'], data['firstName'].strip(), data['lastName'].strip())
-
         else:
-            return {"message" : "Please enter a valid phone number", "status" : 409}
+            abort(make_response(jsonify(message="Please enter valid phone number"), 400))
         # Check if street name is not only space
         if data['street'] != '':
             updateHotelDetails(uid, data['hotelName'].strip(), data['street'].strip(), data['city'].strip(), data['zip'], data['state'].strip, data['country'].strip())
         else: 
-            return {"message" : "Please enter a valid street name", "status" : 409}
+            abort(make_response(jsonify(message="Please enter valid street name"), 400))
         
 
         
