@@ -1,6 +1,8 @@
+import { SERVER_URL } from "api";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { Ellipsis } from "react-spinners-css";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -121,42 +123,48 @@ function Register() {
     resetField,
   } = useForm();
   const [isFetching, setIsFetching] = useState(false);
+  const [serverError, setServerError] = useState("");
 
   const handleSignup = async (signupData) => {
-    /* HOTEL Sign up */
-    if (signupData.usertype === "hotel") {
-      navigate("hotel", {
-        state: signupData,
-      });
-    } else {
-      /* GUEST, ADMIN Sign up */
-      setIsFetching(true);
+    setIsFetching(true);
 
-      fetch("http://127.0.0.1:5000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(signupData),
-      })
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .finally(() => {
-          setIsFetching(false);
-          resetFields();
-        });
+    // Request
+    const response = await fetch(SERVER_URL + "/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(signupData),
+    });
+
+    // Data
+    const data = await response.json();
+    console.log(response.status, data);
+
+    /* If successfully signed up */
+    if (response.ok) {
+      console.log("User registered successfully");
+
+      if (signupData.role === "hotel") {
+        /* HOTEL SIGN UP */
+        navigate("hotel", { state: { uid: data.uid } });
+      } else {
+        /* GUEST, ADMIN SIGN UP */
+        navigate("/login");
+      }
+    } else {
+      /* If sign up failed */
+      console.log("Registration failed");
+      setServerError(data.message);
     }
+    resetFields();
+    setIsFetching(false);
   };
 
   const resetFields = () => {
     resetField("username");
     resetField("password");
   };
-
 
   return (
     <Container>
@@ -173,14 +181,14 @@ function Register() {
             <Label>First Name</Label>
             <InputContainer style={{ width: "160px" }}>
               <Input
-                {...register("firstName", {
+                {...register("firstname", {
                   required: "Please enter first name",
                 })}
               />
             </InputContainer>
-            {errors.firstName && (
+            {errors.firstname && (
               <ErrorMessageArea>
-                {errors.firstName.message.toString()}
+                {errors.firstname.message.toString()}
               </ErrorMessageArea>
             )}
           </div>
@@ -188,19 +196,18 @@ function Register() {
             <Label>Last Name</Label>
             <InputContainer style={{ width: "160px" }}>
               <Input
-                {...register("lastName", {
+                {...register("lastname", {
                   required: "Please enter last name",
                 })}
               />
             </InputContainer>
-            {errors.lastName && (
+            {errors.lastname && (
               <ErrorMessageArea>
-                {errors.lastName.message.toString()}
+                {errors.lastname.message.toString()}
               </ErrorMessageArea>
             )}
           </div>
         </div>
-
         <Label>Email</Label>
         <InputContainer>
           <Input
@@ -216,12 +223,19 @@ function Register() {
         {errors.email && (
           <ErrorMessageArea>{errors.email.message.toString()}</ErrorMessageArea>
         )}
-
+        {serverError === "Email already in use." && (
+          <ErrorMessageArea>{serverError}</ErrorMessageArea>
+        )}
         <Label>Password</Label>
         <InputContainer>
           <Input
             {...register("password", {
               required: "Please enter password",
+              minLength: {
+                value: 6,
+                message:
+                  "Password must be a string at least 6 characters long.",
+              },
             })}
             type="password"
           />
@@ -231,7 +245,6 @@ function Register() {
             {errors.password.message.toString()}
           </ErrorMessageArea>
         )}
-
         <Label>Phone Number</Label>
         <InputContainer>
           <Input
@@ -244,16 +257,17 @@ function Register() {
         {errors.phone && (
           <ErrorMessageArea>{errors.phone.message.toString()}</ErrorMessageArea>
         )}
+        {serverError === "Phone number already in use." && (
+          <ErrorMessageArea>{serverError}</ErrorMessageArea>
+        )}
 
         <Label>Who are you?</Label>
-        {errors.usertype && (
-          <ErrorMessageArea>
-            {errors.usertype.message.toString()}
-          </ErrorMessageArea>
+        {errors.role && (
+          <ErrorMessageArea>{errors.role.message.toString()}</ErrorMessageArea>
         )}
         <RadioContainer>
           <input
-            {...register("usertype", { required: "Please select who you are" })}
+            {...register("role", { required: "Please select who you are" })}
             type="radio"
             value="guest"
           />
@@ -261,7 +275,7 @@ function Register() {
         </RadioContainer>
         <RadioContainer>
           <input
-            {...register("usertype", { required: "Please select who you are" })}
+            {...register("role", { required: "Please select who you are" })}
             type="radio"
             value="hotel"
           />
@@ -269,14 +283,18 @@ function Register() {
         </RadioContainer>
         <RadioContainer>
           <input
-            {...register("usertype", { required: "Please select who you are" })}
+            {...register("role", { required: "Please select who you are" })}
             type="radio"
             value="admin"
           />
           <span>Admin</span>
         </RadioContainer>
         <SubmitBtn type="submit">
-          {isFetching ? "loading..." : "Sign Up"}
+          {isFetching ? (
+            <Ellipsis color="white" size={30} />
+          ) : (
+            <span>Sign Up</span>
+          )}
         </SubmitBtn>
       </Form>
     </Container>
