@@ -84,14 +84,14 @@ def signup():
 def hotel_signup():
     data = request.get_json()  # Assuming JSON data is sent
     userId = request.args['uid']
-    hotelName = data['firstname']
-    street = data['lastname']
-    city = data['email']
-    zipcode = data['password']
-    state = data['phoneNumber']
-    country = data['role']
-    addHotelInfo(userId, hotelName, street, city, zipcode, state, country)
-    return jsonify({"uid": userId})
+    hotelName = data['hotelName']
+    street = data['street']
+    city = data['city']
+    zipcode = data['zipcode']
+    state = data['state']
+    country = data['country']
+    hotel = addHotelInfo(userId, hotelName, street, city, zipcode, state, country)
+    return jsonify(hotel)
 
 def login_user(email, password):
     user = pyrebase_auth.sign_in_with_email_and_password(email, password)

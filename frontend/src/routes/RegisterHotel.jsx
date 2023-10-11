@@ -1,6 +1,8 @@
+import { SERVER_URL } from "api";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Ellipsis } from "react-spinners-css";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -92,19 +94,44 @@ const ErrorMessageArea = styled.div`
 `;
 
 function RegisterHotel() {
+  const navigate = useNavigate();
   const location = useLocation();
-  const signupData = location.state;
   const {
     register,
     handleSubmit,
     formState: { errors },
     resetField,
   } = useForm();
+  const uid = location.state.uid;
   const [isFetching, setIsFetching] = useState(false);
+  const [serverError, setServerError] = useState("");
 
   const handleSignupHotel = async (hotelData) => {
-    const data = { ...signupData, ...hotelData };
-    console.log(data);
+    // Request
+    const response = await fetch(SERVER_URL + `/hotel_signup?uid=${uid}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(hotelData),
+    });
+
+    // Data
+    const data = await response.json();
+    console.log(response.status, data);
+
+    /* If successfully signed up */
+    if (response.ok) {
+      console.log("User registered successfully");
+      navigate("/login");
+    } else {
+      /* If sign up failed */
+      console.log("Registration failed");
+      setServerError(data.message);
+    }
+
+    setIsFetching(false);
+    resetFields();
   };
 
   const resetFields = () => {
@@ -207,7 +234,11 @@ function RegisterHotel() {
           </div>
         </div>
         <SubmitBtn type="submit">
-          {isFetching ? "loading..." : "Sign Up"}
+          {isFetching ? (
+            <Ellipsis color="white" size={30} />
+          ) : (
+            <span>Sign Up</span>
+          )}
         </SubmitBtn>
       </Form>
     </Container>
