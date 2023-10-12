@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import DeleteAccountWarning from "components/DeleteAccountWarning";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   position: relative;
@@ -84,6 +85,12 @@ function Profile() {
     setShowDeleteConfirmation(false);
   };
 
+  const navigate = useNavigate();
+  const handleEditProfileClick = () => {
+    // Use navigate to navigate to the desired route
+    navigate("/account_modification");
+  };
+
   return (
     <Container>
       <ProfileBox>
@@ -99,7 +106,7 @@ function Profile() {
         <Label>Phone Number</Label>
         <Content>408-123-4567</Content>
       </ProfileBox>
-      <EditBtn>Edit Profile</EditBtn>
+      <EditBtn onClick={handleEditProfileClick}>Edit Profile</EditBtn>
       <DeleteBtn onClick={handleDeleteClick}>Delete Account</DeleteBtn>
       {showDeleteConfirmation && (
         <DeleteAccountWarning
