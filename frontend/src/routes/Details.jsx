@@ -142,28 +142,19 @@ const DropdownItem = styled.div`
   }
 `;
 
-const Buttons = styled.label`
-  margin-top: 15px;
-  margin-bottom: 10px;
-  width: 100px;
-  height: 50px;
-  padding: 10px;
+const Buttons = styled.button`
+  background-color: #cf316a;
+  width: 126px;
+  height: 31px;
+  font-size: 16px;
+  color: #ffffff;
+  padding: 5px 30px;
   border-radius: 20px;
-  background-color: #ffffff;
-  color: #cf316a;
-  border: 1px solid;
-  border-color: #cf316a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 17px;
-  font-weight: 600;
-
   &:hover {
-    background-color: #cf316a;
-    color: #ffffff;
+    border: 2px solid #cf316a;
+    color: #cf316a;
+    background-color: #ffffff;
   }
 `;
 
@@ -300,14 +291,13 @@ function Details() {
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          <div style={{ marginLeft: "60px" }}>
+          <div style={{ marginRight: "20px" }}>
             <Buttons>Yes</Buttons>
           </div>
-          <div style={{ marginRight: "60px" }}>
+          <div>
             <Buttons onClick={closeDeleteModal}>No</Buttons>
           </div>
         </div>
