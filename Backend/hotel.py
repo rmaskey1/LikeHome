@@ -148,7 +148,29 @@ def hotel_modification_func(app):
         except auth.AuthError as e:
             abort(make_response(jsonify(message=f"Error deleting user: {str(e)}"), 500))
 
+def get_year_from_date(date_str):
+    parts = date_str.split('/')
+    year = int(parts[2])
+    return year
 
+def format_date(input_date):
+    # Split the date into components
+    month, day, year = input_date.split('/')
+
+    # Define a list of month names
+    month_names = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ]
+
+    # Get the month name based on the month number
+    month_name = month_names[int(month) - 1]
+
+    # Format the date
+    formatted_date = f'{month_name} {int(day)}, {year}'
+
+    return formatted_date
+    
 def generate_random_id(length):
     alphabet = string.ascii_letters + string.digits
     return ''.join(secrets.choice(alphabet) for _ in range(length))
