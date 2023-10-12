@@ -75,7 +75,8 @@ def hotel_modification_func(app):
         autoId = generate_random_id(20)
         amenities = []
         for dict in roomData['amenities']:
-            key = list(dict.keys())[0]
+            print(dict)
+            key = list(dict.keys())
             if dict[key] == True:
                 amenities.append(key)
         try:
@@ -94,6 +95,7 @@ def hotel_modification_func(app):
                     "errorMsg": "Listing must be available between 2023-2024"
                 })
             # Add listing to room collection
+            
             print(f"The current year is: {current_year}")
             db.collection('room').document(autoId).set({
                     "hotelName": hotelDoc['hotelName'],
@@ -108,8 +110,8 @@ def hotel_modification_func(app):
                     "numberGuests": roomData['guests'],
                     "numberOfBathrooms": roomData['bathrooms'],
                     "Amenities": amenities,
-                    "startDate": f"{roomData['fromMonth']} {roomData['fromDay']}, {current_year}",
-                    "endDate": f"{roomData['toMonth']} {roomData['toDay']}, {current_year}",
+                    "startDate": format_date(roomData['fromDate']),
+                    "endDate": format_date(roomData['toDate']),
                     "imageUrl": roomData['image']
             })
             # If first time making listing for a hotel owner
@@ -128,6 +130,15 @@ def hotel_modification_func(app):
 def generate_random_id(length):
     alphabet = string.ascii_letters + string.digits
     return ''.join(secrets.choice(alphabet) for _ in range(length))
+
+def format_date(input_date):
+    # Parse the input date
+    date_obj = datetime.strptime(input_date, '%m/%d/%Y')
+
+    # Format the date to the desired output format
+    formatted_date = date_obj.strftime('%b %d, %Y')
+
+    return formatted_date
 
 # Function to verify phone
 def is_valid_phone_number(phone_number):
