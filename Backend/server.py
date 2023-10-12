@@ -108,9 +108,9 @@ def login():
         # Return user's information
         return jsonify(userData)
     except Exception as e:
-        return jsonify({
-            "msg": str(e)
-        })
+        abort(make_response(jsonify(
+            message="Incorrect email or password"
+        ), 401))
 
 if __name__ == '__main__':
     app.debug = True
