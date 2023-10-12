@@ -5,22 +5,21 @@ import requests
 import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, make_response, abort
-from database import  updatePassword, getUid, updateInfomation, getUserEmail, getUserPhone
+from database import  updatePassword, getUid, updateInfomation, getUserEmail, getUserPhone, db
 
 
 def guest_modification_func(app):
     @app.route('/GuestAccountMod', methods=['POST', 'GET'])
     def guest_modification():
-        
+
         # Get current user's uid
         uid = getUid()
-        #get uid in db
+        print("UID: " + uid)
+        # get uid in db
         firebase_admin.get_app()
-       
 
-        # Get JSON data from frontent 
-        data = request.get_json() 
-
+        # Get JSON data from frontent
+        data = request.get_json()
 
         # Check if email or phone is in availble
         try: # Check if entered email is already in use
@@ -47,9 +46,10 @@ def guest_modification_func(app):
                 print('Sucessfully updated password: {0}'.format(uid))
             else:
                 abort(make_response(jsonify(message="Password should be at least 6 characters"), 400))
-        
+
         if is_valid_phone_number(data['phoneNumber'].strip()):
-            updateInfomation(uid, data['email'].strip(), "+" + data['phoneNumber'], data['firstName'].strip(), data['lastName'].strip())
+            updateInfomation(uid, data['email'].strip(), "+" + data['phoneNumber'], data['firstName'].strip(),
+                             data['lastName'].strip())
         else:
             abort(make_response(jsonify(message="Please enter valid phone number"), 400))
         return jsonify({'message': 'Guest modification was successful'})
@@ -57,22 +57,27 @@ def guest_modification_func(app):
     #delete guest account. Require password authentication
     @app.route('/delete_guest_user', methods=['GET','POST'])
     def delete_guest_user():
-        
-        if request.method == 'POST':
-            uid=getUid()
-            password = request.form["password"]
-            #after authentication, should delete user and automatically delete user data too
-            try: 
-                auth.update_user(uid,password)
-                auth.delete_user(uid)
-                return jsonify({'message':'Guest {uid} has been deleted'})
-                
-            except auth.UserNotFoundError:
-                return jsonify({'message':'User doesn\'t exist'})
-            except auth.AuthError as e:
-                return jsonify({'message':'Error deleting user: {str(e)}'})    
-        
+        uid = getUid()
 
+        # after authentication, should delete user and automatically delete user data too
+
+        try:
+            # Get JSON data from frontend
+            data = request.get_json()
+            auth.delete_user(uid)
+            user_ref = db.collection("users").document(uid)
+
+            # delete them from the db in addition to deleting from auth
+            if user_ref.get().exists:
+                user_ref.delete()
+
+                return jsonify({'message': f'Guest {uid} has been deleted'})
+
+        except auth.UserNotFoundError:
+            abort(make_response(jsonify(message="User doesn't exist"), 404))
+
+        except auth.AuthError as e:
+            abort(make_response(jsonify(message=f"Error deleting user: {str(e)}"), 500))
 
 
 # Function to verify phone
@@ -83,8 +88,10 @@ def is_valid_phone_number(phone_number):
     else:
         return False
 
+
 def is_valid_password(password):
     return len(password) >= 6
+
 
 
 

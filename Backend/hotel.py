@@ -73,34 +73,25 @@ def hotel_modification_func(app):
 
     @app.route('/addRoomListing', methods=['POST'])
     def hotel_add_listing():
-        roomData = request.get_json()
-        # Generate rid and get amenities
-        autoId = generate_random_id(20)
-        amenities = []
-        for dict in roomData['amenities']:
-            key = list(dict.keys())[0]
-            if dict[key] == True:
-                amenities.append(key)
         try:
+            roomData = request.get_json()
+            # Generate rid and get amenities
+            autoId = generate_random_id(20)
+            amenities = []
+            for dict in roomData['amenities']:
+                key = list(dict.keys())[0]
+                if dict[key] == True:
+                    amenities.append(key)
             uid = getUid()
             hotel_ref = db.collection('user').document(uid)
             hotelDoc = hotel_ref.get().to_dict()
-            # Ensure authenticated user is a hotel owner
             if hotelDoc['accountType'] != 'hotel':
-                return jsonify({
-                    "errorMsg": "User is not a hotel owner!"
-                })
+                return jsonify(message="User is not a Hotel Owner")
             # Ensure listing is between 2023-2024
             if get_year_from_date(roomData['fromDate']) < 2023 or get_year_from_date(roomData['fromDate']) > 2024:
-                print('here year error')
-                return jsonify(
-                    errorMessage="Listing should be created between 2023-2024"
-                )
+                return jsonify(message="Listing should be created between 2023-2024")
             if get_year_from_date(roomData['toDate']) < 2023 or get_year_from_date(roomData['toDate']) > 2024:
-                print('here year error')
-                return jsonify(
-                    errorMessage="Listing should be created between 2023-2024"
-                )
+                return jsonify(message="Listing should be created between 2023-2024")
             # Add listing to room collection
             
             db.collection('room').document(autoId).set({
@@ -127,11 +118,34 @@ def hotel_modification_func(app):
             else: # Already have made a listing for this hotel owner
                 hotel_ref.update({"listedRooms": firestore.ArrayUnion([autoId])})
             print(autoId)
-            return jsonify({"msg": "Listing Successfuly Created"})
+            return jsonify(message="listing created")
         except Exception as e:
-            return jsonify(
-                errorMessage=str(e)
-            )
+            abort(make_response(jsonify(message=f"Error: {str(e)}"), 400))
+        
+        # delete hotel account. Require password authentication
+    @app.route('/delete_hotel_user', methods=['GET', 'POST'])
+    def delete_hotel_user():
+        uid = getUid()
+
+        # after authentication, should delete user and automatically delete user data too
+
+        try:
+            # Get JSON data from frontend
+            data = request.get_json()
+            auth.delete_user(uid)
+            user_ref = db.collection("users").document(uid)
+
+            # delete them from the db in addition to deleting from auth
+            if user_ref.get().exists:
+                user_ref.delete()
+
+            return jsonify({'message': f'Guest {uid} has been deleted'})
+
+        except auth.UserNotFoundError:
+            abort(make_response(jsonify(message="User doesn't exist"), 404))
+
+        except auth.AuthError as e:
+            abort(make_response(jsonify(message=f"Error deleting user: {str(e)}"), 500))
 
 def generate_random_id(length):
     alphabet = string.ascii_letters + string.digits

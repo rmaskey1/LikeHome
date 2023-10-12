@@ -70,7 +70,12 @@ const DeleteBtn = styled.div`
 `;
 
 function Profile() {
+  const navigate = useNavigate();
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+
+  const userinfo = localStorage.userinfo
+    ? JSON.parse(localStorage.userinfo)
+    : {};
 
   const handleDeleteClick = () => {
     setShowDeleteConfirmation(true);
@@ -85,10 +90,9 @@ function Profile() {
     setShowDeleteConfirmation(false);
   };
 
-  const navigate = useNavigate();
   const handleEditProfileClick = () => {
     // Use navigate to navigate to the desired route
-    navigate("/account_modification");
+    navigate("modify");
   };
 
   return (
@@ -96,15 +100,15 @@ function Profile() {
       <ProfileBox>
         <div>Profile</div>
         <Label>First Name</Label>
-        <Content>John</Content>
+        <Content>{userinfo.firstName}</Content>
         <Label>Last Name</Label>
-        <Content>Doe</Content>
+        <Content>{userinfo.lastName}</Content>
         <Label>Email</Label>
-        <Content>John.Doe@gmail.com</Content>
+        <Content>{userinfo.email}</Content>
         <Label>Password</Label>
-        <Content>123456789</Content>
+        <Content>********</Content>
         <Label>Phone Number</Label>
-        <Content>408-123-4567</Content>
+        <Content>{userinfo.phone}</Content>
       </ProfileBox>
       <EditBtn onClick={handleEditProfileClick}>Edit Profile</EditBtn>
       <DeleteBtn onClick={handleDeleteClick}>Delete Account</DeleteBtn>
