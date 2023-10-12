@@ -39,7 +39,7 @@ def guest_modification_func(app):
             pass
 
         # Update password
-        if 'newPassword' in data and data['password']:
+        if 'password' in data and data['password']:
             # Checks if phone number is valid
             if is_valid_password(data['password']):
                 updatePassword(uid, data['password'])
