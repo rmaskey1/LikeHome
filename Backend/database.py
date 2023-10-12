@@ -102,7 +102,7 @@ def addHotelInfo(userId, hotelName, street, city, zipcode, state, country):
     })
     return doc_ref.get().to_dict()
 
-def addBooking(uid, rid, start_date, end_date):
+def addBooking(rid, uid, start_date, end_date):
     doc_ref = db.collection("booking").document(rid).set({
         'uid': uid,
         'startDate': start_date,
@@ -121,7 +121,7 @@ def main():
     if user2.custom_claims.get('guest') == True:
         print("works")
 
-    addBooking('efjnejrgndfs', 'egfnejsgrnsjfn', datetime.datetime(2023, 10, 6, 20, 0, 0) , datetime.datetime(2023, 10, 7, 10, 0, 0))
+    addBooking('RID HERE', 'UID HERE', "11/17/2023" , "11/27/2023")
 
 
 # Function to return uid of current user

@@ -2,18 +2,9 @@ from database import auth, pyrebase_auth, db
 from flask import Flask, request, jsonify, render_template, make_response, abort
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
-<<<<<<< HEAD
 from flask import Flask, request, jsonify
 from database import  updatePassword, getUid, updateInfomation, updateHotelDetails, getUserEmail, getUserPhone, isBooked
     
-=======
-from flask import Flask, request, jsonify, render_template, redirect, url_for
-import secrets
-import string
-from database import  updatePassword, getUid, updateInfomation, updateHotelDetails, getUserEmail, getUserPhone
-import datetime
-
->>>>>>> c4f5c7987c74beebb3eabd84aac33cca05187484
 
 
 def hotel_modification_func(app):
