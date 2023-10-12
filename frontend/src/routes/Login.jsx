@@ -4,9 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { ReactComponent as PersonIcon } from "../icons/person-fill.svg";
 import { ReactComponent as KeyIcon } from "../icons/key.svg";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { isLoginAtom, userInfoAtom } from "../atom";
+import { useRecoilState } from "recoil";
+import { isLoginAtom } from "../atom";
 import { SERVER_URL } from "api";
+import { Ellipsis } from "react-spinners-css";
 
 const Container = styled.div`
   display: flex;
@@ -113,7 +114,6 @@ function Login() {
     resetField,
   } = useForm();
   const [isLogin, setIsLogin] = useRecoilState(isLoginAtom);
-  const setUserInfo = useSetRecoilState(userInfoAtom);
   const [isFetching, setIsFetching] = useState(false);
   const [serverError, setServerError] = useState(null);
 
@@ -138,7 +138,6 @@ function Login() {
       localStorage.setItem("uid", data.localId);
       localStorage.setItem("userinfo", JSON.stringify(data.info));
 
-      setUserInfo(data);
       setServerError(null);
       setIsLogin(true);
 
@@ -207,7 +206,7 @@ function Login() {
         )}
         {serverError && <ErrorMessageArea>{serverError}</ErrorMessageArea>}
         <SubmitBtn type="submit">
-          {isFetching ? "loading..." : "Login"}
+          {isFetching ? <Ellipsis color="white" size={30} /> : "Login"}
         </SubmitBtn>
       </Form>
     </Container>
