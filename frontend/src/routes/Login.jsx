@@ -6,6 +6,7 @@ import { ReactComponent as PersonIcon } from "../icons/person-fill.svg";
 import { ReactComponent as KeyIcon } from "../icons/key.svg";
 import { useRecoilState } from "recoil";
 import { isLoginAtom } from "../atom";
+import { SERVER_URL } from "api";
 
 const Container = styled.div`
   display: flex;
@@ -113,28 +114,31 @@ function Login() {
   } = useForm();
   const [isLogin, setIsLogin] = useRecoilState(isLoginAtom);
   const [isFetching, setIsFetching] = useState(false);
+  const [serverError, setServerError] = useState("");
 
-  const handleLogin = (loginData) => {
+  const handleLogin = async (loginData) => {
     setIsFetching(true);
-    fetch("http://127.0.0.1:5000/login", {
+    const response = await fetch(SERVER_URL + "/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(loginData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setIsLogin(true);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        resetFields();
-        setIsFetching(false);
-      });
+    });
+
+    const data = await response.json();
+    console.log(response.status, data);
+
+    if (response.ok) {
+      setIsLogin(true);
+      setServerError("");
+      resetFields();
+      navigate("/");
+    } else {
+      setServerError(data.message);
+      setIsLogin(false);
+    }
+    setIsFetching(false);
   };
 
   const resetFields = () => {
