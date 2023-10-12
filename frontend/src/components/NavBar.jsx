@@ -1,7 +1,7 @@
 import { isLoginAtom } from "../atom";
 import { useRecoilState } from "recoil";
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const NavbarContainer = styled.nav`
@@ -40,57 +40,70 @@ const Button = styled.button`
 `;
 
 function NavBar() {
-  const [isLogin, setIsLogin] = useRecoilState(isLoginAtom);
+  const navigate = useNavigate();
   const location = useLocation();
 
-  const logout = () => setIsLogin(false);
+  const [isLogin, setIsLogin] = useRecoilState(isLoginAtom);
+  const userinfo = localStorage.userinfo
+    ? JSON.parse(localStorage.userinfo)
+    : {};
 
-  //show "Back" or "Home" based on the route -- used for add listing
-  const renderLeftBox = () => {
-    if (location.pathname === "/add_listing") {
-      return (
-        <LeftBox>
-          <Button onClick={() => window.history.back()}>Back</Button>
-        </LeftBox>
-      );
-    }
-    return (
-      <LeftBox>
-        <Link to={""}>Home</Link>
-        <Link to="mybooking">MyBooking</Link>
-        <Link to={"profile"}>Profile</Link>
-      </LeftBox>
-    );
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("uid");
+    localStorage.removeItem("userinfo");
+    setIsLogin(false);
+    navigate("/welcome");
   };
 
-  //render right box based on the left box content -- used for add listing
-  const renderRightBox = () => {
-    if (location.pathname === "/add_listing") {
-      return <></>; // Empty fragment for the right box
-    }
-
-    if (isLogin) {
-      return (
-        <RightBox>
-          <Button onClick={logout}>Logout</Button>
-        </RightBox>
-      );
-    }
-
-    return (
-      <RightBox>
-        <Link to="login" onClick={logout}>
-          Login
-        </Link>
-        <Link to="register">Sign Up</Link>
-      </RightBox>
-    );
-  };
-
+  useEffect(() => {
+    if (localStorage.accessToken && localStorage.refreshToken) setIsLogin(true);
+  }, [setIsLogin]);
   return (
     <NavbarContainer>
-      {renderLeftBox()}
-      {renderRightBox()}
+      {isLogin ? (
+        // Logged in
+        <>
+          {location.pathname === "/add_listing" ? (
+            // When adding listing
+            <>
+              <LeftBox>
+                <Button onClick={() => navigate(-1)}>Back</Button>
+              </LeftBox>
+              <RightBox>
+                <Button onClick={logout}>Logout</Button>
+              </RightBox>
+            </>
+          ) : (
+            <>
+              <LeftBox>
+                <Link to={""}>Home</Link>
+                {userinfo?.accountType !== "hotel" && (
+                  <Link to="mybooking">MyBooking</Link>
+                )}
+                <Link to={`profile/${localStorage.uid}`}>Profile</Link>
+              </LeftBox>
+              <RightBox>
+                <Button onClick={logout}>Logout</Button>
+              </RightBox>
+            </>
+          )}
+        </>
+      ) : (
+        // Without Login
+        <>
+          <LeftBox>
+            <Link to={"/welcome"}>Home</Link>
+          </LeftBox>
+          <RightBox>
+            <Link to="login" onClick={logout}>
+              Login
+            </Link>
+            <Link to="register">Sign Up</Link>
+          </RightBox>
+        </>
+      )}
     </NavbarContainer>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import DeleteAccountWarning from "components/DeleteAccountWarning";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   position: relative;
@@ -69,7 +70,12 @@ const DeleteBtn = styled.div`
 `;
 
 function Profile() {
+  const navigate = useNavigate();
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+
+  const userinfo = localStorage.userinfo
+    ? JSON.parse(localStorage.userinfo)
+    : {};
 
   const handleDeleteClick = () => {
     setShowDeleteConfirmation(true);
@@ -84,22 +90,27 @@ function Profile() {
     setShowDeleteConfirmation(false);
   };
 
+  const handleEditProfileClick = () => {
+    // Use navigate to navigate to the desired route
+    navigate("modify");
+  };
+
   return (
     <Container>
       <ProfileBox>
         <div>Profile</div>
         <Label>First Name</Label>
-        <Content>John</Content>
+        <Content>{userinfo.firstName}</Content>
         <Label>Last Name</Label>
-        <Content>Doe</Content>
+        <Content>{userinfo.lastName}</Content>
         <Label>Email</Label>
-        <Content>John.Doe@gmail.com</Content>
+        <Content>{userinfo.email}</Content>
         <Label>Password</Label>
-        <Content>123456789</Content>
+        <Content>********</Content>
         <Label>Phone Number</Label>
-        <Content>408-123-4567</Content>
+        <Content>{userinfo.phone}</Content>
       </ProfileBox>
-      <EditBtn>Edit Profile</EditBtn>
+      <EditBtn onClick={handleEditProfileClick}>Edit Profile</EditBtn>
       <DeleteBtn onClick={handleDeleteClick}>Delete Account</DeleteBtn>
       {showDeleteConfirmation && (
         <DeleteAccountWarning

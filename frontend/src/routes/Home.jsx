@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.main`
@@ -8,6 +9,14 @@ const Container = styled.main`
 `;
 
 function Home() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.accessToken === undefined) {
+      navigate("welcome");
+    }
+  }, [navigate]);
+
   return <Container>Home</Container>;
 }
 

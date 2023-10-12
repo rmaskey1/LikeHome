@@ -81,13 +81,18 @@ def hotel_modification_func(app):
                     "errorMsg": "User is not a hotel owner!"
                 })
             # Ensure listing is between 2023-2024
-            current_year = datetime.datetime.now().year
-            if current_year < 2023 or current_year > 2024:
-                return jsonify({
-                    "errorMsg": "Listing must be available between 2023-2024"
-                })
+            if get_year_from_date(roomData['fromDate']) < 2023 or get_year_from_date(roomData['fromDate']) > 2024:
+                print('here year error')
+                return jsonify(
+                    errorMessage="Listing should be created between 2023-2024"
+                )
+            if get_year_from_date(roomData['toDate']) < 2023 or get_year_from_date(roomData['toDate']) > 2024:
+                print('here year error')
+                return jsonify(
+                    errorMessage="Listing should be created between 2023-2024"
+                )
             # Add listing to room collection
-            print(f"The current year is: {current_year}")
+            
             db.collection('room').document(autoId).set({
                 "hotelName": hotelDoc['hotelName'],
                 "street_name": hotelDoc['street'],
@@ -114,9 +119,9 @@ def hotel_modification_func(app):
             print(autoId)
             return jsonify({"msg": "Listing Successfuly Created"})
         except Exception as e:
-            return jsonify({
-                "errorMsg": str(e)
-            })
+            return jsonify(
+                errorMessage=str(e)
+            )
 
     # delete hotel account. Require password authentication
     @app.route('/delete_hotel_user', methods=['GET', 'POST'])
@@ -162,4 +167,3 @@ def is_valid_password(password):
     return len(password) >= 6
 
 
-        

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import styled from "styled-components";
 
@@ -102,7 +102,7 @@ const ErrorMessage = styled.span`
   margin-top: 5px;
 `;
 
-function AddListing() {
+function ModifyListing() {
   const {
     handleSubmit,
     control,
@@ -110,6 +110,37 @@ function AddListing() {
     formState: { errors },
     getValues,
   } = useForm();
+  const [listing, setListing] = useState("");
+  const [setExistingData] = useState(null); // State to hold existing data
+
+  //INTEGRATIONS!! somehow get the listings's existing data :D
+  const existingData = {
+    price: 100,
+    fromDate: "01/23/2023",
+    toDate: "12/27/2023",
+    beds: 3,
+    guests: 3,
+    bathrooms: 2,
+    bedType: "Double",
+    image:
+      "https://cdn.businesstraveller.com/wp-content/uploads/2020/01/GLH_AMBA_CHX_STANDARD_KING_01-e1580683845287.jpg",
+    amenities: [
+      { freeWifi: true },
+      { pool: true },
+      { tv: false },
+      { freeWasherInUnit: false },
+      { freeDryerInUnit: true },
+      { freeParking: false },
+      { airConditioning: true },
+      { freeBreakfast: false },
+      { freeLunch: false },
+      { freeDinner: false },
+      { microwave: false },
+      { refrigerator: true },
+      { petFriendly: true },
+      { spa: false },
+    ],
+  };
 
   const isLetter = (str) => {
     return /^[A-Za-z]+$/.test(str);
@@ -123,26 +154,12 @@ function AddListing() {
   const onSubmit = (data) => {
     //Handle form submission here!! <3
     console.log(data);
-    fetch("http://127.0.0.1:5000/addRoomListing", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   return (
     <Container>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <ListingTitle>Add a new listing:</ListingTitle>
+        <ListingTitle>Modify listing</ListingTitle>
         <SectionTitle>Basic Information</SectionTitle>
         <Input
           {...register("price", {
@@ -153,6 +170,7 @@ function AddListing() {
           type="number"
           placeholder="Price"
           style={{ color: "black" }}
+          defaultValue={existingData.price}
         />
         {errors.price && (
           <ErrorMessage className="error-text">
@@ -189,6 +207,7 @@ function AddListing() {
                   type="text"
                   placeholder="mm/dd/yyyy"
                   style={{ color: "black" }}
+                  defaultValue={existingData.fromDate}
                 />
                 {errors.fromDate && (
                   <ErrorMessage className="error-text">
@@ -228,6 +247,7 @@ function AddListing() {
                   type="text"
                   placeholder="mm/dd/yyyy"
                   style={{ color: "black" }}
+                  defaultValue={existingData.toDate}
                 />
                 {errors.toDate && (
                   <ErrorMessage className="error-text">
@@ -254,6 +274,7 @@ function AddListing() {
               type="number"
               placeholder="# of Beds"
               style={{ color: "black" }}
+              defaultValue={existingData.beds}
             />
             {errors.beds && (
               <ErrorMessage className="error-text">
@@ -277,6 +298,7 @@ function AddListing() {
               type="text"
               placeholder="Bed Type"
               style={{ color: "black" }}
+              defaultValue={existingData.bedType}
             />
             {errors.bedType && (
               <ErrorMessage className="error-text">
@@ -299,6 +321,7 @@ function AddListing() {
               type="number"
               placeholder="# of Guests"
               style={{ color: "black" }}
+              defaultValue={existingData.guests}
             />
             {errors.guests && (
               <ErrorMessage className="error-text">
@@ -319,6 +342,7 @@ function AddListing() {
               type="number"
               placeholder="# of Bathrooms"
               style={{ color: "black" }}
+              defaultValue={existingData.bathrooms}
             />
             {errors.bathrooms && (
               <ErrorMessage className="error-text">
@@ -335,6 +359,7 @@ function AddListing() {
           type="url"
           placeholder="URL of Image"
           style={{ color: "black" }}
+          defaultValue={existingData.image}
         />
         {errors.image && (
           <ErrorMessage>{errors.image.message.toString()}</ErrorMessage>
@@ -348,8 +373,14 @@ function AddListing() {
               <Controller
                 name="amenities[0].freeWifi"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[0].freeWifi}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[0].freeWifi}
+                  />
+                )}
               />
               Free Wifi
             </Label>
@@ -357,8 +388,14 @@ function AddListing() {
               <Controller
                 name="amenities[1].pool"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[1].pool}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[1].pool}
+                  />
+                )}
               />
               Pool
             </Label>
@@ -366,8 +403,14 @@ function AddListing() {
               <Controller
                 name="amenities[2].tv"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[2].tv}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[2].tv}
+                  />
+                )}
               />
               TV
             </Label>
@@ -375,8 +418,14 @@ function AddListing() {
               <Controller
                 name="amenities[3].freeWasherInUnit"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[3].freeWasherInUnit}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[3].freeWasherInUnit}
+                  />
+                )}
               />
               Free washer - In unit
             </Label>
@@ -384,8 +433,14 @@ function AddListing() {
               <Controller
                 name="amenities[4].freeDryerInUnit"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[4].freeDryerInUnit}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[4].freeDryerInUnit}
+                  />
+                )}
               />
               Free dryer - In unit
             </Label>
@@ -393,8 +448,14 @@ function AddListing() {
               <Controller
                 name="amenities[5].freeParking"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[5].freeParking}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[5].freeParking}
+                  />
+                )}
               />
               Free parking
             </Label>
@@ -402,8 +463,14 @@ function AddListing() {
               <Controller
                 name="amenities[6].airConditioning"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[6].airConditioning}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[6].airConditioning}
+                  />
+                )}
               />
               Air conditioning
             </Label>
@@ -413,8 +480,14 @@ function AddListing() {
               <Controller
                 name="amenities[7].freeBreakfast"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[7].freeBreakfast}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[7].freeBreakfast}
+                  />
+                )}
               />
               Free Breakfast
             </Label>
@@ -422,8 +495,14 @@ function AddListing() {
               <Controller
                 name="amenities[8].freeLunch"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[8].freeLunch}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[8].freeLunch}
+                  />
+                )}
               />
               Free Lunch
             </Label>
@@ -431,8 +510,14 @@ function AddListing() {
               <Controller
                 name="amenities[9].freeDinner"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[9].freeDinner}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[9].freeDinner}
+                  />
+                )}
               />
               Free Dinner
             </Label>
@@ -440,8 +525,14 @@ function AddListing() {
               <Controller
                 name="amenities[10].microwave"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[10].microwave}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[10].microwave}
+                  />
+                )}
               />
               Microwave
             </Label>
@@ -449,8 +540,14 @@ function AddListing() {
               <Controller
                 name="amenities[11].refrigerator"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[11].refrigerator}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[11].refrigerator}
+                  />
+                )}
               />
               Refrigerator
             </Label>
@@ -458,8 +555,14 @@ function AddListing() {
               <Controller
                 name="amenities[12].petFriendly"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[12].petFriendly}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[12].petFriendly}
+                  />
+                )}
               />
               Pet Friendly
             </Label>
@@ -467,19 +570,25 @@ function AddListing() {
               <Controller
                 name="amenities[13].spa"
                 control={control}
-                defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                defaultValue={existingData.amenities[13].spa}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    type="checkbox"
+                    defaultChecked={existingData.amenities[13].spa}
+                  />
+                )}
               />
               Spa
             </Label>
           </CheckboxItem>
         </CheckboxGroup>
         <CenteredButtonContainer>
-          <SubmitButton type="submit">Add</SubmitButton>
+          <SubmitButton type="submit">Save</SubmitButton>
         </CenteredButtonContainer>
       </form>
     </Container>
   );
 }
 
-export default AddListing;
+export default ModifyListing;
