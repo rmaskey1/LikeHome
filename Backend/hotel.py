@@ -88,14 +88,18 @@ def hotel_modification_func(app):
                     "errorMsg": "User is not a hotel owner!"
                 })
             # Ensure listing is between 2023-2024
-            current_year = datetime.datetime.now().year
-            if current_year < 2023 or current_year > 2024:
-                return jsonify({
-                    "errorMsg": "Listing must be available between 2023-2024"
-                })
+            if get_year_from_date(roomData['fromDate']) < 2023 or get_year_from_date(roomData['fromDate']) > 2024:
+                print('here year error')
+                return jsonify(
+                    errorMessage="Listing should be created between 2023-2024"
+                )
+            if get_year_from_date(roomData['toDate']) < 2023 or get_year_from_date(roomData['toDate']) > 2024:
+                print('here year error')
+                return jsonify(
+                    errorMessage="Listing should be created between 2023-2024"
+                )
             # Add listing to room collection
             
-            print(f"The current year is: {current_year}")
             db.collection('room').document(autoId).set({
                     "hotelName": hotelDoc['hotelName'],
                     "street_name": hotelDoc['street'],
@@ -122,13 +126,18 @@ def hotel_modification_func(app):
             print(autoId)
             return jsonify({"msg": "Listing Successfuly Created"})
         except Exception as e:
-            return abort(make_response(jsonify(
-                message="Listing must be available between 2023-2024"
-            ), 404))
+            return jsonify(
+                errorMessage=str(e)
+            )
 
 def generate_random_id(length):
     alphabet = string.ascii_letters + string.digits
     return ''.join(secrets.choice(alphabet) for _ in range(length))
+
+def get_year_from_date(date_str):
+    parts = date_str.split('/')
+    year = int(parts[2])
+    return year
 
 def format_date(input_date):
     # Split the date into components
