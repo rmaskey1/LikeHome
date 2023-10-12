@@ -94,6 +94,7 @@ def hotel_modification_func(app):
                     "errorMsg": "Listing must be available between 2023-2024"
                 })
             # Add listing to room collection
+            
             print(f"The current year is: {current_year}")
             db.collection('room').document(autoId).set({
                     "hotelName": hotelDoc['hotelName'],
@@ -108,8 +109,8 @@ def hotel_modification_func(app):
                     "numberGuests": roomData['guests'],
                     "numberOfBathrooms": roomData['bathrooms'],
                     "Amenities": amenities,
-                    "startDate": f"{roomData['fromMonth']} {roomData['fromDay']}, {current_year}",
-                    "endDate": f"{roomData['toMonth']} {roomData['toDay']}, {current_year}",
+                    "startDate": format_date(roomData['fromDate']),
+                    "endDate": format_date(roomData['toDate']),
                     "imageUrl": roomData['image']
             })
             # If first time making listing for a hotel owner
@@ -121,13 +122,31 @@ def hotel_modification_func(app):
             print(autoId)
             return jsonify({"msg": "Listing Successfuly Created"})
         except Exception as e:
-            return jsonify({
-                "errorMsg": str(e)
-            })
+            return abort(make_response(jsonify(
+                message="Listing must be available between 2023-2024"
+            ), 404))
 
 def generate_random_id(length):
     alphabet = string.ascii_letters + string.digits
     return ''.join(secrets.choice(alphabet) for _ in range(length))
+
+def format_date(input_date):
+    # Split the date into components
+    month, day, year = input_date.split('/')
+
+    # Define a list of month names
+    month_names = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ]
+
+    # Get the month name based on the month number
+    month_name = month_names[int(month) - 1]
+
+    # Format the date
+    formatted_date = f'{month_name} {int(day)}, {year}'
+
+    return formatted_date
 
 # Function to verify phone
 def is_valid_phone_number(phone_number):
