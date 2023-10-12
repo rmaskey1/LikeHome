@@ -52,23 +52,23 @@ def guest_modification_func(app):
         else:
             abort(make_response(jsonify(message="Please enter valid phone number"), 400))
         
-#delete guest account. Require password authentication
-@app.route('/delete_guest_user', methods=['GET','POST'])
-def delete_guest_user():
-	
-	if request.method == 'POST':
-		uid=getUid()
-		password = request.form["password"]
-		#after authentication, should delete user and automatically delete user data too
-		try: 
-		    auth.update_user(uid,password)
-		    auth.delete_user(uid)
-		    return jsonify({'message':'Guest {uid} has been deleted'});
-		    
-		except auth.UserNotFoundError:
-		    return jsonify({'message':'User doesn\'t exist'});
-		except auth.AuthError as e:
-		    return jsonify({'message':'Error deleting user: {str(e)}'});       
+        #delete guest account. Require password authentication
+        @app.route('/delete_guest_user', methods=['GET','POST'])
+        def delete_guest_user():
+            
+            if request.method == 'POST':
+                uid=getUid()
+                password = request.form["password"]
+                #after authentication, should delete user and automatically delete user data too
+                try: 
+                    auth.update_user(uid,password)
+                    auth.delete_user(uid)
+                    return jsonify({'message':'Guest {uid} has been deleted'})
+                    
+                except auth.UserNotFoundError:
+                    return jsonify({'message':'User doesn\'t exist'})
+                except auth.AuthError as e:
+                    return jsonify({'message':'Error deleting user: {str(e)}'})    
         
 
 
