@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { ReactComponent as PersonIcon } from "../icons/person-fill.svg";
 import { ReactComponent as KeyIcon } from "../icons/key.svg";
-import { useRecoilState } from "recoil";
-import { isLoginAtom } from "../atom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { isLoginAtom, userInfoAtom } from "../atom";
 import { SERVER_URL } from "api";
 
 const Container = styled.div`
@@ -113,12 +113,13 @@ function Login() {
     resetField,
   } = useForm();
   const [isLogin, setIsLogin] = useRecoilState(isLoginAtom);
+  const setUserInfo = useSetRecoilState(userInfoAtom);
   const [isFetching, setIsFetching] = useState(false);
-  const [serverError, setServerError] = useState("");
+  const [serverError, setServerError] = useState(null);
 
   const handleLogin = async (loginData) => {
     setIsFetching(true);
-    const response = await fetch(SERVER_URL + "/login", {
+    const response = await fetch(`${SERVER_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -129,20 +130,31 @@ function Login() {
     const data = await response.json();
     console.log(response.status, data);
 
+    // Login Success
     if (response.ok) {
+      // Save tokens
+      localStorage.setItem("accessToken", data.idToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      localStorage.setItem("uid", data.localId);
+      localStorage.setItem("userinfo", JSON.stringify(data.info));
+
+      setUserInfo(data);
+      setServerError(null);
       setIsLogin(true);
-      setServerError("");
-      resetFields();
-      navigate("/");
+
+      // Navigate to landing page
+      // navigate("/");
     } else {
+      // Login Fail
       setServerError(data.message);
       setIsLogin(false);
     }
+    resetFields();
     setIsFetching(false);
   };
 
   const resetFields = () => {
-    resetField("username");
+    // resetField("email");
     resetField("password");
   };
 
@@ -167,7 +179,7 @@ function Login() {
             {...register("email", {
               required: "Please enter email",
               pattern: {
-                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
                 message: "Please enter valid email",
               },
             })}
@@ -193,6 +205,7 @@ function Login() {
             {errors.password.message.toString()}
           </ErrorMessageArea>
         )}
+        {serverError && <ErrorMessageArea>{serverError}</ErrorMessageArea>}
         <SubmitBtn type="submit">
           {isFetching ? "loading..." : "Login"}
         </SubmitBtn>

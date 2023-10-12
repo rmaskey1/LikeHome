@@ -1,7 +1,7 @@
 import { isLoginAtom } from "../atom";
 import { useRecoilState } from "recoil";
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const NavbarContainer = styled.nav`
@@ -40,13 +40,36 @@ const Button = styled.button`
 `;
 
 function NavBar() {
-  const [isLogin, setIsLogin] = useRecoilState(isLoginAtom);
+  const navigate = useNavigate();
   const location = useLocation();
 
-  const logout = () => setIsLogin(false);
+  const [isLogin, setIsLogin] = useRecoilState(isLoginAtom);
+  const userinfo = localStorage.userinfo
+    ? JSON.parse(localStorage.userinfo)
+    : {};
+
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("uid");
+    localStorage.removeItem("userinfo");
+    setIsLogin(false);
+    navigate("/");
+  };
+
+  useEffect(() => {
+    if (localStorage.accessToken && localStorage.refreshToken) setIsLogin(true);
+  }, [setIsLogin]);
 
   //show "Back" or "Home" based on the route -- used for add listing
   const renderLeftBox = () => {
+    if (!isLogin) {
+      return (
+        <LeftBox>
+          <Link to={""}>Home</Link>
+        </LeftBox>
+      );
+    }
     if (location.pathname === "/add_listing") {
       return (
         <LeftBox>
@@ -57,8 +80,10 @@ function NavBar() {
     return (
       <LeftBox>
         <Link to={""}>Home</Link>
-        <Link to="mybooking">MyBooking</Link>
-        <Link to={"profile/:id"}>Profile</Link>
+        {userinfo?.accountType !== "hotel" && (
+          <Link to="mybooking">MyBooking</Link>
+        )}
+        <Link to={`profile/${localStorage.uid}`}>Profile</Link>
       </LeftBox>
     );
   };
