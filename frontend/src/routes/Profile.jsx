@@ -72,6 +72,11 @@ const DeleteBtn = styled.div`
 function Profile() {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
+  const userinfo = localStorage.userinfo
+    ? JSON.parse(localStorage.userinfo)
+    : {};
+
+  console.log(userinfo);
   const handleDeleteClick = () => {
     setShowDeleteConfirmation(true);
   };
@@ -96,15 +101,15 @@ function Profile() {
       <ProfileBox>
         <div>Profile</div>
         <Label>First Name</Label>
-        <Content>John</Content>
+        <Content>{userinfo.firstName}</Content>
         <Label>Last Name</Label>
-        <Content>Doe</Content>
+        <Content>{userinfo.lastName}</Content>
         <Label>Email</Label>
-        <Content>John.Doe@gmail.com</Content>
+        <Content>{userinfo.email}</Content>
         <Label>Password</Label>
-        <Content>123456789</Content>
+        <Content>********</Content>
         <Label>Phone Number</Label>
-        <Content>408-123-4567</Content>
+        <Content>{userinfo.phone}</Content>
       </ProfileBox>
       <EditBtn onClick={handleEditProfileClick}>Edit Profile</EditBtn>
       <DeleteBtn onClick={handleDeleteClick}>Delete Account</DeleteBtn>
