@@ -11,24 +11,27 @@ import AddListing from "routes/AddListing";
 import ModifyListing from "routes/ModifyListing";
 import AccountMod from "routes/AccountMod";
 import RegisterHotel from "routes/RegisterHotel";
-import PreviewCardsListing from "routes/PreviewCardsListing";
+import Home from "routes/Home";
 
 function App() {
   return (
     <BrowserRouter>
       <NavBar />
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/welcome" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/register/hotel" element={<RegisterHotel />} />
-        <Route path="/hotel/:id" element={<Details />} />
+
         <Route path="/profile/:id" element={<Profile />} />
-        <Route path="/add_listing" element={<AddListing />} />
-        <Route path="/hotel/:id/modify_listing" element={<ModifyListing />} />
-        <Route path="/account_modification" element={<AccountMod />} />
+        <Route path="/profile/:id/modify" element={<AccountMod />} />
+
+        <Route path="/room/add" element={<AddListing />} />
+        <Route path="/room/:id" element={<Details />} />
+        <Route path="/room/:id/modify" element={<ModifyListing />} />
+
         <Route path="*" element={<NotFound />} />
-        <Route path="/previewCards" element={<PreviewCardsListing />} />
       </Routes>
     </BrowserRouter>
   );
