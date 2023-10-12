@@ -70,13 +70,13 @@ const DeleteBtn = styled.div`
 `;
 
 function Profile() {
+  const navigate = useNavigate();
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   const userinfo = localStorage.userinfo
     ? JSON.parse(localStorage.userinfo)
     : {};
 
-  console.log(userinfo);
   const handleDeleteClick = () => {
     setShowDeleteConfirmation(true);
   };
@@ -90,10 +90,9 @@ function Profile() {
     setShowDeleteConfirmation(false);
   };
 
-  const navigate = useNavigate();
   const handleEditProfileClick = () => {
     // Use navigate to navigate to the desired route
-    navigate("/account_modification");
+    navigate("modify");
   };
 
   return (
