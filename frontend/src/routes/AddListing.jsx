@@ -178,7 +178,7 @@ function AddListing() {
       })
       .catch((error) => {
         console.log(error);
-      })
+      });
   };
 
   return (
@@ -390,6 +390,7 @@ function AddListing() {
               <Controller
                 name="amenities[0].freeWifi"
                 control={control}
+                defaultValue={false}
                 render={({ field }) => <Checkbox {...field} type="checkbox" />}
               />
               Free Wifi
@@ -398,6 +399,7 @@ function AddListing() {
               <Controller
                 name="amenities[1].pool"
                 control={control}
+                defaultValue={false}
                 render={({ field }) => <Checkbox {...field} type="checkbox" />}
               />
               Pool
@@ -406,6 +408,7 @@ function AddListing() {
               <Controller
                 name="amenities[2].tv"
                 control={control}
+                defaultValue={false}
                 render={({ field }) => <Checkbox {...field} type="checkbox" />}
               />
               TV
