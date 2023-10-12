@@ -140,4 +140,23 @@ def is_valid_phone_number(phone_number):
 def is_valid_password(password):
     return len(password) >= 6
 
+#delete hotel account. Require password authentication
+@app.route('/delete_hotel_user', methods=['GET','POST'])
+def delete_hotel_user():
+	
+	if request.method == 'POST':
+		uid=getUid()
+		password = request.form["password"]
+		#after authentication, should delete user and automatically delete user data too
+		try: 
+		    auth.update_user(uid,password)
+		    auth.delete_user(uid)
+		    return jsonify({'message':'Guest {uid} has been deleted'});
+		    
+		except auth.UserNotFoundError:
+		    return jsonify({'message':'User doesn\'t exist'});
+		except auth.AuthError as e:
+		    return jsonify({'message':'Error deleting user: {str(e)}'});
 
+
+        
