@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import styled from "styled-components";
-import { Link, useLocation } from "react-router-dom";
 
 const Container = styled.main`
   display: center;
@@ -39,40 +38,6 @@ const Input = styled.input`
   color: #888888;
   font-size: 18px;
   font-weight: 450;
-`;
-
-const FileInput = styled.input`
-  display: none; /* Hide the file input */
-`;
-
-const UploadButton = styled.label`
-  margin-top: 15px;
-  margin-bottom: 10px;
-  width: 200px;
-  height: 60px;
-  padding: 10px;
-  border-radius: 20px;
-  background-color: #ffffff;
-  color: #cf316a;
-  border: 1px solid;
-  border-color: #cf316a;
-  font-size: 20px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #cf316a;
-    color: #ffffff;
-  }
-`;
-
-const FileName = styled.span`
-  margin-top: 10px;
-  margin-left: 5px;
 `;
 
 const CheckboxGroup = styled.div`
@@ -145,13 +110,6 @@ function AddListing() {
     formState: { errors },
     getValues,
   } = useForm();
-  const location = useLocation();
-  const [listing, setListing] = useState("");
-
-  useEffect(() => {
-    setListing(location.pathname.substring(1));
-    console.log(listing);
-  }, [listing, location.pathname]);
 
   const isLetter = (str) => {
     return /^[A-Za-z]+$/.test(str);
