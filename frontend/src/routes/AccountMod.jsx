@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import styled from "styled-components";
 
 const Container = styled.main`
@@ -39,38 +39,6 @@ const Input = styled.input`
   color: #888888;
   font-size: 18px;
   font-weight: 450;
-`;
-
-const CheckboxGroup = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  margin-top: 15px;
-  width: 100%;
-`;
-
-const Label = styled.label`
-  display: flex;
-  align-items: center;
-  font-size: 20px;
-  font-weight: 500;
-  width: 100%;
-  margin-bottom: 15px;
-`;
-
-const CheckboxItem = styled.div`
-  flex: 1;
-  margin-right: 20px;
-`;
-
-const Checkbox = styled.input`
-  border: 1px solid #b0b0b0;
-  border-radius: 10px;
-  height: 20px;
-  color: #888888;
-  margin-right: 20px;
-  vertical-align: bottom;
 `;
 
 const SubmitButton = styled.button`
@@ -122,12 +90,10 @@ const ErrorText = styled.div`
 function AddListing() {
   const {
     handleSubmit,
-    control,
     register,
     setError,
     formState: { errors },
   } = useForm();
-  const [formData, setFormData] = useState(null);
 
   const [isHotelOwner, setIsHotelOwner] = useState(false);
   useEffect(() => {
@@ -162,18 +128,6 @@ function AddListing() {
     lastName: "SampleLast",
     email: "sampleemail@gmail.com",
     phoneNumber: +1234567809,
-  };
-
-  const validateEmail = (value) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    if (!emailRegex.test(value)) {
-      setError("email", {
-        type: "manual",
-        message: "Invalid email format",
-      });
-    } else {
-      setError("email", null);
-    }
   };
 
   const onSubmit = (data) => {
@@ -391,7 +345,7 @@ function AddListing() {
             {...register("email", {
               required: "Email is required",
               pattern: {
-                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
                 message: "Invalid email format",
               },
             })}

@@ -3,7 +3,6 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Details from "routes/Details";
 import Landing from "routes/Landing";
-import Home from "routes/Home";
 import Login from "routes/Login";
 import NotFound from "routes/NotFound";
 import Profile from "routes/Profile";
@@ -12,17 +11,9 @@ import AddListing from "routes/AddListing";
 import ModifyListing from "routes/ModifyListing";
 import AccountMod from "routes/AccountMod";
 import RegisterHotel from "routes/RegisterHotel";
-import PreviewCardsListing from "components/PreviewCardsListing";
+import PreviewCardsListing from "routes/PreviewCardsListing";
 
 function App() {
-  const handleCancelDelete = () => {
-    console.log("Cancel");
-  };
-
-  const handleConfirmDelete = () => {
-    console.log("Account deleted");
-  };
-
   return (
     <BrowserRouter>
       <NavBar />

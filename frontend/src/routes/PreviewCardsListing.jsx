@@ -1,5 +1,5 @@
 import React from "react";
-import PreviewCard from "./PreviewCard";
+import PreviewCard from "../components/PreviewCard";
 import styled from "styled-components";
 
 const StyledCardsListing = styled.div`
