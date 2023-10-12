@@ -8,24 +8,25 @@ from database import  updatePassword, getUid, updateInfomation, updateHotelDetai
 
 
 def hotel_modification_func(app):
-    @app.route('/AccountMod', methods=['POST', 'GET'])
+    @app.route('/HotelAccountMod', methods=['POST'])
     def hotel_modification():
         
 
         # Get current user's uid
         uid = getUid()
-        print("UID: " + uid)
+        print("UID in HOTEL MOD: " + uid)
         #get uid in db
         firebase_admin.get_app()
        
 
         # Get JSON data from frontent 
         data = request.get_json() 
+        print(data)
 
 
         # Check if email or phone is in availble
         try: # Check if entered email is already in use
-            if getUserEmail != data['email']:
+            if getUserEmail() != data['email']:
                 if 'email' in data and data['email']:
                     usr = auth.get_user_by_email(data['email'])
                     abort(make_response(jsonify(message="Email already in use"), 409))
@@ -33,9 +34,9 @@ def hotel_modification_func(app):
             pass
         try:
             # Check if entered phone number is already in use
-            if getUserPhone != "+" + data['phone']:
-                if 'phone' in data and data['phone']:
-                    usr = auth.get_user_by_phone_number("+" + data['phone']) 
+            if getUserPhone() != "+" + data['phoneNumber']:
+                if 'phoneNumber' in data and data['phoneNumber']:
+                    usr = auth.get_user_by_phone_number("+" + data['phoneNumber']) 
                     abort(make_response(jsonify(message="Phone number already in use"), 409))
         except auth.UserNotFoundError:   
             pass
@@ -58,12 +59,13 @@ def hotel_modification_func(app):
             else:
                 abort(make_response(jsonify(message="Please enter valid phone number"), 400))
             # Check if street name is not only space
-            if data['street'] != '':
-                updateHotelDetails(uid, data['hotelName'].strip(), data['street'].strip(), data['city'].strip(), data['zip'], data['state'].strip, data['country'].strip())
+            if data['streetName'] != '':
+                updateHotelDetails(uid, data['hotelName'].strip(), data['streetName'].strip(), data['city'].strip(), data['zipCode'], data['state'].strip(), data['country'].strip())
             else: 
                 abort(make_response(jsonify(message="Please enter valid street name"), 400))
         else:
             abort(make_response(jsonify(message="Cannot update hotel information because there are bookings at the hotel."), 409))
+        return jsonify({'message': 'Hotel modification was successful'})
 
 
     @app.route('/addRoomListing', methods=['POST'])

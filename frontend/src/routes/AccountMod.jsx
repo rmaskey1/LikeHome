@@ -120,6 +120,7 @@ const ErrorText = styled.div`
 `;
 
 function AddListing() {
+
   const {
     handleSubmit,
     control,
@@ -178,7 +179,7 @@ function AddListing() {
 
   const onSubmit = (data) => {
     //INTEGRATIONS! Make error msgs for setting first and last names with numbers?
-    console.log(data)
+
     //email is already taken
     //INTEGRATIONS! Please check through the email database and ensure that the email they
     //want to change is unique

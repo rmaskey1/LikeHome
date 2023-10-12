@@ -4,7 +4,7 @@ import database
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, abort, make_response, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
-from database import addUser, addHotelInfo, pyrebase_auth, db, addBooking
+from database import addUser, addHotelInfo, pyrebase_auth, db, getUid
 
 
 app = Flask(__name__)
@@ -115,4 +115,3 @@ def login():
 if __name__ == '__main__':
     app.debug = True
     app.run()
-

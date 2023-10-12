@@ -24,6 +24,7 @@ def listing_modification_func(app):
             update_room(data['rid'], data['Amenities'], data['bedType'], data['city'], data['country'], data['endDate'], data['hotelName'], data['imageUrl'], data['numberGuests'], data['numberOfBathrooms'], data['numberOfBeds'], data['price'], data['startDate'], data['state'], data['street_name'], data['zipcode'])
         else:
             abort(make_response(jsonify(message="Start date cannot be after end date"), 400))
+    return jsonify({'message': 'Listing modification was successful'})
 
 
 

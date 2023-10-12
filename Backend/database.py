@@ -157,12 +157,12 @@ def getUserInfo():
     return user_data
 
 def getUserEmail():
-    user = auth.get_user(getUid)
+    user = auth.get_user(getUid())
     email = user.email
     return email
 
 def getUserPhone():
-    user = auth.get_user(getUid)
+    user = auth.get_user(getUid())
     phone = user.phone_number
     return phone
 
@@ -192,9 +192,11 @@ def updateInfomation(uid, email, phone, firstName, lastName):
     
 # Update hotel name and hotel address
 def updateHotelDetails(uid, hotelName, street, city, zip, state, country):
- 
-    # Update hotel name for all room listing
-    updateHotelForRoom(hotelName)
+    room_ids = getRoomIds()
+    # Checks if there is room ids
+    if(room_ids[0] != 0):
+        # Update hotel name for all room listing
+        updateHotelForRoom(hotelName, state, street, zip, country, city)
 
     # Update all hotel details
     doc_ref = db.collection("user").document(uid)
@@ -202,7 +204,7 @@ def updateHotelDetails(uid, hotelName, street, city, zip, state, country):
         "hotelName": hotelName,
         "street": street,
         "city": city,
-        "zip": zip,
+        "zipcode": zip,
         "state": state,
         "country": country
     })
@@ -235,33 +237,46 @@ def update_room(rid, amenities, bedType, city, country, endDate, hotelName, imag
 
 
 # Update hotel name for room collection if it is not booked
-def updateHotelForRoom(new_hotel_name):
-    room_ids = getRoomIds
+def updateHotelForRoom(new_hotel_name, state, streetName,zipcode, country, city):
+    room_ids = getRoomIds()
     # For each room listing, change the naem
     for rids in room_ids:
-        room_ref = db.collection("room").document(rids)
+        room_ref = db.collection("room").document(str(rids))
 
         # Update the hotelName field in the room document
-        room_ref.update({"hotelName": new_hotel_name})
+        room_ref.update({
+            "hotelName": new_hotel_name,
+            "state": state,
+            "street_name": streetName,
+            "zipcode": zipcode,
+            "country": country,
+            "city": city})
 
 
 # Checks if any user has booked the hotel 
 def isBooked():
-    room_ids = getRoomIds
-    # Checks if there is no room ids connected
-    if(room_ids[0] != 0):
-        return True
-    else:
-        False
+    room_ids = getRoomIds()
+    # Check if there's no rid
+    if room_ids[0] == 0:
+        return False
+    # If there is rid --> loop
+    for rid in room_ids:
+        room_ref = db.collection("booking").document(str(rid))
+        room_doc = room_ref.get()
+        # Check if rid is in booking collection 
+        if room_doc.exists:
+            return True
+
+    return False
 
 # Get room ids array from hotel user 
 def getRoomIds():
     # Get hotel information
-    doc_ref = db.collection("user").document(getUid)
+    doc_ref = db.collection("user").document(getUid())
     doc_data = doc_ref.get().to_dict()
 
     # Get the 'roomIds' array field
-    room_ids = doc_data.get('roomIds', [])
+    room_ids = doc_data.get('listedRooms', [])
     return room_ids
 
 
