@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import styled from "styled-components";
-import { Link, useLocation } from "react-router-dom";
 
 const Container = styled.main`
   display: center;
@@ -111,7 +110,6 @@ function ModifyListing() {
     formState: { errors },
     getValues,
   } = useForm();
-  const location = useLocation();
   const [listing, setListing] = useState("");
   const [setExistingData] = useState(null); // State to hold existing data
 
@@ -143,11 +141,6 @@ function ModifyListing() {
       { spa: false },
     ],
   };
-
-  useEffect(() => {
-    setListing(location.pathname.substring(1));
-    console.log(listing);
-  }, [listing, location.pathname]);
 
   const isLetter = (str) => {
     return /^[A-Za-z]+$/.test(str);
