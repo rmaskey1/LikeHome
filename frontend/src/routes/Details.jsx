@@ -168,6 +168,10 @@ function Details() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
+  // INTEGRATIONS!! somehow get the role. Dropdown menu should only be visble to hotel owner
+  //Assuming we have a user role (ex: "hotel_owner")
+  const userRole = "hotel_owner"; //set with the actual user role???
+
   const navigate = useNavigate();
   // Function to handle the "Edit Listing" click event
   const handleEditListingClick = () => {
@@ -200,17 +204,19 @@ function Details() {
           <HotelName>Hotel Room</HotelName>
         </div>
         <div>
-          <Dropdown onClick={toggleDropdown}>
-            . . .
-            <DropdownContent isOpen={isDropdownOpen}>
-              <DropdownItem onClick={handleEditListingClick}>
-                Edit Listing
-              </DropdownItem>
-              <DropdownItem onClick={openDeleteModal}>
-                Delete Listing
-              </DropdownItem>
-            </DropdownContent>
-          </Dropdown>
+          {userRole === "hotel_owner" && (
+            <Dropdown onClick={toggleDropdown}>
+              . . .
+              <DropdownContent isOpen={isDropdownOpen}>
+                <DropdownItem onClick={handleEditListingClick}>
+                  Edit Listing
+                </DropdownItem>
+                <DropdownItem onClick={openDeleteModal}>
+                  Delete Listing
+                </DropdownItem>
+              </DropdownContent>
+            </Dropdown>
+          )}
         </div>
       </div>
 
