@@ -172,7 +172,7 @@ function Details() {
   // Function to handle the "Edit Listing" click event
   const handleEditListingClick = () => {
     // Use navigate to navigate to the desired route
-    navigate(`/hotel/:id/modify_listing`);
+    navigate("/hotel/:id/modify_listing");
   };
 
   const toggleDropdown = () => {
