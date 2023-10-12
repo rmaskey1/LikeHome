@@ -142,11 +142,6 @@ function ModifyListing() {
     ],
   };
 
-  useEffect(() => {
-    setListing(location.pathname.substring(1));
-    console.log(listing);
-  }, [listing, location.pathname]);
-
   const isLetter = (str) => {
     return /^[A-Za-z]+$/.test(str);
   };
