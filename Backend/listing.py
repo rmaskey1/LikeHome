@@ -28,8 +28,9 @@ def listing_modification_func(app):
                 amenities.append(key)
         print(amenities)     
         if roomBooked() == False:
+            #cYXBww5bSw4nYbdv2RzM
             if is_start_date_before_or_on_end_date(data['fromDate'], data['toDate']):
-                update_room("cYXBww5bSw4nYbdv2RzM", data['price'], format_date(data['fromDate']), format_date(data['toDate']), data['beds'], data['guests'], data['bathrooms'], data['bedType'], data['image'], amenities)
+                update_room(data['rid'], data['price'], format_date(data['fromDate']), format_date(data['toDate']), data['beds'], data['guests'], data['bathrooms'], data['bedType'], data['image'], amenities)
                 return jsonify({'message': 'Listing modification was successful'})
             else:
                 abort(make_response(jsonify(message="Start date cannot be after end date"), 400))
