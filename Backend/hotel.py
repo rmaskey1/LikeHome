@@ -1,6 +1,9 @@
 from database import auth, pyrebase_auth, db
 from flask import Flask, request, jsonify, render_template, make_response, abort
 import firebase_admin
+import secrets
+import string
+import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify
 from database import  updatePassword, getUid, updateInfomation, updateHotelDetails, getUserEmail, getUserPhone, isBooked

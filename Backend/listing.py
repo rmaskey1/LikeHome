@@ -6,27 +6,55 @@ import datetime
 from datetime import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, make_response, abort
-from database import  updatePassword, getUid, updateInfomation, update_room
+from database import  updatePassword, getUid, updateInfomation, update_room, roomBooked
 
 def listing_modification_func(app):
-    @app.rout('/ListingMod', methods = ['POST', 'GET'])
+    @app.rout('/ListingMod', methods = ['POST'])
     def listing_modification():
         uid = getUid()
+        print("HELO")
         #get uid in db
         firebase_admin.get_app()
        
-
+       
         # Get JSON data from frontent 
         data = request.get_json()
-
-
-        if is_start_date_before_or_on_end_date(data['startDate'], data['endDate']):
-            update_room(data['rid'], data['Amenities'], data['bedType'], data['city'], data['country'], data['endDate'], data['hotelName'], data['imageUrl'], data['numberGuests'], data['numberOfBathrooms'], data['numberOfBeds'], data['price'], data['startDate'], data['state'], data['street_name'], data['zipcode'])
+        print(data['fromDate'])
+        print(data['toDate'])
+        amenities = []
+        for dict in data['amenities']:
+            key = list(dict.keys())[0]
+            if dict[key] == True:
+                amenities.append(key)
+        print(amenities)     
+        if roomBooked() == False:
+            if is_start_date_before_or_on_end_date(data['fromDate'], data['toDate']):
+                update_room("cYXBww5bSw4nYbdv2RzM", data['price'], format_date(data['fromDate']), format_date(data['toDate']), data['beds'], data['guests'], data['bathrooms'], data['bedType'], data['image'], amenities)
+                return jsonify({'message': 'Listing modification was successful'})
+            else:
+                abort(make_response(jsonify(message="Start date cannot be after end date"), 400))
         else:
-            abort(make_response(jsonify(message="Start date cannot be after end date"), 400))
-    return jsonify({'message': 'Listing modification was successful'})
+            abort(make_response(jsonify(message="Room is booked. Changes are not allowed."), 403))
+    
 
 
+def format_date(input_date):
+    # Split the date into components
+    month, day, year = input_date.split('/')
+
+    # Define a list of month names
+    month_names = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ]
+
+    # Get the month name based on the month number
+    month_name = month_names[int(month) - 1]
+
+    # Format the date
+    formatted_date = f'{month_name} {int(day)}, {year}'
+
+    return formatted_date
 
 
 def is_start_date_before_or_on_end_date(start_date_str, end_date_str):

@@ -210,30 +210,32 @@ def updateHotelDetails(uid, hotelName, street, city, zip, state, country):
     })
 
 # Update room listing
-def update_room(rid, amenities, bedType, city, country, endDate, hotelName, imageUrl, numberGuests, numberOfBathrooms, numberOfBeds, price, startDate, state, street_name, zipcode):
+def update_room(rid, price, fromDate, toDate, beds, guests, bathrooms, bedType, image, amenities):
     room_ref = db.collection("room").document(rid)
-
+    hotel_ref = db.collection('user').document(getUid())
+    hotelDoc = hotel_ref.get().to_dict()
     # Create a dictionary with the provided input
     updated_data = {
-        "Amenities": amenities,
-        "bedType": bedType,
-        "city": city,
-        "country": country,
-        "endDate": endDate,
-        "hotelName": hotelName,
-        "imageUrl": imageUrl,
-        "numberGuests": numberGuests,
-        "numberOfBathrooms": numberOfBathrooms,
-        "numberOfBeds": numberOfBeds,
+        "hotelName": hotelDoc['hotelName'],
+        "street_name": hotelDoc['street'],
+        "zipCode": hotelDoc['zipcode'],
+        "city": hotelDoc['city'],
+        "state": hotelDoc['state'],
+        "country": hotelDoc['country'],
         "price": price,
-        "startDate": startDate,
-        "state": state,
-        "street_name": street_name,
-        "zipcode": zipcode
+        "startDate": fromDate,
+        "endDate": toDate,
+        "numberOfBeds": beds,
+        "numberGuests": guests,
+        "numberOfBathrooms": bathrooms,
+        "bedType": bedType,
+        "imageUrl": image,
+        "Amenities": amenities
     }
 
     # Update the document with the provided data
     room_ref.update(updated_data)
+
 
 
 # Update hotel name for room collection if it is not booked
@@ -268,6 +270,17 @@ def isBooked():
             return True
 
     return False
+
+def roomBooked(rid):
+    # Search booking collection for rid
+    room_ref = db.collection("booking").document(str(rid))
+    room_doc = room_ref.get()
+    # Check if rid is in booking collection 
+    if room_doc.exists:
+        return True
+    else:
+        return False
+    
 
 # Get room ids array from hotel user 
 def getRoomIds():
