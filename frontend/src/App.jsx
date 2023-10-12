@@ -9,6 +9,7 @@ import NotFound from "routes/NotFound";
 import Profile from "routes/Profile";
 import Register from "routes/Register";
 import AddListing from "routes/AddListing";
+import ModifyListing from "routes/ModifyListing";
 import AccountMod from "routes/AccountMod";
 import RegisterHotel from "routes/RegisterHotel";
 import PreviewCardsListing from "components/PreviewCardsListing";
@@ -33,7 +34,7 @@ function App() {
         <Route path="/hotel/:id" element={<Details />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/add_listing" element={<AddListing />} />
-        <Route path="/hotel/:id/modify_listing" element={<AddListing />} />
+        <Route path="/hotel/:id/modify_listing" element={<ModifyListing />} />
         <Route path="/account_modification" element={<AccountMod />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/previewCards" element={<PreviewCardsListing />} />
