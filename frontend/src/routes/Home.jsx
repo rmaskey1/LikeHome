@@ -65,7 +65,10 @@ function Home() {
 
   const { isLoading: myListingsIsLoading, data: myListings } = useQuery(
     ["listings", "myListings"],
-    () => getMyListings(localStorage.uid)
+    () => getMyListings(localStorage.uid),
+    {
+      enabled: userinfo.accountType === "hotel",
+    }
   );
 
   return (
