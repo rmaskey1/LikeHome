@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import PreviewCardsListing from "../components/PreviewCardsListing";
 
@@ -41,16 +41,15 @@ const Addbutton = styled.button`
   font-weight: bold;
   margin-left: 1000px;
   background-color: #cf316a;
+  color: white;
   padding: 10px 32px;
   border-radius: 10px;
-`;
+  cursor: pointer;
 
-const ButtonLink = styled.a`
-  text-decoration: none; 
-  color: inherit; 
-  display: block;
+  &:hover {
+    background-color: rgb(226, 99, 146);
+  }
 `;
-
 
 function Home() {
   // const navigate = useNavigate();
@@ -62,37 +61,33 @@ function Home() {
   // }, [navigate]);
 
   const [isHotelOwner, setIsHotelOwner] = useState(false);
-  
+
   //check if hotel owner
   useEffect(() => {
-    const isHotelOwnerAccount = true; 
+    const isHotelOwnerAccount = true;
     setIsHotelOwner(isHotelOwnerAccount);
-    }, []);
+  }, []);
 
   return (
-  <Container>
-    {isHotelOwner && ( //Render if hotel owner
-      <>
-        <div>
+    <Container>
+      {isHotelOwner && ( //Render if hotel owner
+        <>
           <Mylisting>
             My listings:
-            <Addbutton>
-              <ButtonLink href = "/room/add">
-                <button type="button">Add +</button>
-              </ButtonLink>
-            </Addbutton>
+            <Link to="/room/add">
+              <Addbutton>Add +</Addbutton>
+            </Link>
           </Mylisting>
-        </div>
-        <PreviewCardsListing />
-      </>
-    )}
+          <PreviewCardsListing />
+        </>
+      )}
 
-    <Welcome>Welcome, Bob!</Welcome>
-    <Start>Start your journey here:</Start>
+      <Welcome>Welcome, Bob!</Welcome>
+      <Start>Start your journey here:</Start>
 
-    <PreviewCardsListing />
-
-  </Container>);
+      <PreviewCardsListing />
+    </Container>
+  );
 }
 
 export default Home;
