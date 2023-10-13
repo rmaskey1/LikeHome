@@ -70,52 +70,59 @@ def hotel_modification_func(app):
 
     @app.route('/addRoomListing', methods=['POST'])
     def hotel_add_listing():
-        roomData = request.get_json()
-        # Generate rid and get amenities
-        autoId = generate_random_id(20)
-        amenities = []
-        for dict in roomData['amenities']:
-            key = list(dict.keys())[0]
-            if dict[key] == True:
-                amenities.append(key)
-        uid = getUid()
-        hotel_ref = db.collection('user').document(uid)
-        hotelDoc = hotel_ref.get().to_dict()
-        # Ensure authenticated user is a hotel owner
+        try:
+            roomData = request.get_json()
+            # Generate rid and get amenities
+            autoId = generate_random_id(20)
+            amenities = []
+            for dict in roomData['amenities']:
+                key = list(dict.keys())[0]
+                if dict[key] == True:
+                    amenities.append(key)
+            uid = getUid()
+            hotel_ref = db.collection('user').document(uid)
+            hotelDoc = hotel_ref.get().to_dict()
+        except Exception as e:
+            abort(make_response(jsonify(message=f"Error: {str(e)}"), 400))
+
+        # Ensure user is hotel owner
         if hotelDoc['accountType'] != 'hotel':
-            abort(make_response(jsonify(message="User is not a Hotel Owner"), 404))
-        # Ensure listing is between 2023-2024
+                return jsonify(message="User is not a Hotel Owner")
+         # Ensure listing is between 2023-2024
         if get_year_from_date(roomData['fromDate']) < 2023 or get_year_from_date(roomData['fromDate']) > 2024:
-            return abort(make_response(jsonify(message="Listing should be created between 2023-2024"), 409))
+            return jsonify(message="Listing should be created between 2023-2024")
         if get_year_from_date(roomData['toDate']) < 2023 or get_year_from_date(roomData['toDate']) > 2024:
-            return abort(make_response(jsonify(message="Listing should be created between 2023-2024"), 409))
-        # Add listing to room collection
+            return jsonify(message="Listing should be created between 2023-2024")
         
-        db.collection('room').document(autoId).set({
-                "hotelName": hotelDoc['hotelName'],
-                "street_name": hotelDoc['street'],
-                "zipCode": hotelDoc['zipcode'],
-                "city": hotelDoc['city'],
-                "state": hotelDoc['state'],
-                "country": hotelDoc['country'],
-                "price": roomData['price'],
-                "numberOfBeds": roomData['beds'],
-                "bedType": roomData['bedType'],
-                "numberGuests": roomData['guests'],
-                "numberOfBathrooms": roomData['bathrooms'],
-                "Amenities": amenities,
-                "startDate": format_date(roomData['fromDate']),
-                "endDate": format_date(roomData['toDate']),
-                "imageUrl": roomData['image']
-        })
-        # If first time making listing for a hotel owner
-        print(hotelDoc['listedRooms'][0])
-        if hotelDoc['listedRooms'][0] == 0:
-            hotel_ref.update({"listedRooms": [autoId]})
-        else: # Already have made a listing for this hotel owner
-            hotel_ref.update({"listedRooms": firestore.ArrayUnion([autoId])})
-        print(autoId)
-        return jsonify({"msg": "Listing Successfuly Created"})
+        # Add listing to room collection
+        try:
+            db.collection('room').document(autoId).set({
+                    "hotelName": hotelDoc['hotelName'],
+                    "street_name": hotelDoc['street'],
+                    "zipCode": hotelDoc['zipcode'],
+                    "city": hotelDoc['city'],
+                    "state": hotelDoc['state'],
+                    "country": hotelDoc['country'],
+                    "price": roomData['price'],
+                    "numberOfBeds": roomData['beds'],
+                    "bedType": roomData['bedType'],
+                    "numberGuests": roomData['guests'],
+                    "numberOfBathrooms": roomData['bathrooms'],
+                    "Amenities": amenities,
+                    "startDate": format_date(roomData['fromDate']),
+                    "endDate": format_date(roomData['toDate']),
+                    "imageUrl": roomData['image']
+            })
+            # If first time making listing for a hotel owner
+            print(hotelDoc['listedRooms'][0])
+            if hotelDoc['listedRooms'][0] == 0:
+                hotel_ref.update({"listedRooms": [autoId]})
+            else: # Already have made a listing for this hotel owner
+                hotel_ref.update({"listedRooms": firestore.ArrayUnion([autoId])})
+            print(autoId)
+            return jsonify(message="listing created")
+        except Exception as e:
+            abort(make_response(jsonify(message=f"Error: {str(e)}"), 400))
         
         # delete hotel account. Require password authentication
     @app.route('/delete_hotel_user', methods=['GET', 'POST'])
