@@ -88,6 +88,7 @@ const ErrorText = styled.div`
 `;
 
 function AddListing() {
+
   const {
     handleSubmit,
     register,
