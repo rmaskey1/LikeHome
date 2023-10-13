@@ -1,5 +1,7 @@
+import { SERVER_URL } from "api";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.main`
@@ -36,7 +38,7 @@ const Input = styled.input`
   border: 1px solid #b0b0b0;
   border-radius: 20px;
   height: 50px;
-  color: #888888;
+  color: black;
   font-size: 18px;
   font-weight: 450;
 `;
@@ -88,6 +90,8 @@ const ErrorText = styled.div`
 `;
 
 function AddListing() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const {
     handleSubmit,
     register,
@@ -95,15 +99,12 @@ function AddListing() {
     formState: { errors },
   } = useForm();
 
-  const [isHotelOwner, setIsHotelOwner] = useState(false);
-  useEffect(() => {
-    //INTEGRATIONS!! Check the account type if it is a hotel owner HERE!
-    const isHotelOwnerAccount = true; //temporarily set to true for testing, fix later!
-    setIsHotelOwner(isHotelOwnerAccount);
-  }, []);
+  const userinfo = localStorage.userinfo
+    ? JSON.parse(localStorage.userinfo)
+    : {};
 
   const validateLettersWithSpaces = (value) => {
-    if (/^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/.test(value)) {
+    if (/[^a-zA-Z\s]+/.test(value)) {
       return true;
     }
     return "Only letters and spaces are allowed";
@@ -113,59 +114,72 @@ function AddListing() {
     return /^[A-Za-z]+$/.test(str);
   };
 
-  //INTEGRATIONS!! somehow get the user's existing data :D
-  const existingData = {
-    //if account is hotel user, get their exsiting address:
-    hotelName: "Sad Hotel",
-    streetName: "1st Depression Ave",
-    city: "San Jose",
-    zipCode: 95122,
-    state: "CA",
-    country: "USA",
+  const onSubmit = async (formData) => {
+    console.log(formData);
 
-    //load exiting user data
-    firstName: "SampleFirst",
-    lastName: "SampleLast",
-    email: "sampleemail@gmail.com",
-    phoneNumber: +1234567809,
-  };
+    /* FOR HOTEL USER */
+    if (userinfo.accountType === "hotel") {
+      const response = await fetch(
+        `${SERVER_URL}/hotel?uid=${localStorage.uid}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
-  const onSubmit = (data) => {
-    //INTEGRATIONS! Make error msgs for setting first and last names with numbers?
+      // Data
+      const data = await response.json();
+      console.log(response.status, data);
 
-    //email is already taken
-    //INTEGRATIONS! Please check through the email database and ensure that the email they
-    //want to change is unique
-    if (data.email === "taken@gmail.com") {
-      setError("email", {
-        type: "manual",
-        message: "Email is already taken",
-      });
+      // 200
+      if (response.ok) {
+        localStorage.userinfo = JSON.stringify(data);
+        alert("Updated");
+      } else {
+        console.log("Fail");
+      }
+    } else {
+      /* FOR GUEST, ADMIN */
+
+      // Request
+      const response = await fetch(
+        `${SERVER_URL}/user?uid=${localStorage.uid}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      // Data
+      const userResult = await response.json();
+      console.log(response.status, userResult);
+
+      // 200
+      if (response.ok) {
+        localStorage.userinfo = JSON.stringify(userResult);
+        navigate(location.pathname.replace("/modify", ""));
+      } else {
+        console.log("Fail");
+      }
     }
-
-    //phone number is already taken
-    //INTEGRATIONS! Please check through the phonenumber database and ensure that the number they
-    //want to change is unique
-    if (data.phoneNumber === "1234567890") {
-      setError("phoneNumber", {
-        type: "manual",
-        message: "Phone number is already taken",
-      });
-    }
-
-    console.log(data);
   };
 
   return (
     <>
       <LeftBox>
-        <Button onClick={() => window.history.back()}>Back</Button>
+        <Button onClick={() => navigate(-1)}>Back</Button>
       </LeftBox>
       <Container>
         <form onSubmit={handleSubmit(onSubmit)}>
           <ListingTitle>Update Profile</ListingTitle>
 
-          {isHotelOwner && ( //renders only if the account is a hotel owner
+          {userinfo.accountType === "hotel" && ( //renders only if the account is a hotel owner
             <div>
               <SectionTitle>Hotel Details</SectionTitle>
               <SubTitle>Hotel Name</SubTitle>
@@ -175,8 +189,7 @@ function AddListing() {
                   validate: validateLettersWithSpaces,
                 })}
                 type="text"
-                style={{ color: "black" }}
-                defaultValue={existingData.hotelName}
+                defaultValue={userinfo.hotelName}
               />
               {errors.hotelName && (
                 <ErrorText className="error-text">
@@ -186,16 +199,15 @@ function AddListing() {
 
               <SubTitle>Street Name</SubTitle>
               <Input
-                {...register("streetName", {
+                {...register("street", {
                   required: "Street Name is required",
                 })}
                 type="text"
-                style={{ color: "black" }}
-                defaultValue={existingData.streetName}
+                defaultValue={userinfo.street}
               />
-              {errors.streetName && (
+              {errors.street && (
                 <ErrorText className="error-text">
-                  <span>{errors.streetName.message.toString()}</span>
+                  <span>{errors.street.message.toString()}</span>
                 </ErrorText>
               )}
 
@@ -208,8 +220,7 @@ function AddListing() {
                       validate: validateLettersWithSpaces,
                     })}
                     type="text"
-                    style={{ color: "black" }}
-                    defaultValue={existingData.city}
+                    defaultValue={userinfo.city}
                   />
                   {errors.city && (
                     <ErrorText className="error-text">
@@ -220,17 +231,16 @@ function AddListing() {
                 <div style={{ flex: 1 }}>
                   <SubTitle>Zip Code</SubTitle>
                   <Input
-                    {...register("zipCode", {
+                    {...register("zipcode", {
                       valueAsNumber: true,
                       required: "Zip Code is required",
                     })}
                     type="number"
-                    style={{ color: "black" }}
-                    defaultValue={existingData.zipCode}
+                    defaultValue={userinfo.zipcode}
                   />
-                  {errors.zipCode && (
+                  {errors.zipcode && (
                     <ErrorText className="error-text">
-                      <span>{errors.zipCode.message.toString()}</span>
+                      <span>{errors.zipcode.message.toString()}</span>
                     </ErrorText>
                   )}
                 </div>
@@ -252,8 +262,7 @@ function AddListing() {
                       },
                     })}
                     type="text"
-                    style={{ color: "black" }}
-                    defaultValue={existingData.state}
+                    defaultValue={userinfo.state}
                   />
                   {errors.state && (
                     <ErrorText className="error-text">
@@ -276,8 +285,7 @@ function AddListing() {
                       },
                     })}
                     type="text"
-                    style={{ color: "black" }}
-                    defaultValue={existingData.country}
+                    defaultValue={userinfo.country}
                   />
                   {errors.country && (
                     <ErrorText className="error-text">
@@ -292,6 +300,9 @@ function AddListing() {
           <br />
 
           <SectionTitle>Profile Details</SectionTitle>
+
+          <SubTitle>Email</SubTitle>
+          <Input defaultValue={userinfo.email} readOnly />
 
           <div style={{ display: "flex" }}>
             <div style={{ flex: 1, marginRight: "10px" }}>
@@ -309,8 +320,7 @@ function AddListing() {
                   },
                 })}
                 type="text"
-                style={{ color: "black" }}
-                defaultValue={existingData.firstName}
+                defaultValue={userinfo.firstName}
               />
               {errors.firstName && (
                 <ErrorText>{errors.firstName.message.toString()}</ErrorText>
@@ -331,8 +341,7 @@ function AddListing() {
                   },
                 })}
                 type="text"
-                style={{ color: "black" }}
-                defaultValue={existingData.lastName}
+                defaultValue={userinfo.lastName}
               />
               {errors.lastName && (
                 <ErrorText>{errors.lastName.message.toString()}</ErrorText>
@@ -340,39 +349,15 @@ function AddListing() {
             </div>
           </div>
 
-          <SubTitle>Email</SubTitle>
-          <Input
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                message: "Invalid email format",
-              },
-            })}
-            type="text"
-            style={{ color: "black" }}
-            //onBlur={(e) => validateEmail(e.target.value)}
-            defaultValue={existingData.email}
-          />
-          {errors.email && (
-            <ErrorText>{errors.email.message.toString()}</ErrorText>
-          )}
-
           <SubTitle>Password</SubTitle>
-          <Input
-            {...register("password", {})}
-            type="password"
-            style={{ color: "black" }}
-          />
+          <Input {...register("password", {})} type="password" />
 
           <SubTitle>Phone Number</SubTitle>
           <Input
             {...register("phoneNumber", {
               required: "Phone Number is required",
             })}
-            type="number"
-            style={{ color: "black" }}
-            defaultValue={existingData.phoneNumber}
+            defaultValue={userinfo.phone}
           />
           {errors.phoneNumber && (
             <ErrorText>{errors.phoneNumber.message.toString()}</ErrorText>

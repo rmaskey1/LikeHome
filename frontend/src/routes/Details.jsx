@@ -8,6 +8,8 @@ import { ReactComponent as BedIcon } from "../icons/bed.svg";
 import { ReactComponent as LaundryIcon } from "../icons/laundry.svg";
 import { ReactComponent as SinkIcon } from "../icons/sink.svg";
 import { ReactComponent as MicrowaveIcon } from "../icons/microwave.svg";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 const Container = styled.main`
   display: flex;
@@ -40,16 +42,16 @@ const Board = styled.div`
   display: flex;
   margin-top: 19px;
   gap: 32px;
-
-  div {
-    width: 385px;
-    height: 310px;
-    border: 1px solid #888888;
-  }
   div img {
     width: 100%;
     height: 100%;
   }
+`;
+
+const ImgContainer = styled.div`
+  width: 385px;
+  height: 310px;
+  border: 1px solid #888888;
 `;
 
 const Reserve = styled.div`
@@ -60,20 +62,46 @@ const Reserve = styled.div`
   gap: 46px;
   width: 356px;
   border-radius: 15px;
+`;
+
+const Reservebtn = styled.button`
+  width: 229px;
+  height: 54px;
+  border-radius: 20px;
+  background-color: #cf316a;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+`;
+
+const ReserveDateContainer = styled.div`
+  display: flex;
+`;
+
+const ReserveDate = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 130px;
+  padding: 7px 0 5px 12px;
+  letter-spacing: 1px;
+  border-radius: 2px;
 
   span {
-    font-size: 30px;
-    font-weight: 500;
+    font-size: 10px;
+    font-weight: 600;
   }
-  button {
-    width: 229px;
-    height: 54px;
-    border-radius: 20px;
-    background-color: #cf316a;
-    color: #ffffff;
-    font-size: 24px;
-    font-weight: 700;
-  }
+`;
+
+const DateSelector = styled.div`
+  margin-top: 5px;
+  font-size: 16px;
+  font-weight: 200;
+  cursor: pointer;
+`;
+
+const CalendarContainer = styled.div`
+  position: absolute;
 `;
 
 const Divider = styled.div`
@@ -125,7 +153,6 @@ const DropdownContent = styled.div`
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   border-radius: 5px;
-  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
   font-size: 18px;
   font-weight: 400;
 `;
@@ -191,6 +218,14 @@ function Details() {
     setDeleteModalOpen(false);
   };
 
+  const [checkInValue, checkInOnChange] = useState(new Date());
+  const [checkOnValue, checkOnOnChange] = useState(new Date());
+  const [showCheckIn, setShowCheckIn] = useState(false);
+  const [showCheckOut, setShowCheckOut] = useState(false);
+
+  const toggleShowCheckIn = () => setShowCheckIn(!showCheckIn);
+  const toggleShowCheckOut = () => setShowCheckOut(!showCheckOut);
+
   return (
     <Container>
       <div
@@ -207,14 +242,16 @@ function Details() {
           {userRole === "hotel_owner" && (
             <Dropdown onClick={toggleDropdown}>
               . . .
-              <DropdownContent isOpen={isDropdownOpen}>
-                <DropdownItem onClick={handleEditListingClick}>
-                  Edit Listing
-                </DropdownItem>
-                <DropdownItem onClick={openDeleteModal}>
-                  Delete Listing
-                </DropdownItem>
-              </DropdownContent>
+              {isDropdownOpen && (
+                <DropdownContent>
+                  <DropdownItem onClick={handleEditListingClick}>
+                    Edit Listing
+                  </DropdownItem>
+                  <DropdownItem onClick={openDeleteModal}>
+                    Delete Listing
+                  </DropdownItem>
+                </DropdownContent>
+              )}
             </Dropdown>
           )}
         </div>
@@ -223,15 +260,67 @@ function Details() {
       <Location>123 Street, San Jose, California</Location>
       <Summary>4 Guests - 2 Beds - 1 Bath</Summary>
       <Board>
-        <div>
+        <ImgContainer>
           <img
             src="https://a0.muscache.com/im/pictures/miso/Hosting-17826786/original/d40f0877-fa17-44fc-ba4f-71a9cf205ce2.jpeg?im_w=960"
             alt="example"
           />
-        </div>
+        </ImgContainer>
         <Reserve>
-          <span>$100 per night</span>
-          <button>Reserve</button>
+          <div>
+            <span style={{ fontSize: "30px", fontWeight: 600 }}>$100</span>{" "}
+            <span style={{ fontSize: "20px", fontWeight: 400 }}>per night</span>
+          </div>
+          <ReserveDateContainer>
+            <ReserveDate
+              style={{
+                border: showCheckIn
+                  ? "1px solid black"
+                  : "1px solid transparent",
+              }}
+            >
+              {showCheckIn && (
+                <CalendarContainer style={{ top: "49px", right: "-1px" }}>
+                  <Calendar
+                    hover
+                    // @ts-ignore
+                    onChange={checkInOnChange}
+                    onClickDay={toggleShowCheckIn}
+                    value={checkInValue}
+                    locale="en-GB"
+                  />
+                </CalendarContainer>
+              )}
+              <span>CHECK-IN</span>
+              <DateSelector onClick={toggleShowCheckIn}>
+                {checkInValue.toLocaleDateString()}
+              </DateSelector>
+            </ReserveDate>
+            <ReserveDate
+              style={{
+                border: showCheckOut
+                  ? "1px solid black"
+                  : "1px solid transparent",
+              }}
+            >
+              {showCheckOut && (
+                <CalendarContainer style={{ top: "49px", left: "-1px" }}>
+                  <Calendar
+                    // @ts-ignore
+                    onChange={checkOnOnChange}
+                    onClickDay={toggleShowCheckOut}
+                    value={checkOnValue}
+                    locale="en-GB"
+                  />
+                </CalendarContainer>
+              )}
+              <span>CHECK-OUT</span>
+              <DateSelector onClick={toggleShowCheckOut}>
+                {checkOnValue.toLocaleDateString()}
+              </DateSelector>
+            </ReserveDate>
+          </ReserveDateContainer>
+          <Reservebtn>Reserve</Reservebtn>
         </Reserve>
       </Board>
       <Divider />

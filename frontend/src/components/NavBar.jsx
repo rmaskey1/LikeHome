@@ -54,7 +54,7 @@ function NavBar() {
     localStorage.removeItem("uid");
     localStorage.removeItem("userinfo");
     setIsLogin(false);
-    navigate("/welcome");
+    navigate("/");
   };
 
   useEffect(() => {
