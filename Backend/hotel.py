@@ -7,7 +7,7 @@ import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify
 from database import  updatePassword, getUid, updateInfomation, updateHotelDetails, getUserEmail, getUserPhone, isBooked
-    
+
 
 
 def hotel_modification_func(app):
@@ -69,6 +69,7 @@ def hotel_modification_func(app):
         else:
             abort(make_response(jsonify(message="Cannot update hotel information because there are bookings at the hotel."), 409))
         return jsonify({'message': 'Hotel modification was successful'})
+        
 
 
     @app.route('/addRoomListing', methods=['POST'])
@@ -85,15 +86,20 @@ def hotel_modification_func(app):
             uid = getUid()
             hotel_ref = db.collection('user').document(uid)
             hotelDoc = hotel_ref.get().to_dict()
-            if hotelDoc['accountType'] != 'hotel':
-                return jsonify(message="User is not a Hotel Owner")
-            # Ensure listing is between 2023-2024
-            if get_year_from_date(roomData['fromDate']) < 2023 or get_year_from_date(roomData['fromDate']) > 2024:
-                return jsonify(message="Listing should be created between 2023-2024")
-            if get_year_from_date(roomData['toDate']) < 2023 or get_year_from_date(roomData['toDate']) > 2024:
-                return jsonify(message="Listing should be created between 2023-2024")
-            # Add listing to room collection
-            
+        except Exception as e:
+            abort(make_response(jsonify(message=f"Error: {str(e)}"), 400))
+
+        # Ensure user is hotel owner
+        if hotelDoc['accountType'] != 'hotel':
+            abort(make_response(jsonify(message=f"Error: User is not a hotel owner!"), 400))
+         # Ensure listing is between 2023-2024
+        if get_year_from_date(roomData['fromDate']) < 2023 or get_year_from_date(roomData['fromDate']) > 2024:
+            abort(make_response(jsonify(message=f"Error: Listing should be created between 2023-2024"), 400))
+        if get_year_from_date(roomData['toDate']) < 2023 or get_year_from_date(roomData['toDate']) > 2024:
+            abort(make_response(jsonify(message=f"Error: Listing should be created between 2023-2024"), 400))
+        
+        # Add listing to room collection
+        try:
             db.collection('room').document(autoId).set({
                     "hotelName": hotelDoc['hotelName'],
                     "street_name": hotelDoc['street'],
@@ -184,5 +190,6 @@ def is_valid_phone_number(phone_number):
 
 def is_valid_password(password):
     return len(password) >= 6
+
 
 
