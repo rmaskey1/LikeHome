@@ -78,7 +78,7 @@ function NavBar() {
           ) : (
             <>
               <LeftBox>
-                <Link to={""}>Home</Link>
+                <Link to={"/home"}>Home</Link>
                 {userinfo?.accountType !== "hotel" && (
                   <Link to="mybooking">MyBooking</Link>
                 )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Rating from "../icons/rating.svg";
 import Favorite from "../icons/favorite.svg";
@@ -35,8 +35,9 @@ const ImgContainer = styled.div`
 const StyledImg = styled.img`
   display: flex;
   flex-wrap: wrap;
-  max-width: 400px;
-  height: auto;
+  width: 300px;
+  height: 280px;
+  object-fit: cover;
 `;
 
 const StyledCardDetails = styled.div`
@@ -45,41 +46,43 @@ const StyledCardDetails = styled.div`
 `;
 
 const formatMonthAndDate = (dateString) => {
-  const options = { month: "short", day: "numeric" };
+  // const options = ;
   const date = new Date(dateString);
-  const currentYear = new Date().getFullYear();
-  const includeYear = date.getFullYear() !== currentYear;
 
-  if (includeYear) {
-    options.year = "numeric";
-  }
-  return date.toLocaleDateString(undefined, options);
+  // if (includeYear) {
+  //   options.year = "numeric";
+  // }
+  return date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 };
 
-const SliderNavsContainer = styled.div`
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-`;
+// const SliderNavsContainer = styled.div`
+//   position: absolute;
+//   bottom: 10px;
+//   left: 50%;
+//   transform: translateX(-50%);
+//   display: flex;
+//   align-items: center;
+// `;
 
-const SliderNav = styled.span`
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background-color: #c1bebe;
-  margin: 0 5px;
-  transition: transform 0.2s, width 0.2s, height 0.2s;
-  cursor: pointer;
+// const SliderNav = styled.span`
+//   width: 5px;
+//   height: 5px;
+//   border-radius: 50%;
+//   background-color: #c1bebe;
+//   margin: 0 5px;
+//   transition: transform 0.2s, width 0.2s, height 0.2s;
+//   cursor: pointer;
 
-  &.active {
-    width: 7px;
-    height: 7px;
-    background-color: #f8f9fa;
-  }
-`;
+//   &.active {
+//     width: 7px;
+//     height: 7px;
+//     background-color: #f8f9fa;
+//   }
+// `;
 
 const SaveFavoriteIcon = styled.img`
   position: absolute;
@@ -91,25 +94,25 @@ const SaveFavoriteIcon = styled.img`
 `;
 
 function PreviewCard({ previewCard, onClick }) {
-  const {
-    location,
-    rating,
-    description,
-    startDate,
-    endDate,
-    price,
-    imageUrls,
-  } = previewCard;
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const imageUrl = imageUrls[currentIndex];
+  // const {
+  //   location,
+  //   rating,
+  //   description,
+  //   startDate,
+  //   endDate,
+  //   price,
+  //   imageUrls,
+  // } = previewCard;
+  // const [currentIndex, setCurrentIndex] = useState(0);
+  // const imageUrl = imageUrls[currentIndex];
 
-  useEffect(() => {
-    // Automatically switch images at regular intervals
-    const intervalId = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
-    }, 2000);
-    return () => clearInterval(intervalId);
-  }, [imageUrls.length]);
+  // useEffect(() => {
+  //   // Automatically switch images at regular intervals
+  //   const intervalId = setInterval(() => {
+  //     setCurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
+  //   }, 2000);
+  //   return () => clearInterval(intervalId);
+  // }, [imageUrls.length]);
 
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -117,17 +120,20 @@ function PreviewCard({ previewCard, onClick }) {
     setIsFavorite((prevIsFavorite) => !prevIsFavorite);
   };
 
+  const { imageUrl, rid, startDate, endDate, price, city, state } = previewCard;
+
   return (
     <StyledCard>
       <ImgContainer>
-        <StyledImg src={imageUrl} alt={`Image ${currentIndex + 1}`} />
+        {/* <StyledImg src={imageUrl} alt={`Image ${currentIndex + 1}`} /> */}
+        <StyledImg src={imageUrl} alt={`Image ${rid}`} />
         <SaveFavoriteIcon
           src={isFavorite ? FavoriteFilled : Favorite}
           alt="Favorite"
           onClick={toggleFavorite}
           style={{ cursor: "pointer" }}
         />
-        <SliderNavsContainer>
+        {/* <SliderNavsContainer>
           {imageUrls.map((_, index) => (
             <SliderNav
               key={index}
@@ -135,7 +141,7 @@ function PreviewCard({ previewCard, onClick }) {
               onClick={() => setCurrentIndex(index)}
             ></SliderNav>
           ))}
-        </SliderNavsContainer>
+        </SliderNavsContainer> */}
       </ImgContainer>
       <StyledCardDetails onClick={onClick}>
         <div
@@ -145,17 +151,20 @@ function PreviewCard({ previewCard, onClick }) {
             width: "300px",
           }}
         >
-          <StyledP style={{ fontWeight: "500" }}>{location}</StyledP>
+          {/* <StyledP style={{ fontWeight: "500" }}>{location}</StyledP> */}
+          <StyledP style={{ fontWeight: "500" }}>{`${city}, ${state}`}</StyledP>
           <div style={{ display: "flex", alignItems: "center" }}>
             <img
               src={Rating}
               style={{ width: "15px", height: "15px" }}
               alt="Rating"
             />
-            <StyledP style={{ marginLeft: "3px" }}>{rating}</StyledP>
+            {/* <StyledP style={{ marginLeft: "3px" }}>{rating}</StyledP> */}
+            <StyledP style={{ marginLeft: "3px" }}>{4.5}</StyledP>
           </div>
         </div>
-        <StyledP>{description}</StyledP>
+        {/* <StyledP>{description}</StyledP> */}
+        <StyledP>Ocean views</StyledP>
         <StyledP>
           {formatMonthAndDate(startDate)} - {formatMonthAndDate(endDate)}
         </StyledP>
