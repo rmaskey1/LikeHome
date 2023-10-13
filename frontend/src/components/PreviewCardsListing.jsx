@@ -106,16 +106,17 @@ function PreviewCardsListing() {
 
   return (
     <div>
-      <h1
+      {/* <h1
         style={{
           padding: "10px 50px",
           fontWeight: "bold",
           fontSize: "26px",
           marginTop: "20px",
+          color: "#293545",
         }}
       >
         Start your journey here.
-      </h1>
+      </h1> */}
       <StyledCardsListing>
         {previewCards.map((previewCard) => (
           <PreviewCard
