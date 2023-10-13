@@ -1,23 +1,25 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import styled from "styled-components";
+import TestCardList from "components/TestCardList";
+
 
 const Container = styled.main`
-  width: 100vw;
-  height: 100vh;
-  padding: 20px;
+width: 100vw;
+height: 100vh;
+padding: 20px;
 `;
 
+
 function Home() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (localStorage.accessToken === undefined) {
-      navigate("welcome");
-    }
-  }, [navigate]);
-
-  return <Container>Home</Container>;
+    return (
+      <Container>
+          <div>
+            <h1>Start your journey here:</h1>
+            <TestCardList />
+          </div>
+      </Container>
+  );
 }
+
 
 export default Home;
