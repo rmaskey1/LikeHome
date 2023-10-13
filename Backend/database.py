@@ -174,19 +174,17 @@ def updatePassword(uid, newPassword):
         password='newPassword')
 
 # Update basic user information
-def updateInfomation(uid, email, phone, firstName, lastName):
+def updateInfomation(uid, phone, firstName, lastName):
     # Firestore Database
     doc_ref = db.collection("user").document(uid)
     doc_ref.update({
        'firstName': firstName,
         'lastName': lastName,
-        'email': email,
         'phone': phone
     })
     # Authenication 
     user = auth.update_user(
         uid,
-        email = email,
         phone_number = phone,
         display_name = firstName + " " + lastName)
     
