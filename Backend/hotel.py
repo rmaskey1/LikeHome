@@ -11,12 +11,12 @@ import datetime
 
 
 def hotel_modification_func(app):
-    @app.route('/AccountMod', methods=['POST', 'GET'])
+    @app.route('/hotel', methods=['PUT'])
     def hotel_modification():
         
 
         # Get current user's uid
-        uid = getUid()
+        uid = request.args['uid']
         print("UID: " + uid)
         #get uid in db
         firebase_admin.get_app()
@@ -26,47 +26,41 @@ def hotel_modification_func(app):
         data = request.get_json() 
 
 
-        # Check if email or phone is in availble
-        try: # Check if entered email is already in use
-            if getUserEmail != data['email']:
-                if 'email' in data and data['email']:
-                    usr = auth.get_user_by_email(data['email'])
-                    abort(make_response(jsonify(message="Email already in use"), 409))
-        except auth.UserNotFoundError:
-            pass
+        
         try:
             # Check if entered phone number is already in use
-            if getUserPhone != "+" + data['phone']:
-                if 'phone' in data and data['phone']:
-                    usr = auth.get_user_by_phone_number("+" + data['phone']) 
-                    abort(make_response(jsonify(message="Phone number already in use"), 409))
-        except auth.UserNotFoundError:   
+            if 'phone' in data and data['phone']:
+                usr = auth.get_user_by_phone_number(data['phone'])
+                abort(make_response(jsonify(message="Phone number already in use"), 409))
+        except auth.UserNotFoundError:
             pass
 
         
         # Update password
-        if 'password' in data and data['password']:
+        if 'newPassword' in data and data['password']:
             # Checks if phone number is valid
             if is_valid_password(data['password']):
                 updatePassword(uid, data['password'])
                 print('Sucessfully updated password: {0}'.format(uid))
             else:
                 abort(make_response(jsonify(message="Password should be at least 6 characters"), 400))
-            
-        
-        
-        # Update hotel user information
+
         if is_valid_phone_number(data['phoneNumber'].strip()):
-            updateInfomation(uid, data['email'].strip(), "+" + data['phoneNumber'], data['firstName'].strip(), data['lastName'].strip())
+            updateInfomation(uid, data['phoneNumber'], data['firstName'].strip(),
+                             data['lastName'].strip())
         else:
             abort(make_response(jsonify(message="Please enter valid phone number"), 400))
         # Check if street name is not only space
         if data['street'] != '':
-            updateHotelDetails(uid, data['hotelName'].strip(), data['street'].strip(), data['city'].strip(), data['zip'], data['state'].strip, data['country'].strip())
-        else: 
+            updateHotelDetails(uid, data['hotelName'].strip(), data['street'].strip(), data['city'].strip(),
+                               data['zipcode'], data['state'].strip(), data['country'].strip())
+        else:
             abort(make_response(jsonify(message="Please enter valid street name"), 400))
         
 
+
+        user_data = db.collection('user').document(uid).get().to_dict()
+        return jsonify(user_data)
 
     @app.route('/addRoomListing', methods=['POST'])
     def hotel_add_listing():
