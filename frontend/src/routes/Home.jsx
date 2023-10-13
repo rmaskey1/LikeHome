@@ -52,25 +52,13 @@ const Addbutton = styled.button`
 `;
 
 function Home() {
-  // const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   if (localStorage.accessToken === undefined) {
-  //     navigate("welcome");
-  //   }
-  // }, [navigate]);
-
-  const [isHotelOwner, setIsHotelOwner] = useState(false);
-
-  //check if hotel owner
-  useEffect(() => {
-    const isHotelOwnerAccount = true;
-    setIsHotelOwner(isHotelOwnerAccount);
-  }, []);
+  const userinfo = localStorage.userinfo
+    ? JSON.parse(localStorage.userinfo)
+    : {};
 
   return (
     <Container>
-      {isHotelOwner && ( //Render if hotel owner
+      {userinfo.accountType === "hotel" && ( //Render if hotel owner
         <>
           <Mylisting>
             My listings:

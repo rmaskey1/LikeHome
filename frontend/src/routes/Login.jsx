@@ -158,7 +158,7 @@ function Login() {
   };
 
   useEffect(() => {
-    isLogin && navigate("/");
+    isLogin && navigate("/home");
   }, [isLogin, navigate]);
 
   return (
