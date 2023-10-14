@@ -52,88 +52,13 @@ def hotel_modification_func(app):
             updateHotelDetails(uid, data['hotelName'].strip(), data['street'].strip(), data['city'].strip(),
                                data['zipcode'], data['state'].strip(), data['country'].strip())
         else:
-            abort(make_response(jsonify(message="Cannot update hotel information because there are bookings at the hotel."), 409))
-        return jsonify({'message': 'Hotel modification was successful'})
+            abort(make_response(jsonify(message="Please enter valid street name"), 400))
+        
 
 
-    @app.route('/addRoomListing', methods=['POST'])
-    def hotel_add_listing():
-        try:
-            roomData = request.get_json()
-            # Generate rid and get amenities
-            autoId = generate_random_id(20)
-            amenities = []
-            for dict in roomData['amenities']:
-                key = list(dict.keys())[0]
-                if dict[key] == True:
-                    amenities.append(key)
-            uid = getUid()
-            hotel_ref = db.collection('user').document(uid)
-            hotelDoc = hotel_ref.get().to_dict()
-            if hotelDoc['accountType'] != 'hotel':
-                return jsonify(message="User is not a Hotel Owner")
-            # Ensure listing is between 2023-2024
-            if get_year_from_date(roomData['fromDate']) < 2023 or get_year_from_date(roomData['fromDate']) > 2024:
-                return jsonify(message="Listing should be created between 2023-2024")
-            if get_year_from_date(roomData['toDate']) < 2023 or get_year_from_date(roomData['toDate']) > 2024:
-                return jsonify(message="Listing should be created between 2023-2024")
-            # Add listing to room collection
-            
-            db.collection('room').document(autoId).set({
-                    "hotelName": hotelDoc['hotelName'],
-                    "street_name": hotelDoc['street'],
-                    "zipCode": hotelDoc['zipcode'],
-                    "city": hotelDoc['city'],
-                    "state": hotelDoc['state'],
-                    "country": hotelDoc['country'],
-                    "price": roomData['price'],
-                    "numberOfBeds": roomData['beds'],
-                    "bedType": roomData['bedType'],
-                    "numberGuests": roomData['guests'],
-                    "numberOfBathrooms": roomData['bathrooms'],
-                    "Amenities": amenities,
-                    "startDate": format_date(roomData['fromDate']),
-                    "endDate": format_date(roomData['toDate']),
-                    "imageUrl": roomData['image']
-            })
-            # If first time making listing for a hotel owner
-            print(hotelDoc['listedRooms'][0])
-            if hotelDoc['listedRooms'][0] == 0:
-                hotel_ref.update({"listedRooms": [autoId]})
-            else: # Already have made a listing for this hotel owner
-                hotel_ref.update({"listedRooms": firestore.ArrayUnion([autoId])})
-            print(autoId)
-            return jsonify(message="listing created")
-        except Exception as e:
-            abort(make_response(jsonify(message=f"Error: {str(e)}"), 400))
-    # Modify hotel listing
-    @app.rout('/ListingMod', methods = ['POST'])
-    def listing_modification():
-        uid = getUid()
-        print("HELO")
-        #get uid in db
-        firebase_admin.get_app()
-       
-       
-        # Get JSON data from frontent 
-        data = request.get_json()
-        print(data['fromDate'])
-        print(data['toDate'])
-        amenities = []
-        for dict in data['amenities']:
-            key = list(dict.keys())[0]
-            if dict[key] == True:
-                amenities.append(key)
-        print(amenities)     
-        if roomBooked() == False:
-            #cYXBww5bSw4nYbdv2RzM
-            if is_start_date_before_or_on_end_date(data['fromDate'], data['toDate']):
-                update_room(request.args['rid'], data['price'], format_date(data['fromDate']), format_date(data['toDate']), data['beds'], data['guests'], data['bathrooms'], data['bedType'], data['image'], amenities)
-                return jsonify({'message': 'Listing modification was successful'})
-            else:
-                abort(make_response(jsonify(message="Start date cannot be after end date"), 400))
-        else:
-            abort(make_response(jsonify(message="Room is booked. Changes are not allowed."), 403))    
+        user_data = db.collection('user').document(uid).get().to_dict()
+        return jsonify(user_data)
+
         # delete hotel account. Require password authentication
     @app.route('/delete_hotel_user', methods=['GET', 'POST'])
     def delete_hotel_user():
@@ -330,10 +255,6 @@ def is_start_date_before_or_on_end_date(start_date_str, end_date_str):
     # Convert the date strings to datetime objects
     start_date = datetime.strptime(start_date_str, "%m/%d/%Y")
     end_date = datetime.strptime(end_date_str, "%m/%d/%Y")
-
-    # Compare the start and end dates
-    return start_date <= end_date
-
 
     # Compare the start and end dates
     return start_date <= end_date
