@@ -1,5 +1,8 @@
-import React from "react";
+import { SERVER_URL } from "api";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { Ellipsis } from "react-spinners-css";
 import styled from "styled-components";
 
 const Container = styled.main`
@@ -103,6 +106,7 @@ const ErrorMessage = styled.span`
 `;
 
 function AddListing() {
+  const navigate = useNavigate();
   const {
     handleSubmit,
     control,
@@ -110,6 +114,7 @@ function AddListing() {
     formState: { errors },
     getValues,
   } = useForm();
+  const [isFetching, setIsFetching] = useState(false);
 
   const isLetter = (str) => {
     return /^[A-Za-z]+$/.test(str);
@@ -120,23 +125,29 @@ function AddListing() {
     return !isNaN(parsedDate); // Check if it's a valid date
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (formData) => {
+    setIsFetching(true);
     //Handle form submission here!! <3
-    console.log(data);
-    fetch("http://127.0.0.1:5000/addRoomListing", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    console.log(formData);
+    const response = await fetch(
+      `${SERVER_URL}/listing?uid=${localStorage.uid}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
+
+    const data = await response.json();
+    console.log(response.status, data);
+
+    if (response.ok) {
+      alert("Listing created!");
+      navigate("/home");
+    }
+    setIsFetching(false);
   };
 
   return (
@@ -475,7 +486,9 @@ function AddListing() {
           </CheckboxItem>
         </CheckboxGroup>
         <CenteredButtonContainer>
-          <SubmitButton type="submit">Add</SubmitButton>
+          <SubmitButton type="submit">
+            {isFetching ? <Ellipsis color="white" size={30} /> : "Add"}
+          </SubmitButton>
         </CenteredButtonContainer>
       </form>
     </Container>

@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Modal from "react-modal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { ReactComponent as PersonIcon } from "../icons/person-fill.svg";
 import { ReactComponent as BedIcon } from "../icons/bed.svg";
-import { ReactComponent as LaundryIcon } from "../icons/laundry.svg";
 import { ReactComponent as SinkIcon } from "../icons/sink.svg";
-import { ReactComponent as MicrowaveIcon } from "../icons/microwave.svg";
+import Calendar from "react-calendar";
+import { useQuery } from "react-query";
+import "react-calendar/dist/Calendar.css";
+import { SERVER_URL, getListing } from "api";
+import Amenity from "components/Amenity";
 
 const Container = styled.main`
   display: flex;
@@ -40,16 +43,16 @@ const Board = styled.div`
   display: flex;
   margin-top: 19px;
   gap: 32px;
-
-  div {
-    width: 385px;
-    height: 310px;
-    border: 1px solid #888888;
-  }
   div img {
     width: 100%;
     height: 100%;
   }
+`;
+
+const ImgContainer = styled.div`
+  width: 385px;
+  height: 310px;
+  border: 1px solid #888888;
 `;
 
 const Reserve = styled.div`
@@ -60,20 +63,46 @@ const Reserve = styled.div`
   gap: 46px;
   width: 356px;
   border-radius: 15px;
+`;
+
+const Reservebtn = styled.button`
+  width: 229px;
+  height: 54px;
+  border-radius: 20px;
+  background-color: #cf316a;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+`;
+
+const ReserveDateContainer = styled.div`
+  display: flex;
+`;
+
+const ReserveDate = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 130px;
+  padding: 7px 0 5px 12px;
+  letter-spacing: 1px;
+  border-radius: 2px;
 
   span {
-    font-size: 30px;
-    font-weight: 500;
+    font-size: 10px;
+    font-weight: 600;
   }
-  button {
-    width: 229px;
-    height: 54px;
-    border-radius: 20px;
-    background-color: #cf316a;
-    color: #ffffff;
-    font-size: 24px;
-    font-weight: 700;
-  }
+`;
+
+const DateSelector = styled.div`
+  margin-top: 5px;
+  font-size: 16px;
+  font-weight: 200;
+  cursor: pointer;
+`;
+
+const CalendarContainer = styled.div`
+  position: absolute;
 `;
 
 const Divider = styled.div`
@@ -125,7 +154,6 @@ const DropdownContent = styled.div`
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   border-radius: 5px;
-  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
   font-size: 18px;
   font-weight: 400;
 `;
@@ -165,18 +193,23 @@ const SectionTitle = styled.div`
 `;
 
 function Details() {
+  const params = useParams();
+  const navigate = useNavigate();
+
+  const rid = params.id;
+  const userinfo = localStorage.userinfo
+    ? JSON.parse(localStorage.userinfo)
+    : {};
+
+  const { isLoading, data } = useQuery(["listing"], () => getListing(rid));
+
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  // INTEGRATIONS!! somehow get the role. Dropdown menu should only be visble to hotel owner
-  //Assuming we have a user role (ex: "hotel_owner")
-  const userRole = "hotel_owner"; //set with the actual user role???
-
-  const navigate = useNavigate();
   // Function to handle the "Edit Listing" click event
   const handleEditListingClick = () => {
     // Use navigate to navigate to the desired route
-    navigate("/hotel/:id/modify_listing");
+    navigate(`modify`, { state: data });
   };
 
   const toggleDropdown = () => {
@@ -191,123 +224,195 @@ function Details() {
     setDeleteModalOpen(false);
   };
 
+  const [checkInValue, checkInOnChange] = useState(
+    data ? new Date(data.startDate) : new Date()
+  );
+  const [checkOnValue, checkOnOnChange] = useState(
+    data ? new Date(data.endDate) : new Date()
+  );
+  const [showCheckIn, setShowCheckIn] = useState(false);
+  const [showCheckOut, setShowCheckOut] = useState(false);
+
+  const toggleShowCheckIn = () => setShowCheckIn(!showCheckIn);
+  const toggleShowCheckOut = () => setShowCheckOut(!showCheckOut);
+
+  const deleteListing = async () => {
+    await fetch(`${SERVER_URL}/listing/${rid}`, { method: "delete" });
+    await navigate("/home");
+  };
+
   return (
     <Container>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ marginRight: "590px" }}>
-          <HotelName>Hotel Room</HotelName>
-        </div>
-        <div>
-          {userRole === "hotel_owner" && (
-            <Dropdown onClick={toggleDropdown}>
-              . . .
-              <DropdownContent isOpen={isDropdownOpen}>
-                <DropdownItem onClick={handleEditListingClick}>
-                  Edit Listing
-                </DropdownItem>
-                <DropdownItem onClick={openDeleteModal}>
-                  Delete Listing
-                </DropdownItem>
-              </DropdownContent>
-            </Dropdown>
-          )}
-        </div>
-      </div>
-
-      <Location>123 Street, San Jose, California</Location>
-      <Summary>4 Guests - 2 Beds - 1 Bath</Summary>
-      <Board>
-        <div>
-          <img
-            src="https://a0.muscache.com/im/pictures/miso/Hosting-17826786/original/d40f0877-fa17-44fc-ba4f-71a9cf205ce2.jpeg?im_w=960"
-            alt="example"
-          />
-        </div>
-        <Reserve>
-          <span>$100 per night</span>
-          <button>Reserve</button>
-        </Reserve>
-      </Board>
-      <Divider />
-      <Detail>
-        <h1>Room Details</h1>
-        <DetailItem>
-          <PersonIcon />
-          <span>4 Guests</span>
-        </DetailItem>
-        <DetailItem>
-          <BedIcon />
-          <span>2 Beds / 2 Queen-sized Beds</span>
-        </DetailItem>
-        <DetailItem>
-          <SinkIcon />
-          <span>1 Bath</span>
-        </DetailItem>
-      </Detail>
-      <Divider />
-      <Detail>
-        <h1>Ammenities</h1>
-        <DetailItem>
-          <LaundryIcon />
-          <span>Free washer - In Unit</span>
-        </DetailItem>
-        <DetailItem>
-          <LaundryIcon />
-          <span>Free dryer - In Unit</span>
-        </DetailItem>
-        <DetailItem>
-          <MicrowaveIcon />
-          <span>Microwave</span>
-        </DetailItem>
-      </Detail>
-
-      <Modal
-        isOpen={isDeleteModalOpen}
-        onRequestClose={closeDeleteModal}
-        contentLabel="Delete Listing Modal"
-        style={{
-          overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            zIndex: 1000,
-          },
-          content: {
-            width: "400px",
-            height: "fit-content",
-            margin: "auto",
-            borderRadius: "10px",
-            padding: "20px",
-            textAlign: "center",
-            backgroundColor: "#fff",
-            border: "none",
-          },
-        }}
-      >
-        <SectionTitle>
-          Are you sure you want to delete this listing?
-        </SectionTitle>
-        <br />
-        <p>This action is irreversible.</p>
-        <br />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <div style={{ marginRight: "20px" }}>
-            <Buttons>Yes</Buttons>
+      {isLoading ? (
+        "Loading..."
+      ) : (
+        <>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div style={{ marginRight: "590px" }}>
+              <HotelName>{data.hotelName}</HotelName>
+            </div>
+            <div>
+              {userinfo.accountType === "hotel" && (
+                <Dropdown onClick={toggleDropdown}>
+                  . . .
+                  {isDropdownOpen && (
+                    <DropdownContent>
+                      <DropdownItem onClick={handleEditListingClick}>
+                        Edit Listing
+                      </DropdownItem>
+                      <DropdownItem onClick={openDeleteModal}>
+                        Delete Listing
+                      </DropdownItem>
+                    </DropdownContent>
+                  )}
+                </Dropdown>
+              )}
+            </div>
           </div>
-          <div>
-            <Buttons onClick={closeDeleteModal}>No</Buttons>
-          </div>
-        </div>
-      </Modal>
+
+          <Location>{`${data.street_name}, ${data.city}, ${data.state}`}</Location>
+          <Summary>
+            {data.numberGuests} Guests - {data.numberOfBeds} Beds -{" "}
+            {data.numberOfBathrooms} Bath
+          </Summary>
+          <Board>
+            <ImgContainer>
+              <img src={data.imageUrl} alt="example" />
+            </ImgContainer>
+            <Reserve>
+              <div>
+                <span style={{ fontSize: "30px", fontWeight: 600 }}>
+                  ${data.price}
+                </span>{" "}
+                <span style={{ fontSize: "20px", fontWeight: 400 }}>
+                  per night
+                </span>
+              </div>
+              <ReserveDateContainer>
+                <ReserveDate
+                  style={{
+                    border: showCheckIn
+                      ? "1px solid black"
+                      : "1px solid transparent",
+                  }}
+                >
+                  {showCheckIn && (
+                    <CalendarContainer style={{ top: "49px", right: "-1px" }}>
+                      <Calendar
+                        hover
+                        // @ts-ignore
+                        onChange={checkInOnChange}
+                        onClickDay={toggleShowCheckIn}
+                        value={checkInValue}
+                        locale="en-GB"
+                      />
+                    </CalendarContainer>
+                  )}
+                  <span>CHECK-IN</span>
+                  <DateSelector onClick={toggleShowCheckIn}>
+                    {checkInValue.toLocaleDateString()}
+                  </DateSelector>
+                </ReserveDate>
+                <ReserveDate
+                  style={{
+                    border: showCheckOut
+                      ? "1px solid black"
+                      : "1px solid transparent",
+                  }}
+                >
+                  {showCheckOut && (
+                    <CalendarContainer style={{ top: "49px", left: "-1px" }}>
+                      <Calendar
+                        // @ts-ignore
+                        onChange={checkOnOnChange}
+                        onClickDay={toggleShowCheckOut}
+                        value={checkOnValue}
+                        locale="en-GB"
+                      />
+                    </CalendarContainer>
+                  )}
+                  <span>CHECK-OUT</span>
+                  <DateSelector onClick={toggleShowCheckOut}>
+                    {checkOnValue.toLocaleDateString()}
+                  </DateSelector>
+                </ReserveDate>
+              </ReserveDateContainer>
+              <Reservebtn>Reserve</Reservebtn>
+            </Reserve>
+          </Board>
+          <Divider />
+          <Detail>
+            <h1>Room Details</h1>
+            <DetailItem>
+              <PersonIcon />
+              <span>{data.numberGuests} Guests</span>
+            </DetailItem>
+            <DetailItem>
+              <BedIcon />
+              <span>{data.numberOfBeds} Beds / 2 Queen-sized Beds</span>
+            </DetailItem>
+            <DetailItem>
+              <SinkIcon />
+              <span>{data.numberOfBathrooms} Bath</span>
+            </DetailItem>
+          </Detail>
+          <Divider />
+          <Detail>
+            <h1>Amenities</h1>
+            {data.Amenities.map((item, i) => (
+              <Amenity key={i} item={item} />
+            ))}
+          </Detail>
+
+          <Modal
+            isOpen={isDeleteModalOpen}
+            onRequestClose={closeDeleteModal}
+            contentLabel="Delete Listing Modal"
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                zIndex: 1000,
+              },
+              content: {
+                width: "400px",
+                height: "fit-content",
+                margin: "auto",
+                borderRadius: "10px",
+                padding: "20px",
+                textAlign: "center",
+                backgroundColor: "#fff",
+                border: "none",
+              },
+            }}
+          >
+            <SectionTitle>
+              Are you sure you want to delete this listing?
+            </SectionTitle>
+            <br />
+            <p>This action is irreversible.</p>
+            <br />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <div style={{ marginRight: "20px" }}>
+                <Buttons onClick={deleteListing}>Yes</Buttons>
+              </div>
+              <div>
+                <Buttons onClick={closeDeleteModal}>No</Buttons>
+              </div>
+            </div>
+          </Modal>
+        </>
+      )}
     </Container>
   );
 }

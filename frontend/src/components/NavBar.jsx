@@ -54,7 +54,7 @@ function NavBar() {
     localStorage.removeItem("uid");
     localStorage.removeItem("userinfo");
     setIsLogin(false);
-    navigate("/welcome");
+    navigate("/");
   };
 
   useEffect(() => {
@@ -78,7 +78,7 @@ function NavBar() {
           ) : (
             <>
               <LeftBox>
-                <Link to={""}>Home</Link>
+                <Link to={"/home"}>Home</Link>
                 {userinfo?.accountType !== "hotel" && (
                   <Link to="mybooking">MyBooking</Link>
                 )}
@@ -94,7 +94,7 @@ function NavBar() {
         // Without Login
         <>
           <LeftBox>
-            <Link to={"/welcome"}>Home</Link>
+            <Link to={"/"}>Home</Link>
           </LeftBox>
           <RightBox>
             <Link to="login" onClick={logout}>
