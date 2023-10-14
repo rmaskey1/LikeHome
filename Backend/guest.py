@@ -23,7 +23,7 @@ def guest_modification_func(app):
 
         # Check if email or phone is in availble
         try: # Check if entered email is already in use
-            if getUserEmail() != data['email']:
+            if getUserEmail() != data['email'].lower():
                 if 'email' in data and data['email']:
                     usr = auth.get_user_by_email(data['email'])
                     abort(make_response(jsonify(message="Email already in use"), 409))
@@ -31,9 +31,9 @@ def guest_modification_func(app):
             pass
         try:
             # Check if entered phone number is already in use
-            if getUserPhone() != "+1" + data['phoneNumber']:
+            if getUserPhone() !=  data['phoneNumber']:
                 if 'phoneNumber' in data and data['phoneNumber']:
-                    usr = auth.get_user_by_phone_number("+1" + data['phoneNumber']) 
+                    usr = auth.get_user_by_phone_number( data['phoneNumber']) 
                     abort(make_response(jsonify(message="Phone number already in use"), 409))
         except auth.UserNotFoundError:   
             pass
@@ -47,8 +47,8 @@ def guest_modification_func(app):
             else:
                 abort(make_response(jsonify(message="Password should be at least 6 characters"), 400))
 
-        if is_valid_phone_number("+1" + data['phoneNumber'].strip()):
-            updateInfomation(uid, data['email'].strip(), "+1" + data['phoneNumber'], data['firstName'].strip(),
+        if is_valid_phone_number( data['phoneNumber'].strip()):
+            updateInfomation(uid, data['email'].strip(), data['phoneNumber'], data['firstName'].strip(),
                              data['lastName'].strip())
         else:
             abort(make_response(jsonify(message="Please enter valid phone number"), 400))
@@ -85,7 +85,7 @@ def guest_modification_func(app):
 # Function to verify phone
 def is_valid_phone_number(phone_number):
     # Check if the string is exactly 12 characters long and starts with '+'
-    if len(phone_number) >= 11 and len(phone_number) <= 11:
+    if len(phone_number) == 12:
         return True
     else:
         return False

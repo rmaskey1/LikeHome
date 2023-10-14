@@ -128,7 +128,6 @@ def main():
 def getUid():
     # Get JSON of user's information
     user_info = pyrebase_auth.current_user
-    print("THIS IS UsER INFO:  " + str(user_info))
     user_info = jsonify(user_info)
     user_data = user_info.get_json()
     # Get id token from JSON
@@ -172,7 +171,7 @@ def getUserPhone():
 def updatePassword(uid, newPassword):
     user = auth.update_user(
         uid,
-        password= newPassword)
+        password = newPassword)
 
 # Update basic user information
 def updateInfomation(uid, email, phone, firstName, lastName):

@@ -115,10 +115,10 @@ function AccountMod() {
   };
 
   const isValidPhoneNumber = (value) => {
-    if (/^\+\d{11,14}$/.test(value)) {
+    if (/^\+\d{11}$/.test(value)) {
       return true;
     }
-    return "Phone number must start with '+' and have at least 11 digits and max 14 digits";
+    return "Phone number must start with '+' and have 11 digits";
   };
 
   const onSubmit = async (formData) => {
