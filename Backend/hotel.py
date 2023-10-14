@@ -6,7 +6,7 @@ import string
 import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify
-from database import  updatePassword, getUid, updateInfomation, updateHotelDetails, getUserEmail, getUserPhone, isBooked
+from database import  updatePassword, getUid, updateInfomation, updateHotelDetails, getUserEmail, getUserPhone, isBooked, roomBooked
     
 
 
@@ -121,7 +121,34 @@ def hotel_modification_func(app):
             return jsonify(message="listing created")
         except Exception as e:
             abort(make_response(jsonify(message=f"Error: {str(e)}"), 400))
-        
+    # Modify hotel listing
+    @app.rout('/ListingMod', methods = ['POST'])
+    def listing_modification():
+        uid = getUid()
+        print("HELO")
+        #get uid in db
+        firebase_admin.get_app()
+       
+       
+        # Get JSON data from frontent 
+        data = request.get_json()
+        print(data['fromDate'])
+        print(data['toDate'])
+        amenities = []
+        for dict in data['amenities']:
+            key = list(dict.keys())[0]
+            if dict[key] == True:
+                amenities.append(key)
+        print(amenities)     
+        if roomBooked() == False:
+            #cYXBww5bSw4nYbdv2RzM
+            if is_start_date_before_or_on_end_date(data['fromDate'], data['toDate']):
+                update_room(request.args['rid'], data['price'], format_date(data['fromDate']), format_date(data['toDate']), data['beds'], data['guests'], data['bathrooms'], data['bedType'], data['image'], amenities)
+                return jsonify({'message': 'Listing modification was successful'})
+            else:
+                abort(make_response(jsonify(message="Start date cannot be after end date"), 400))
+        else:
+            abort(make_response(jsonify(message="Room is booked. Changes are not allowed."), 403))    
         # delete hotel account. Require password authentication
     @app.route('/delete_hotel_user', methods=['GET', 'POST'])
     def delete_hotel_user():
@@ -186,3 +213,10 @@ def is_valid_password(password):
     return len(password) >= 6
 
 
+def is_start_date_before_or_on_end_date(start_date_str, end_date_str):
+    # Convert the date strings to datetime objects
+    start_date = datetime.strptime(start_date_str, "%m/%d/%Y")
+    end_date = datetime.strptime(end_date_str, "%m/%d/%Y")
+
+    # Compare the start and end dates
+    return start_date <= end_date
