@@ -110,7 +110,7 @@ def login():
     except Exception as e:
         abort(make_response(jsonify(
             message="Incorrect email or password"
-        ), 401))
+        ), 400))
 
 if __name__ == '__main__':
     app.debug = True

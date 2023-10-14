@@ -1,22 +1,29 @@
+import secrets
 import firebase_admin
 import database
 import pyrebase
 import requests
+import string
 import datetime
 from datetime import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, make_response, abort
-from database import  updatePassword, getUid, updateInfomation, update_room, roomBooked
+from database import  updatePassword, getUid, updateInfomation, update_room, roomBooked, db
 
 def listing_modification_func(app):
-    @app.rout('/ListingMod', methods = ['POST'])
+    @app.route('/listing', methods=['POST'])
+    def hotel_add_listing():
+        return "HELLO"
+
+    @app.route('/listing', methods = ['POST', 'PUT'])
     def listing_modification():
-        uid = getUid()
+        rid = request.args['rid']
+        uid = request.args['uid']
         print("HELO")
         #get uid in db
         firebase_admin.get_app()
-       
-       
+    
+    
         # Get JSON data from frontent 
         data = request.get_json()
         print(data['fromDate'])
@@ -30,7 +37,7 @@ def listing_modification_func(app):
         if roomBooked() == False:
             #cYXBww5bSw4nYbdv2RzM
             if is_start_date_before_or_on_end_date(data['fromDate'], data['toDate']):
-                update_room(request.args['rid'], data['price'], format_date(data['fromDate']), format_date(data['toDate']), data['beds'], data['guests'], data['bathrooms'], data['bedType'], data['image'], amenities)
+                update_room(uid, rid, data['price'], format_date(data['fromDate']), format_date(data['toDate']), data['beds'], data['guests'], data['bathrooms'], data['bedType'], data['image'], amenities)
                 return jsonify({'message': 'Listing modification was successful'})
             else:
                 abort(make_response(jsonify(message="Start date cannot be after end date"), 400))
@@ -65,3 +72,31 @@ def is_start_date_before_or_on_end_date(start_date_str, end_date_str):
 
     # Compare the start and end dates
     return start_date <= end_date
+
+
+def generate_random_id(length):
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(length))
+
+def get_year_from_date(date_str):
+    parts = date_str.split('/')
+    year = int(parts[2])
+    return year
+
+def format_date(input_date):
+    # Split the date into components
+    month, day, year = input_date.split('/')
+
+    # Define a list of month names
+    month_names = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ]
+
+    # Get the month name based on the month number
+    month_name = month_names[int(month) - 1]
+
+    # Format the date
+    formatted_date = f'{month_name} {int(day)}, {year}'
+
+    return formatted_date
