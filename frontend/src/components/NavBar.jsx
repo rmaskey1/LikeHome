@@ -94,7 +94,7 @@ function NavBar() {
         // Without Login
         <>
           <LeftBox>
-            <Link to={"/welcome"}>Home</Link>
+            <Link to={"/"}>Home</Link>
           </LeftBox>
           <RightBox>
             <Link to="login" onClick={logout}>
