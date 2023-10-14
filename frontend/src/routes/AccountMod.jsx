@@ -114,6 +114,13 @@ function AccountMod() {
     return /^[A-Za-z]+$/.test(str);
   };
 
+  const isValidPhoneNumber = (value) => {
+    if (/^\+\d{11,14}$/.test(value)) {
+      return true;
+    }
+    return "Phone number must start with '+' and have at least 11 digits and max 14 digits";
+  };
+
   const onSubmit = async (formData) => {
     console.log(formData);
 
@@ -382,8 +389,9 @@ function AccountMod() {
           <Input
             {...register("phoneNumber", {
               required: "Phone Number is required",
+              validate: isValidPhoneNumber,
             })}
-            type="number"
+            type="text"
             defaultValue={userinfo.phone}
           />
           {errors.phoneNumber && (
