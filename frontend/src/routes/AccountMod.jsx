@@ -104,7 +104,7 @@ function AddListing() {
     : {};
 
   const validateLettersWithSpaces = (value) => {
-    if (/[^a-zA-Z\s]+/.test(value)) {
+    if (/^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/.test(value)) {
       return true;
     }
     return "Only letters and spaces are allowed";
