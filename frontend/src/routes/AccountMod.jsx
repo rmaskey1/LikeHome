@@ -313,7 +313,22 @@ function AccountMod() {
           <SectionTitle>Profile Details</SectionTitle>
 
           <SubTitle>Email</SubTitle>
-          <Input defaultValue={userinfo.email} readOnly />
+          <Input
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                message: "Invalid email format",
+              },
+            })}
+            type="text"
+            style={{ color: "black" }}
+            //onBlur={(e) => validateEmail(e.target.value)}
+            defaultValue={userinfo.email}
+          />
+          {errors.email && (
+            <ErrorText>{errors.email.message.toString()}</ErrorText>
+          )}
 
           <div style={{ display: "flex" }}>
             <div style={{ flex: 1, marginRight: "10px" }}>
@@ -368,6 +383,7 @@ function AccountMod() {
             {...register("phoneNumber", {
               required: "Phone Number is required",
             })}
+            type="number"
             defaultValue={userinfo.phone}
           />
           {errors.phoneNumber && (
