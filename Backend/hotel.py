@@ -204,9 +204,19 @@ def hotel_modification_func(app):
         
         # Delete a listing
         if request.method == 'DELETE':
-            db.collection('room').document(rid).delete()
-            return "Success"
+            try:
+                # Delete listing using listing id
+                db.collection('room').document(rid).delete()
 
+                uid = getUid()
+                hotel_ref = db.collection('user').document(uid)
+                # Delete listing from hotel owner's listRooms field 
+                hotel_ref.update({"listedRooms": firestore.ArrayRemove([rid])})
+
+                return jsonify(message=f"Deleted hotel listing {rid}.")
+            except Exception as e:
+                abort(make_response(jsonify(message=f"Error: {str(e)}"), 400))
+        
 
 def generate_random_id(length):
     alphabet = string.ascii_letters + string.digits
@@ -259,4 +269,3 @@ def is_start_date_before_or_on_end_date(start_date_str, end_date_str):
 
     # Compare the start and end dates
     return start_date <= end_date
-
