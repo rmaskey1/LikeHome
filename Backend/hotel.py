@@ -24,26 +24,35 @@ def hotel_modification_func(app):
         data = request.get_json() 
         print(data)
         
-        try:
-            # Check if entered phone number is already in use
-            if 'phone' in data and data['phone']:
-                usr = auth.get_user_by_phone_number(data['phone'])
-                abort(make_response(jsonify(message="Phone number already in use"), 409))
+        # Check if email or phone is in availble
+        try: # Check if entered email is already in use
+            if getUserEmail() != data['email']:
+                if 'email' in data and data['email']:
+                    usr = auth.get_user_by_email(data['email'])
+                    abort(make_response(jsonify(message="Email already in use"), 409))
         except auth.UserNotFoundError:
             pass
-
+        try:
+            # Check if entered phone number is already in use
+            if getUserPhone() != "+1" + data['phoneNumber']:
+                if 'phoneNumber' in data and data['phoneNumber']:
+                    usr = auth.get_user_by_phone_number("+1" + data['phoneNumber']) 
+                    abort(make_response(jsonify(message="Phone number already in use"), 409))
+        except auth.UserNotFoundError:   
+            pass
         
         # Update password
-        if 'newPassword' in data and data['password']:
+        if 'password' in data and data['password']:
             # Checks if phone number is valid
             if is_valid_password(data['password']):
                 updatePassword(uid, data['password'])
                 print('Sucessfully updated password: {0}'.format(uid))
             else:
                 abort(make_response(jsonify(message="Password should be at least 6 characters"), 400))
-
-        if is_valid_phone_number(data['phoneNumber'].strip()):
-            updateInfomation(uid, data['phoneNumber'], data['firstName'].strip(),
+        print(data['phoneNumber'].strip())
+        print(is_valid_phone_number(data['phoneNumber'].strip()))
+        if is_valid_phone_number("+1" + data['phoneNumber'].strip()):
+            updateInfomation(uid, data['email'].strip(),"+1" + data['phoneNumber'], data['firstName'].strip(),
                              data['lastName'].strip())
         else:
             abort(make_response(jsonify(message="Please enter valid phone number"), 400))
@@ -203,9 +212,19 @@ def hotel_modification_func(app):
         
         # Delete a listing
         if request.method == 'DELETE':
-            db.collection('room').document(rid).delete()
-            return "Success"
+            try:
+                # Delete listing using listing id
+                db.collection('room').document(rid).delete()
 
+                uid = getUid()
+                hotel_ref = db.collection('user').document(uid)
+                # Delete listing from hotel owner's listRooms field 
+                hotel_ref.update({"listedRooms": firestore.ArrayRemove([rid])})
+
+                return jsonify(message=f"Deleted hotel listing {rid}.")
+            except Exception as e:
+                abort(make_response(jsonify(message=f"Error: {str(e)}"), 400))
+        
 
 def generate_random_id(length):
     alphabet = string.ascii_letters + string.digits

@@ -89,7 +89,7 @@ const ErrorText = styled.div`
   margin-top: 5px;
 `;
 
-function AddListing() {
+function AccountMod() {
   const location = useLocation();
   const navigate = useNavigate();
   const {
@@ -104,7 +104,7 @@ function AddListing() {
     : {};
 
   const validateLettersWithSpaces = (value) => {
-    if (/[^a-zA-Z\s]+/.test(value)) {
+    if (/^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/.test(value)) {
       return true;
     }
     return "Only letters and spaces are allowed";
@@ -186,7 +186,12 @@ function AddListing() {
               <Input
                 {...register("hotelName", {
                   required: "Hotel Name is required",
-                  validate: validateLettersWithSpaces,
+                  validate: (value) => {
+                    if (value.trim() === "") {
+                      return "Hotel Name cannot be just spaces";
+                    }
+                    return true;
+                  },
                 })}
                 type="text"
                 defaultValue={userinfo.hotelName}
@@ -201,6 +206,12 @@ function AddListing() {
               <Input
                 {...register("street", {
                   required: "Street Name is required",
+                  validate: (value) => {
+                    if (value.trim() === "") {
+                      return "Street Name cannot be just spaces";
+                    }
+                    return true;
+                  },
                 })}
                 type="text"
                 defaultValue={userinfo.street}
@@ -372,4 +383,4 @@ function AddListing() {
   );
 }
 
-export default AddListing;
+export default AccountMod;
