@@ -72,7 +72,7 @@ def hotel_modification_func(app):
             
             user_ref = db.collection('user').document(uid)
             if 'bookedRooms' in user_ref:
-            	booked_rooms=doc_data['bookedRooms'];
+            	booked_rooms=user_ref['bookedRooms'];
             	if (len(booked_rooms)>0):
             		abort(make_response(jsonify(message="Cannot delete; User has a booked room"), 400))
             	else:
