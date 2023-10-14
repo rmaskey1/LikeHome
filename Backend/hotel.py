@@ -41,7 +41,8 @@ def hotel_modification_func(app):
                 print('Sucessfully updated password: {0}'.format(uid))
             else:
                 abort(make_response(jsonify(message="Password should be at least 6 characters"), 400))
-
+        print(data['phoneNumber'].strip())
+        print(is_valid_phone_number(data['phoneNumber'].strip()))
         if is_valid_phone_number(data['phoneNumber'].strip()):
             updateInfomation(uid, data['phoneNumber'], data['firstName'].strip(),
                              data['lastName'].strip())
@@ -237,7 +238,7 @@ def format_date(input_date):
 # Function to verify phone
 def is_valid_phone_number(phone_number):
     # Check if the string is exactly 12 characters long and starts with '+'
-    if len(phone_number) == 11:
+    if phone_number[0] == "+" and len(phone_number) == 12:
         return True
     else:
         return False
