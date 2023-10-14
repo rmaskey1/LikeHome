@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
 import styled from "styled-components";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { SERVER_URL } from "api";
 
 const Container = styled.main`
   display: center;
@@ -112,43 +113,37 @@ function ModifyListing() {
     getValues,
   } = useForm();
   const location = useLocation();
-  const [listing, setListing] = useState("");
-  const [setExistingData] = useState(null); // State to hold existing data
+  const navigate = useNavigate();
+  const rid = useParams().id;
+  const roominfo = location.state;
 
   //INTEGRATIONS!! somehow get the listings's existing data :D
   const existingData = {
-    price: 100,
-    fromDate: "01/23/2023",
-    toDate: "12/27/2023",
-    beds: 3,
-    guests: 3,
-    bathrooms: 2,
-    bedType: "Double",
-    image:
-      "https://cdn.businesstraveller.com/wp-content/uploads/2020/01/GLH_AMBA_CHX_STANDARD_KING_01-e1580683845287.jpg",
+    price: roominfo.price,
+    fromDate: new Date(roominfo.startDate).toLocaleDateString(),
+    toDate: new Date(roominfo.endDate).toLocaleDateString(),
+    beds: roominfo.numberOfBeds,
+    guests: roominfo.numberGuests,
+    bathrooms: roominfo.numberOfBathrooms,
+    bedType: roominfo.bedType,
+    image: roominfo.imageUrl,
     amenities: [
-      { freeWifi: true },
-      { pool: true },
-      { tv: false },
-      { freeWasherInUnit: false },
-      { freeDryerInUnit: true },
-      { freeParking: false },
-      { airConditioning: true },
-      { freeBreakfast: false },
-      { freeLunch: false },
-      { freeDinner: false },
-      { microwave: false },
-      { refrigerator: true },
-      { petFriendly: true },
-      { spa: false },
+      { freeWifi: roominfo.Amenities.includes("freeWifi") },
+      { pool: roominfo.Amenities.includes("pool") },
+      { tv: roominfo.Amenities.includes("tv") },
+      { freeWasherInUnit: roominfo.Amenities.includes("freeWasherInUnit") },
+      { freeDryerInUnit: roominfo.Amenities.includes("freeDryerInUnit") },
+      { freeParking: roominfo.Amenities.includes("freeParking") },
+      { airConditioning: roominfo.Amenities.includes("airConditioning") },
+      { freeBreakfast: roominfo.Amenities.includes("freeBreakfast") },
+      { freeLunch: roominfo.Amenities.includes("freeLunch") },
+      { freeDinner: roominfo.Amenities.includes("freeDinner") },
+      { microwave: roominfo.Amenities.includes("microwave") },
+      { refrigerator: roominfo.Amenities.includes("refrigerator") },
+      { petFriendly: roominfo.Amenities.includes("petFriendly") },
+      { spa: roominfo.Amenities.includes("spa") },
     ],
   };
-
-  useEffect(() => {
-    setListing(location.pathname.substring(1));
-    console.log(listing);
-  }, [listing, location.pathname]);
-
   const isLetter = (str) => {
     return /^[A-Za-z]+$/.test(str);
   };
@@ -158,9 +153,25 @@ function ModifyListing() {
     return !isNaN(parsedDate); // Check if it's a valid date
   };
 
-  const onSubmit = (data) => {
-    //Handle form submission here!! <3
-    console.log(data);
+  const onSubmit = async (formData) => {
+    console.log(formData);
+    const response = await fetch(
+      `${SERVER_URL}/listing/${rid}?uid=${localStorage.uid}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
+
+    const data = await response.json();
+    console.log(response.status, data);
+
+    if (response.ok) {
+      navigate(location.pathname.replace("/modify", ""));
+    }
   };
 
   return (

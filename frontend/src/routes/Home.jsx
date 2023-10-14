@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import PreviewCardsListing from "../components/PreviewCardsListing";
+import { getAllListings, getMyListings } from "api";
+import { useQuery } from "react-query";
 
 const Container = styled.main`
   width: 100vw;
@@ -56,6 +58,19 @@ function Home() {
     ? JSON.parse(localStorage.userinfo)
     : {};
 
+  const { isLoading: allListingsIsLoading, data: allListings } = useQuery(
+    ["listings", "allListings"],
+    getAllListings
+  );
+
+  const { isLoading: myListingsIsLoading, data: myListings } = useQuery(
+    ["listings", "myListings"],
+    () => getMyListings(localStorage.uid),
+    {
+      enabled: userinfo.accountType === "hotel",
+    }
+  );
+
   return (
     <Container>
       {userinfo.accountType === "hotel" && ( //Render if hotel owner
@@ -66,14 +81,22 @@ function Home() {
               <Addbutton>Add +</Addbutton>
             </Link>
           </Mylisting>
-          <PreviewCardsListing />
+          {myListingsIsLoading ? (
+            <div>Loading...</div>
+          ) : (
+            <PreviewCardsListing listings={myListings} />
+          )}
         </>
       )}
 
       <Welcome>Welcome, Bob!</Welcome>
       <Start>Start your journey here:</Start>
 
-      <PreviewCardsListing />
+      {allListingsIsLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <PreviewCardsListing listings={allListings} />
+      )}
     </Container>
   );
 }

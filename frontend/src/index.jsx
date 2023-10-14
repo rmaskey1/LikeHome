@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { createGlobalStyle } from "styled-components";
 import { RecoilRoot } from "recoil";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -35,9 +36,13 @@ menu, ol, ul, li {
 }
 `;
 
+const client = new QueryClient();
+
 root.render(
   <RecoilRoot>
-    <GlobalStyle />
-    <App />
+    <QueryClientProvider client={client}>
+      <GlobalStyle />
+      <App />
+    </QueryClientProvider>
   </RecoilRoot>
 );

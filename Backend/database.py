@@ -208,9 +208,9 @@ def updateHotelDetails(uid, hotelName, street, city, zip, state, country):
     })
 
 # Update room listing
-def update_room(rid, price, fromDate, toDate, beds, guests, bathrooms, bedType, image, amenities):
+def update_room(uid, rid, price, fromDate, toDate, beds, guests, bathrooms, bedType, image, amenities):
     room_ref = db.collection("room").document(rid)
-    hotel_ref = db.collection('user').document(getUid())
+    hotel_ref = db.collection('user').document(uid)
     hotelDoc = hotel_ref.get().to_dict()
     # Create a dictionary with the provided input
     updated_data = {
