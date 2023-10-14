@@ -85,7 +85,7 @@ def guest_modification_func(app):
 # Function to verify phone
 def is_valid_phone_number(phone_number):
     # Check if the string is exactly 12 characters long and starts with '+'
-    if len(phone_number) == 11:
+    if len(phone_number) >= 11 and len(phone_number) <= 11:
         return True
     else:
         return False
