@@ -57,23 +57,23 @@ def guest_modification_func(app):
 
         try:
             user_ref = db.collection('user').document(uid)
-        if 'bookedRooms' in user_ref:
-            booked_rooms = doc_data['bookedRooms'];
-            if (len(booked_rooms) > 0):
-                abort(make_response(jsonify(message="Cannot delete; User has a booked room"), 400))
-            else:
-                auth.delete_user(uid)
-            # delete them from the db in addition to deleting from auth
-        if user_ref.get().exists:
-            user_ref.delete()
+            if 'bookedRooms' in user_ref:
+                booked_rooms = user_ref['bookedRooms'];
+                if (len(booked_rooms) > 0):
+                    abort(make_response(jsonify(message="Cannot delete; User has a booked room"), 400))
+                else:
+                    auth.delete_user(uid)
+                # delete them from the db in addition to deleting from auth
+            if user_ref.get().exists:
+                    user_ref.delete()
 
             return jsonify({'message': f'Guest {uid} has been deleted'})
 
         except auth.UserNotFoundError:
-        abort(make_response(jsonify(message="User doesn't exist"), 404))
+            abort(make_response(jsonify(message="User doesn't exist"), 404))
 
-    except auth.AuthError as e:
-    abort(make_response(jsonify(message=f"Error deleting user: {str(e)}"), 500))
+        except auth.AuthError as e:
+            abort(make_response(jsonify(message=f"Error deleting user: {str(e)}"), 500))
 
 
 # Function to verify phone
