@@ -5,6 +5,7 @@ from firebase_admin import credentials, firestore, auth
 from flask import Flask, abort, make_response, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
 from database import addUser, addHotelInfo, pyrebase_auth, db, getUid
+from guest import is_valid_password, is_valid_phone_number
 
 
 app = Flask(__name__)
@@ -68,16 +69,21 @@ def signup():
             print("Phone number already in use.")
             abort(make_response(jsonify(message="Phone number already in use."), 409))
         except auth.UserNotFoundError:
-            if usertype == "guest": # If the input is 'guest', redirect to guest signup page
-                user = addUser(email, phone, password, firstName, lastName, "guest")
-                return jsonify({"uid": user.uid, "usertype": "guest"})
-            if usertype == "hotel": # If the input is 'hotel', redirect to hotel signup page
-                user = addUser(email, phone, password, firstName, lastName, "hotel")
-                return jsonify({"uid": user.uid, "usertype": "hotel"})
-            if usertype == "admin": # If the input is 'guest', redirect to guest signup page
-                user = addUser(email, phone, password, firstName, lastName, "admin")
-                return jsonify({"uid": user.uid, "usertype": "admin"})
-                # Adds user to database
+            if is_valid_phone_number(phone): # Check if phone number is valid
+                if is_valid_password(password): # Check if password is valid
+                    if usertype == "guest": # If the input is 'guest', redirect to guest signup page
+                        user = addUser(email, phone, password, firstName, lastName, "guest")
+                        return jsonify({"uid": user.uid, "usertype": "guest"})
+                    if usertype == "hotel": # If the input is 'hotel', redirect to hotel signup page
+                        user = addUser(email, phone, password, firstName, lastName, "hotel")
+                        return jsonify({"uid": user.uid, "usertype": "hotel"})
+                    if usertype == "admin": # If the input is 'guest', redirect to guest signup page
+                        user = addUser(email, phone, password, firstName, lastName, "admin")
+                        return jsonify({"uid": user.uid, "usertype": "admin"})
+                else: # Invalid password error
+                    abort(make_response(jsonify(message="Password should be at least 6 characters"), 400))
+            else: # Invalid phone number error
+                abort(make_response(jsonify(message="Please enter valid phone number"), 400))
     abort(make_response(jsonify(message="User role not found."), 409))    # else:
 
 @app.route('/hotel_signup', methods=['POST', 'GET']) # ?uid=<uid>
