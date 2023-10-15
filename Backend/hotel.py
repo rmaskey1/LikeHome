@@ -68,24 +68,26 @@ def hotel_modification_func(app):
         user_data = db.collection('user').document(uid).get().to_dict()
         return jsonify(user_data)
 
-        # delete hotel account. Require password authentication
+	# delete hotel account. Require password authentication
     @app.route('/delete_hotel_user', methods=['GET', 'POST'])
     def delete_hotel_user():
-        uid = getUid()
+        uid = request.args['uid']
 
         # after authentication, should delete user and automatically delete user data too
+        # doesn't delete if the user has booked room
 
         try:
-            # Get JSON data from frontend
-            data = request.get_json()
-            auth.delete_user(uid)
-            user_ref = db.collection("users").document(uid)
-
+            user_ref = db.collection('user').document(uid)
+            if 'bookedRooms' in user_ref:
+                booked_rooms=user_ref['bookedRooms'];
+                if (len(booked_rooms)>0):
+                    abort(make_response(jsonify(message="Cannot delete; User has a booked room"), 400))
+                else:
+                    auth.delete_user(uid)
             # delete them from the db in addition to deleting from auth
             if user_ref.get().exists:
                 user_ref.delete()
-
-            return jsonify({'message': f'Guest {uid} has been deleted'})
+            return jsonify({'message': f'Hotel user {uid} has been deleted'})
 
         except auth.UserNotFoundError:
             abort(make_response(jsonify(message="User doesn't exist"), 404))

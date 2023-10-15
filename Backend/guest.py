@@ -11,7 +11,7 @@ from database import updatePassword, getUid, updateInfomation, getUserEmail, db,
 def guest_modification_func(app):
     @app.route('/user', methods=['PUT'])
     def guest_modification():
-        
+
         # Get user's uid from args
         uid = request.args['uid']
         print("UID: " + uid)
@@ -19,7 +19,7 @@ def guest_modification_func(app):
         firebase_admin.get_app()
 
         # Get JSON data from frontent 
-        data = request.get_json() 
+        data = request.get_json()
 
         # Check if email or phone is in availble
         try: # Check if entered email is already in use
@@ -35,7 +35,7 @@ def guest_modification_func(app):
                 if 'phoneNumber' in data and data['phoneNumber']:
                     usr = auth.get_user_by_phone_number( data['phoneNumber']) 
                     abort(make_response(jsonify(message="Phone number already in use"), 409))
-        except auth.UserNotFoundError:   
+        except auth.UserNotFoundError:
             pass
 
         # Update password
@@ -59,21 +59,23 @@ def guest_modification_func(app):
     # delete guest account. (Maybe) add password authentication requirement to delete
     @app.route('/delete_guest_user', methods=['POST'])
     def delete_guest_user():
-        uid = getUid()
+        uid = request.args['uid']
 
         # after authentication, should delete user and automatically delete user data too
 
         try:
-            # Get JSON data from frontend
-            data = request.get_json()
-            auth.delete_user(uid)
-            user_ref = db.collection("users").document(uid)
-
-            # delete them from the db in addition to deleting from auth
+            user_ref = db.collection('user').document(uid)
+            if 'bookedRooms' in user_ref:
+                booked_rooms = user_ref['bookedRooms'];
+                if (len(booked_rooms) > 0):
+                    abort(make_response(jsonify(message="Cannot delete; User has a booked room"), 400))
+                else:
+                    auth.delete_user(uid)
+                # delete them from the db in addition to deleting from auth
             if user_ref.get().exists:
-                user_ref.delete()
+                    user_ref.delete()
 
-                return jsonify({'message': f'Guest {uid} has been deleted'})
+            return jsonify({'message': f'Guest {uid} has been deleted'})
 
         except auth.UserNotFoundError:
             abort(make_response(jsonify(message="User doesn't exist"), 404))
@@ -93,6 +95,7 @@ def is_valid_phone_number(phone_number):
 
 def is_valid_password(password):
     return len(password) >= 6
+
 
 
 
