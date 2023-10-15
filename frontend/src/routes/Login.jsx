@@ -117,6 +117,10 @@ function Login() {
   const [isFetching, setIsFetching] = useState(false);
   const [serverError, setServerError] = useState(null);
 
+  const userinfo = localStorage.userinfo
+    ? JSON.parse(localStorage.userinfo)
+    : {};
+
   const handleLogin = async (loginData) => {
     setIsFetching(true);
     const response = await fetch(`${SERVER_URL}/login`, {
@@ -158,7 +162,11 @@ function Login() {
   };
 
   useEffect(() => {
-    isLogin && navigate("/home");
+    if (isLogin && userinfo.accountType === "hotel") {
+      navigate("/hotel");
+    } else if (isLogin) {
+      navigate("/home");
+    }
   }, [isLogin, navigate]);
 
   return (
