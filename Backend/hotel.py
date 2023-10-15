@@ -24,17 +24,25 @@ def hotel_modification_func(app):
         data = request.get_json() 
         print(data)
         
-        try:
-            # Check if entered phone number is already in use
-            if 'phone' in data and data['phone']:
-                usr = auth.get_user_by_phone_number(data['phone'])
-                abort(make_response(jsonify(message="Phone number already in use"), 409))
+        # Check if email or phone is in availble
+        try: # Check if entered email is already in use
+            if getUserEmail() != data['email'].lower():
+                if 'email' in data and data['email']:
+                    usr = auth.get_user_by_email(data['email'])
+                    abort(make_response(jsonify(message="Email already in use"), 409))
         except auth.UserNotFoundError:
             pass
-
+        try:
+            # Check if entered phone number is already in use
+            if getUserPhone() != data['phoneNumber']:
+                if 'phoneNumber' in data and data['phoneNumber']:
+                    usr = auth.get_user_by_phone_number(data['phoneNumber']) 
+                    abort(make_response(jsonify(message="Phone number already in use"), 409))
+        except auth.UserNotFoundError:   
+            pass
         
         # Update password
-        if 'newPassword' in data and data['password']:
+        if 'password' in data and data['password']:
             # Checks if phone number is valid
             if is_valid_password(data['password']):
                 updatePassword(uid, data['password'])
@@ -44,7 +52,7 @@ def hotel_modification_func(app):
         print(data['phoneNumber'].strip())
         print(is_valid_phone_number(data['phoneNumber'].strip()))
         if is_valid_phone_number(data['phoneNumber'].strip()):
-            updateInfomation(uid, data['phoneNumber'], data['firstName'].strip(),
+            updateInfomation(uid, data['email'].strip(), data['phoneNumber'], data['firstName'].strip(),
                              data['lastName'].strip())
         else:
             abort(make_response(jsonify(message="Please enter valid phone number"), 400))
@@ -248,7 +256,7 @@ def format_date(input_date):
 # Function to verify phone
 def is_valid_phone_number(phone_number):
     # Check if the string is exactly 12 characters long and starts with '+'
-    if phone_number[0] == "+" and len(phone_number) == 12:
+    if len(phone_number) == 12:
         return True
     else:
         return False
