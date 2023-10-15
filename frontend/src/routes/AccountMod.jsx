@@ -89,7 +89,7 @@ const ErrorText = styled.div`
   margin-top: 5px;
 `;
 
-function AddListing() {
+function AccountMod() {
   const location = useLocation();
   const navigate = useNavigate();
   const {
@@ -112,6 +112,13 @@ function AddListing() {
 
   const isLetter = (str) => {
     return /^[A-Za-z]+$/.test(str);
+  };
+
+  const isValidPhoneNumber = (value) => {
+    if (/^\+\d{11}$/.test(value)) {
+      return true;
+    }
+    return "Phone number must start with '+' and have 11 digits";
   };
 
   const onSubmit = async (formData) => {
@@ -186,7 +193,12 @@ function AddListing() {
               <Input
                 {...register("hotelName", {
                   required: "Hotel Name is required",
-                  validate: validateLettersWithSpaces,
+                  validate: (value) => {
+                    if (value.trim() === "") {
+                      return "Hotel Name cannot be just spaces";
+                    }
+                    return true;
+                  },
                 })}
                 type="text"
                 defaultValue={userinfo.hotelName}
@@ -201,6 +213,12 @@ function AddListing() {
               <Input
                 {...register("street", {
                   required: "Street Name is required",
+                  validate: (value) => {
+                    if (value.trim() === "") {
+                      return "Street Name cannot be just spaces";
+                    }
+                    return true;
+                  },
                 })}
                 type="text"
                 defaultValue={userinfo.street}
@@ -302,7 +320,22 @@ function AddListing() {
           <SectionTitle>Profile Details</SectionTitle>
 
           <SubTitle>Email</SubTitle>
-          <Input defaultValue={userinfo.email} readOnly />
+          <Input
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                message: "Invalid email format",
+              },
+            })}
+            type="text"
+            style={{ color: "black" }}
+            //onBlur={(e) => validateEmail(e.target.value)}
+            defaultValue={userinfo.email}
+          />
+          {errors.email && (
+            <ErrorText>{errors.email.message.toString()}</ErrorText>
+          )}
 
           <div style={{ display: "flex" }}>
             <div style={{ flex: 1, marginRight: "10px" }}>
@@ -356,7 +389,9 @@ function AddListing() {
           <Input
             {...register("phoneNumber", {
               required: "Phone Number is required",
+              validate: isValidPhoneNumber,
             })}
+            type="text"
             defaultValue={userinfo.phone}
           />
           {errors.phoneNumber && (
@@ -372,4 +407,4 @@ function AddListing() {
   );
 }
 
-export default AddListing;
+export default AccountMod;
