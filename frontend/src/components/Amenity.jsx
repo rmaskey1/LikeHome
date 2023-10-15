@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { ReactComponent as SinkIcon } from "../icons/sink.svg";
+import { ReactComponent as WifiIcon } from "../icons/wifi.svg";
 import { ReactComponent as MicrowaveIcon } from "../icons/microwave.svg";
 
 const Container = styled.div`
@@ -26,7 +27,7 @@ function Amenity({ item }) {
     <Container>
       {item === "freeWifi" && (
         <>
-          <SinkIcon />
+          <WifiIcon />
           <span>Free Wifi</span>
         </>
       )}
