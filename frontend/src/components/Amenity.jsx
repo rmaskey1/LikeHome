@@ -1,8 +1,17 @@
 import React from "react";
 import styled from "styled-components";
 
-import { ReactComponent as SinkIcon } from "../icons/sink.svg";
+import { ReactComponent as WifiIcon } from "../icons/wifi.svg";
+import { ReactComponent as PoolIcon } from "../icons/pool.svg";
+import { ReactComponent as TvIcon } from "../icons/tv.svg";
+import { ReactComponent as LaundryIcon } from "../icons/laundry.svg";
+import { ReactComponent as ParkingIcon } from "../icons/parking.svg";
+import { ReactComponent as AirConIcon } from "../icons/aircon.svg";
+import { ReactComponent as FoodIcon } from "../icons/food.svg";
 import { ReactComponent as MicrowaveIcon } from "../icons/microwave.svg";
+import { ReactComponent as FridgeIcon } from "../icons/fridge.svg";
+import { ReactComponent as PetIcon } from "../icons/pet.svg";
+import { ReactComponent as SpaIcon } from "../icons/spa.svg";
 
 const Container = styled.div`
   display: flex;
@@ -26,61 +35,61 @@ function Amenity({ item }) {
     <Container>
       {item === "freeWifi" && (
         <>
-          <SinkIcon />
+          <WifiIcon />
           <span>Free Wifi</span>
         </>
       )}
       {item === "pool" && (
         <>
-          <SinkIcon />
+          <PoolIcon />
           <span>Pool</span>
         </>
       )}
       {item === "tv" && (
         <>
-          <SinkIcon />
+          <TvIcon />
           <span>TV</span>
         </>
       )}
       {item === "freeWasherInUnit" && (
         <>
-          <SinkIcon />
+          <LaundryIcon />
           <span>Free Washer - In Unit</span>
         </>
       )}
       {item === "freeDryerInUnit" && (
         <>
-          <SinkIcon />
+          <LaundryIcon />
           <span>Free Dryer - In Unit</span>
         </>
       )}
       {item === "freeParking" && (
         <>
-          <SinkIcon />
+          <ParkingIcon />
           <span>Free Parking</span>
         </>
       )}
       {item === "airConditioning" && (
         <>
-          <SinkIcon />
+          <AirConIcon />
           <span>Air Conditioning</span>
         </>
       )}
       {item === "freeBreakfast" && (
         <>
-          <SinkIcon />
+          <FoodIcon />
           <span>Free Breakfast</span>
         </>
       )}
       {item === "freeLunch" && (
         <>
-          <SinkIcon />
+          <FoodIcon />
           <span>Free Lunch</span>
         </>
       )}
       {item === "freeDinner" && (
         <>
-          <SinkIcon />
+          <FoodIcon />
           <span>Free Dinner</span>
         </>
       )}
@@ -92,19 +101,19 @@ function Amenity({ item }) {
       )}
       {item === "refrigerator" && (
         <>
-          <SinkIcon />
+          <FridgeIcon />
           <span>Refrigerator</span>
         </>
       )}
       {item === "petFriendly" && (
         <>
-          <SinkIcon />
+          <PetIcon />
           <span>Pet Friendly</span>
         </>
       )}
       {item === "spa" && (
         <>
-          <SinkIcon />
+          <SpaIcon />
           <span>Spa</span>
         </>
       )}

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const StyledCardsListing = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   flex-wrap: wrap;
   padding: 10px 50px;
   gap: 25px;
@@ -124,7 +124,7 @@ function PreviewCardsListing({ listings }) {
         Start your journey here.
       </h1> */}
       <StyledCardsListing>
-        {listings.slice(0, 20).map((previewCard) => (
+        {listings?.slice(0, 20).map((previewCard) => (
           <PreviewCard
             key={previewCard.rid}
             previewCard={previewCard}
