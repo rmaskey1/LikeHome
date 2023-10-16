@@ -12,8 +12,8 @@ npm start
 2. Execute pip --version on your terminal
 Python 3.11 and above works
 3. Execute pip install pyrebase4
-   pip install firebase_admin
-   pip install flask
-   pip install -U flask-cors
-4. Navigate to cmpe165-likehome
-5. Execute python Backend/server.py
+4. Execute pip install firebase_admin
+5. Execute pip install flask
+6. Execute pip install -U flask-cors
+7. Navigate to cmpe165-likehome or the root directory of this project. So do not cd Backend or frontend folders.
+8. Execute python Backend/server.py
