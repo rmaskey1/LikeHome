@@ -138,10 +138,10 @@ def hotel_modification_func(app):
             if hotelDoc['accountType'] != 'hotel':
                 abort(make_response(jsonify(message=f"Error: User is not a hotel owner!"), 400))
             # Ensure listing is between 2023-2024
-            if get_year_from_date(roomData['fromDate']) < 2023 or get_year_from_date(roomData['fromDate']) > 2024:
-                abort(make_response(jsonify(message=f"Error: Listing should be created between 2023-2024"), 400))
-            if get_year_from_date(roomData['toDate']) < 2023 or get_year_from_date(roomData['toDate']) > 2024:
-                abort(make_response(jsonify(message=f"Error: Listing should be created between 2023-2024"), 400))
+            if get_year_from_date(roomData['fromDate']) < 2023:
+                abort(make_response(jsonify(message=f"Error: Listing should not be created between before 2023"), 400))
+            if get_year_from_date(roomData['toDate']) < 2023:
+                abort(make_response(jsonify(message=f"Error: Listing should not be created between before 2023"), 400))
             
             # Add listing to room collection
             try:
