@@ -68,8 +68,7 @@ def signup():
             usr = auth.get_user_by_phone_number(phone) # Returns auth.UserNotFoundError if email does not exist, jumps to second except block
             print("Phone number already in use.")
             abort(make_response(jsonify(message="Phone number already in use."), 418))
-        except Exception as e:
-            print(e)
+        except auth.UserNotFoundError:
             if is_valid_phone_number(phone): # Check if phone number is valid
                 if is_valid_password(password): # Check if password is valid
                     if usertype == "guest": # If the input is 'guest', redirect to guest signup page

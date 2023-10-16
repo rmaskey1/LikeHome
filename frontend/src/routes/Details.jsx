@@ -355,7 +355,9 @@ function Details() {
             </DetailItem>
             <DetailItem>
               <BedIcon />
-              <span>{data.numberOfBeds} Beds / 2 Queen-sized Beds</span>
+              <span>
+                {data.numberOfBeds} Beds / 2 {data.bedType}
+              </span>
             </DetailItem>
             <DetailItem>
               <SinkIcon />
