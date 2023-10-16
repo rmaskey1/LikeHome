@@ -17,3 +17,5 @@ Python 3.11 and above works
 6. Execute pip install -U flask-cors
 7. Navigate to cmpe165-likehome or the root directory of this project. So do not cd Backend or frontend folders.
 8. Execute python Backend/server.py
+9. If step 8 does not work try clicking on server.py and then click on the triangle icon to run the file
+![image](https://github.com/trishnguyen2001/cmpe165-likehome/assets/102846798/af458a66-bd66-403b-a5bb-5f31bfd9db1b)
