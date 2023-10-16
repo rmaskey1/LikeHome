@@ -65,25 +65,26 @@ def signup():
         abort(make_response(jsonify(message="Email already in use."), 409))
     except auth.UserNotFoundError:
         try: # Check if entered phone number is already in use
-            usr = auth.get_user_by_phone_number(phone) # Returns auth.UserNotFoundError if email does not exist, jumps to second except block
-            print("Phone number already in use.")
-            abort(make_response(jsonify(message="Phone number already in use."), 418))
-        except auth.UserNotFoundError:
             if is_valid_phone_number(phone): # Check if phone number is valid
-                if is_valid_password(password): # Check if password is valid
-                    if usertype == "guest": # If the input is 'guest', redirect to guest signup page
-                        user = addUser(email, phone, password, firstName, lastName, "guest")
-                        return jsonify({"uid": user.uid, "usertype": "guest"})
-                    if usertype == "hotel": # If the input is 'hotel', redirect to hotel signup page
-                        user = addUser(email, phone, password, firstName, lastName, "hotel")
-                        return jsonify({"uid": user.uid, "usertype": "hotel"})
-                    if usertype == "admin": # If the input is 'guest', redirect to guest signup page
-                        user = addUser(email, phone, password, firstName, lastName, "admin")
-                        return jsonify({"uid": user.uid, "usertype": "admin"})
-                else: # Invalid password error
-                    abort(make_response(jsonify(message="Password should be at least 6 characters"), 400))
+                usr = auth.get_user_by_phone_number(phone) # Returns auth.UserNotFoundError if email does not exist, jumps to second except block
+                print("Phone number already in use.")
+                abort(make_response(jsonify(message="Phone number already in use."), 418))
             else: # Invalid phone number error
                 abort(make_response(jsonify(message="Please enter valid phone number"), 419))
+        except auth.UserNotFoundError:
+            if is_valid_password(password): # Check if password is valid
+                if usertype == "guest": # If the input is 'guest', redirect to guest signup page
+                    user = addUser(email, phone, password, firstName, lastName, "guest")
+                    return jsonify({"uid": user.uid, "usertype": "guest"})
+                if usertype == "hotel": # If the input is 'hotel', redirect to hotel signup page
+                    user = addUser(email, phone, password, firstName, lastName, "hotel")
+                    return jsonify({"uid": user.uid, "usertype": "hotel"})
+                if usertype == "admin": # If the input is 'guest', redirect to guest signup page
+                    user = addUser(email, phone, password, firstName, lastName, "admin")
+                    return jsonify({"uid": user.uid, "usertype": "admin"})
+            else: # Invalid password error
+                abort(make_response(jsonify(message="Password should be at least 6 characters"), 400))
+            
     abort(make_response(jsonify(message="User role not found."), 400))    # else:
 
 @app.route('/hotel_signup', methods=['POST', 'GET']) # ?uid=<uid>
