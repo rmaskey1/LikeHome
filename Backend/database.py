@@ -192,11 +192,11 @@ def updateInfomation(uid, email, phone, firstName, lastName):
     
 # Update hotel name and hotel address
 def updateHotelDetails(uid, hotelName, street, city, zip, state, country):
-    room_ids = getRoomIds()
+    room_ids = getRoomIds(uid)
     # Checks if there is room ids
     if(room_ids[0] != 0):
         # Update hotel name for all room listing
-        updateHotelForRoom(hotelName, state, street, zip, country, city)
+        updateHotelForRoom(uid, hotelName, state, street, zip, country, city)
 
     # Update all hotel details
     doc_ref = db.collection("user").document(uid)
@@ -239,8 +239,8 @@ def update_room(uid, rid, price, fromDate, toDate, beds, guests, bathrooms, bedT
 
 
 # Update hotel name for room collection if it is not booked
-def updateHotelForRoom(new_hotel_name, state, streetName,zipcode, country, city):
-    room_ids = getRoomIds()
+def updateHotelForRoom(uid, new_hotel_name, state, streetName,zipcode, country, city):
+    room_ids = getRoomIds(uid)
     # For each room listing, change the naem
     for rids in room_ids:
         room_ref = db.collection("room").document(str(rids))
@@ -283,9 +283,9 @@ def roomBooked(rid):
     
 
 # Get room ids array from hotel user 
-def getRoomIds():
+def getRoomIds(uid):
     # Get hotel information
-    doc_ref = db.collection("user").document(getUid())
+    doc_ref = db.collection("user").document(uid)
     doc_data = doc_ref.get().to_dict()
 
     # Get the 'roomIds' array field

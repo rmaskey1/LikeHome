@@ -1,7 +1,8 @@
 import { SERVER_URL } from "api";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Ellipsis } from "react-spinners-css";
 import styled from "styled-components";
 
 const Container = styled.main`
@@ -92,6 +93,8 @@ const ErrorText = styled.div`
 function AccountMod() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isFetching, setIsFetching] = useState(false);
+  const [serverError, setServerError] = useState({ status: 0, message: "" });
   const {
     handleSubmit,
     register,
@@ -111,7 +114,7 @@ function AccountMod() {
   };
 
   const isLetter = (str) => {
-    return /^[A-Za-z]+$/.test(str);
+    return /^[a-zA-Z\s]*$/.test(str);
   };
 
   const isValidPhoneNumber = (value) => {
@@ -123,58 +126,30 @@ function AccountMod() {
 
   const onSubmit = async (formData) => {
     console.log(formData);
+    setIsFetching(true);
 
-    /* FOR HOTEL USER */
-    if (userinfo.accountType === "hotel") {
-      const response = await fetch(
-        `${SERVER_URL}/hotel?uid=${localStorage.uid}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+    // Request
+    const response = await fetch(`${SERVER_URL}/user?uid=${localStorage.uid}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
 
-      // Data
-      const data = await response.json();
-      console.log(response.status, data);
-
-      // 200
-      if (response.ok) {
-        localStorage.userinfo = JSON.stringify(data);
-        alert("Updated");
-      } else {
-        console.log("Fail");
-      }
+    // Data
+    const data = await response.json();
+    console.log(response.status, data);
+    setServerError({ status: response.status, message: data.message });
+    // 200
+    if (response.ok) {
+      localStorage.userinfo = JSON.stringify(data);
+      navigate(location.pathname.replace("/modify", ""));
     } else {
-      /* FOR GUEST, ADMIN */
-
-      // Request
-      const response = await fetch(
-        `${SERVER_URL}/user?uid=${localStorage.uid}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      // Data
-      const userResult = await response.json();
-      console.log(response.status, userResult);
-
-      // 200
-      if (response.ok) {
-        localStorage.userinfo = JSON.stringify(userResult);
-        navigate(location.pathname.replace("/modify", ""));
-      } else {
-        console.log("Fail");
-      }
+      console.log("Fail");
     }
+
+    setIsFetching(false);
   };
 
   return (
@@ -336,6 +311,11 @@ function AccountMod() {
           {errors.email && (
             <ErrorText>{errors.email.message.toString()}</ErrorText>
           )}
+          {serverError.status === 409 && (
+            <ErrorText className="error-text">
+              <span>{serverError.message}</span>
+            </ErrorText>
+          )}
 
           <div style={{ display: "flex" }}>
             <div style={{ flex: 1, marginRight: "10px" }}>
@@ -397,9 +377,16 @@ function AccountMod() {
           {errors.phoneNumber && (
             <ErrorText>{errors.phoneNumber.message.toString()}</ErrorText>
           )}
+          {serverError.status === 418 && (
+            <ErrorText className="error-text">
+              <span>{serverError.message}</span>
+            </ErrorText>
+          )}
 
           <CenteredButtonContainer>
-            <SubmitButton type="submit">Update</SubmitButton>
+            <SubmitButton type="submit">
+              {isFetching ? <Ellipsis color="white" size={30} /> : "Update"}
+            </SubmitButton>
           </CenteredButtonContainer>
         </form>
       </Container>
