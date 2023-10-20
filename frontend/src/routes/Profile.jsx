@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import DeleteAccountWarning from "components/DeleteAccountWarning";
 import { useNavigate } from "react-router-dom";
-import { SERVER_URL } from "api";
+import { SERVER_URL } from "../api";
 import { isLoginAtom } from "../atom";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 const Container = styled.div`
   position: relative;
@@ -75,8 +75,8 @@ const DeleteBtn = styled.div`
 function Profile() {
   const navigate = useNavigate();
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
-  const [serverError, setServerError] = useState(null);
+  const [serverError, setServerError] = useState({ status: 0, message: "" });
+  const setIsLogin = useSetRecoilState(isLoginAtom);
 
   const userinfo = localStorage.userinfo
     ? JSON.parse(localStorage.userinfo)
@@ -97,59 +97,30 @@ function Profile() {
     //     console.log("Access token or user ID not found. Please log in.");
     //     return;
     //   }
-    if (userinfo.accountType === "hotel") {
-      const response = await fetch(
-        `${SERVER_URL}/hotel?hid=${localStorage.uid}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // body: JSON.stringify(),
-        }
-      );
+    const response = await fetch(`${SERVER_URL}/user?uid=${localStorage.uid}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // body: JSON.stringify(),
+    });
 
-      const data = await response.json();
-      console.log(response.status, data);
+    const userResult = await response.json();
+    console.log(response.status, userResult);
 
-      if (response.ok) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("uid");
-        localStorage.removeItem("userinfo");
-        localStorage.clear();
-        setServerError(null);
-        navigate("/login");
-      } else {
-        setServerError(data.message);
-      }
+    if (response.ok) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("uid");
+      localStorage.removeItem("userinfo");
+      localStorage.clear();
+      setServerError(null);
+      navigate("/");
     } else {
-      const response = await fetch(
-        `${SERVER_URL}/user?uid=${localStorage.uid}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // body: JSON.stringify(),
-        }
-      );
-
-      const userResult = await response.json();
-      console.log(response.status, userResult);
-
-      if (response.ok) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("uid");
-        localStorage.removeItem("userinfo");
-        localStorage.clear();
-        setServerError(null);
-        navigate("/login");
-      } else {
-        setServerError(userResult.message);
-      }
+      setServerError(userResult.message);
     }
+
+    setIsLogin(false);
     setShowDeleteConfirmation(false);
   };
 
