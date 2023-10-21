@@ -156,7 +156,7 @@ function AddListing() {
         <ListingTitle>Add a new listing:</ListingTitle>
         <SectionTitle>Basic Information</SectionTitle>
         <SubTitle>Price:</SubTitle>
-        <Input
+        <Input 
           {...register("price", {
             valueAsNumber: true,
             min: { value: 0, message: "Price must be non-negative" },
@@ -164,6 +164,7 @@ function AddListing() {
           })}
           type="number"
           style={{ color: "black" }}
+          id="price-input"
         />
         {errors.price && (
           <ErrorMessage className="error-text">
@@ -200,6 +201,7 @@ function AddListing() {
                   type="text"
                   placeholder="mm/dd/yyyy"
                   style={{ color: "black" }}
+                  id="fromDate-input"
                 />
                 {errors.fromDate && (
                   <ErrorMessage className="error-text">
@@ -239,6 +241,7 @@ function AddListing() {
                   type="text"
                   placeholder="mm/dd/yyyy"
                   style={{ color: "black" }}
+                  id="toDate-input"
                 />
                 {errors.toDate && (
                   <ErrorMessage className="error-text">
@@ -265,6 +268,7 @@ function AddListing() {
               })}
               type="number"
               style={{ color: "black" }}
+              id="beds-input"
             />
             {errors.beds && (
               <ErrorMessage className="error-text">
@@ -288,6 +292,7 @@ function AddListing() {
               })}
               type="text"
               style={{ color: "black" }}
+              id="bedType-input"
             />
             {errors.bedType && (
               <ErrorMessage className="error-text">
@@ -310,6 +315,7 @@ function AddListing() {
               })}
               type="number"
               style={{ color: "black" }}
+              id="guests-input"
             />
             {errors.guests && (
               <ErrorMessage className="error-text">
@@ -330,6 +336,7 @@ function AddListing() {
               })}
               type="number"
               style={{ color: "black" }}
+              id="bathrooms-input"
             />
             {errors.bathrooms && (
               <ErrorMessage className="error-text">
@@ -346,6 +353,7 @@ function AddListing() {
           })}
           type="url"
           style={{ color: "black" }}
+          id="image-input"
         />
         {errors.image && (
           <ErrorMessage>{errors.image.message.toString()}</ErrorMessage>

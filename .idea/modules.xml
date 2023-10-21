@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/cmpe165-likehome.iml" filepath="$PROJECT_DIR$/.idea/cmpe165-likehome.iml" />
+      <module fileurl="file://$PROJECT_DIR$/frontend/selenium/selenium.iml" filepath="$PROJECT_DIR$/frontend/selenium/selenium.iml" />
+    </modules>
+  </component>
+</project>
