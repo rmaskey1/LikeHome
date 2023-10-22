@@ -255,6 +255,15 @@ def updateHotelForRoom(uid, new_hotel_name, state, streetName,zipcode, country, 
             "city": city})
 
 
+def addBooking(gid, rid, startDate, endDate, numGuest):
+    doc_ref = db.collection("booking").add({
+        'gid': gid,
+        'rid': rid,
+        'startDate': startDate,
+        'endDate': endDate,
+        'numGuest': numGuest
+    })
+    return gid, rid
 # Checks if any user has booked the hotel 
 def isBooked():
     room_ids = getRoomIds()
