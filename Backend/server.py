@@ -132,8 +132,8 @@ def booking():
     data = request.get_json()
     if roomBooked(rid):
         abort(make_response(jsonify(message="Sorry, this room is already booked"), 409))
-    gid, rid = addBooking(gid, rid, data['startDate'], data['endDate'], data['numGuest'])
-    return jsonify({'uid': gid, 'rid': rid})
+    booking = addBooking(gid, rid, data['startDate'], data['endDate'], data['numGuest'])
+    return jsonify(booking)
     
 
 if __name__ == '__main__':
