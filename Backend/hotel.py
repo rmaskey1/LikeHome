@@ -79,7 +79,7 @@ def hotel_modification_func(app):
         try:
             user_ref = db.collection('user').document(uid)
             if 'bookedRooms' in user_ref:
-                booked_rooms=user_ref['bookedRooms'];
+                booked_rooms=user_ref['bookedRooms']
             # delete them from the db in addition to deleting from auth
             if user_ref.get().exists:
                 user_ref.delete()
