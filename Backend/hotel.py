@@ -24,17 +24,25 @@ def hotel_modification_func(app):
         data = request.get_json() 
         print(data)
         
-        try:
-            # Check if entered phone number is already in use
-            if 'phone' in data and data['phone']:
-                usr = auth.get_user_by_phone_number(data['phone'])
-                abort(make_response(jsonify(message="Phone number already in use"), 409))
+        # Check if email or phone is in availble
+        try: # Check if entered email is already in use
+            if getUserEmail() != data['email'].lower():
+                if 'email' in data and data['email']:
+                    usr = auth.get_user_by_email(data['email'])
+                    abort(make_response(jsonify(message="Email already in use"), 409))
         except auth.UserNotFoundError:
             pass
-
+        try:
+            # Check if entered phone number is already in use
+            if getUserPhone() != data['phoneNumber']:
+                if 'phoneNumber' in data and data['phoneNumber']:
+                    usr = auth.get_user_by_phone_number(data['phoneNumber']) 
+                    abort(make_response(jsonify(message="Phone number already in use"), 409))
+        except auth.UserNotFoundError:   
+            pass
         
         # Update password
-        if 'newPassword' in data and data['password']:
+        if 'password' in data and data['password']:
             # Checks if phone number is valid
             if is_valid_password(data['password']):
                 updatePassword(uid, data['password'])
@@ -44,7 +52,7 @@ def hotel_modification_func(app):
         print(data['phoneNumber'].strip())
         print(is_valid_phone_number(data['phoneNumber'].strip()))
         if is_valid_phone_number(data['phoneNumber'].strip()):
-            updateInfomation(uid, data['phoneNumber'], data['firstName'].strip(),
+            updateInfomation(uid, data['email'].strip(), data['phoneNumber'], data['firstName'].strip(),
                              data['lastName'].strip())
         else:
             abort(make_response(jsonify(message="Please enter valid phone number"), 400))
@@ -60,24 +68,22 @@ def hotel_modification_func(app):
         user_data = db.collection('user').document(uid).get().to_dict()
         return jsonify(user_data)
 
-        # delete hotel account. Require password authentication
+	# delete hotel account. Require password authentication
     @app.route('/delete_hotel_user', methods=['GET', 'POST'])
     def delete_hotel_user():
-        uid = getUid()
+        uid = request.args['uid']
 
         # after authentication, should delete user and automatically delete user data too
+        # doesn't delete if the user has booked room
 
         try:
-            # Get JSON data from frontend
-            data = request.get_json()
-            auth.delete_user(uid)
-            user_ref = db.collection("users").document(uid)
-
+            user_ref = db.collection('user').document(uid)
+            if 'bookedRooms' in user_ref:
+                booked_rooms=user_ref['bookedRooms'];
             # delete them from the db in addition to deleting from auth
             if user_ref.get().exists:
                 user_ref.delete()
-
-            return jsonify({'message': f'Guest {uid} has been deleted'})
+            return jsonify({'message': f'Hotel user {uid} has been deleted'})
 
         except auth.UserNotFoundError:
             abort(make_response(jsonify(message="User doesn't exist"), 404))
@@ -128,10 +134,10 @@ def hotel_modification_func(app):
             if hotelDoc['accountType'] != 'hotel':
                 abort(make_response(jsonify(message=f"Error: User is not a hotel owner!"), 400))
             # Ensure listing is between 2023-2024
-            if get_year_from_date(roomData['fromDate']) < 2023 or get_year_from_date(roomData['fromDate']) > 2024:
-                abort(make_response(jsonify(message=f"Error: Listing should be created between 2023-2024"), 400))
-            if get_year_from_date(roomData['toDate']) < 2023 or get_year_from_date(roomData['toDate']) > 2024:
-                abort(make_response(jsonify(message=f"Error: Listing should be created between 2023-2024"), 400))
+            if get_year_from_date(roomData['fromDate']) < 2023:
+                abort(make_response(jsonify(message=f"Error: Listing should not be created before 2023"), 400))
+            if get_year_from_date(roomData['toDate']) < 2023:
+                abort(make_response(jsonify(message=f"Error: Listing should not be created before 2023"), 400))
             
             # Add listing to room collection
             try:
@@ -204,9 +210,19 @@ def hotel_modification_func(app):
         
         # Delete a listing
         if request.method == 'DELETE':
-            db.collection('room').document(rid).delete()
-            return "Success"
+            try:
+                # Delete listing using listing id
+                db.collection('room').document(rid).delete()
 
+                uid = getUid()
+                hotel_ref = db.collection('user').document(uid)
+                # Delete listing from hotel owner's listRooms field 
+                hotel_ref.update({"listedRooms": firestore.ArrayRemove([rid])})
+
+                return jsonify(message=f"Deleted hotel listing {rid}.")
+            except Exception as e:
+                abort(make_response(jsonify(message=f"Error: {str(e)}"), 400))
+        
 
 def generate_random_id(length):
     alphabet = string.ascii_letters + string.digits
@@ -238,7 +254,7 @@ def format_date(input_date):
 # Function to verify phone
 def is_valid_phone_number(phone_number):
     # Check if the string is exactly 12 characters long and starts with '+'
-    if phone_number[0] == "+" and len(phone_number) == 12:
+    if len(phone_number) == 12:
         return True
     else:
         return False
@@ -259,4 +275,3 @@ def is_start_date_before_or_on_end_date(start_date_str, end_date_str):
 
     # Compare the start and end dates
     return start_date <= end_date
-
