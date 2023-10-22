@@ -11,6 +11,8 @@ import AddListing from "routes/AddListing";
 import ModifyListing from "routes/ModifyListing";
 import AccountMod from "routes/AccountMod";
 import RegisterHotel from "routes/RegisterHotel";
+import MyBookings from "routes/MyBookings";
+import ModifyBooking from "routes/ModifyBooking";
 import Home from "routes/Home";
 
 function App() {
@@ -30,6 +32,9 @@ function App() {
         <Route path="/room/add" element={<AddListing />} />
         <Route path="/room/:id" element={<Details />} />
         <Route path="/room/:id/modify" element={<ModifyListing />} />
+
+        <Route path="/mybooking" element={<MyBookings />} />
+        <Route path="/booking/:id/modify" element={<ModifyBooking />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
