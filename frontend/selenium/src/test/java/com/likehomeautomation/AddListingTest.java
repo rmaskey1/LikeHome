@@ -15,6 +15,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import com.codeborne.selenide.logevents.SelenideLogger;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 
@@ -26,12 +27,12 @@ import java.io.File;
 import static com.codeborne.selenide.Selenide.open;
 
 public class AddListingTest {
-    WebDriver driver;
+
     AddListing add = new AddListing();
 
     @BeforeAll
     public static void setUpAll() {
-        WebDriverManager.chromedriver().setup();
+//        WebDriverManager.chromedriver().setup();
 //        System.setProperty("webdriver.chrome.driver", "/frontend/node_modules/chromedriver");
 //        System.setProperty("webdriver.gecko.driver", "/frontend/node_modules/geckodriver");
         Configuration.browserSize = "1280x800";
@@ -40,9 +41,9 @@ public class AddListingTest {
 
     @BeforeEach
     public void setUp() {
-        driver = new ChromeDriver();
+//        Configuration.browserCapabilities = new FirefoxOptions().addArguments("--remote-allow-origins=*");
         Configuration.browserCapabilities = new ChromeOptions().addArguments("--remote-allow-origins=*");
-        driver.get("http://127.0.0.1:3000");
+        open("http://127.0.0.1:3000");
     }
 
     @Test
