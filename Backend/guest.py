@@ -5,7 +5,7 @@ import requests
 import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, make_response, abort
-from database import updateHotelDetails, updatePassword, getUid, updateInfomation, getUserEmail, db, getUserPhone, checkIfRoomExists, pyrebase_auth, checkUserIsLoggedIn
+from database import updateHotelDetails, updatePassword, getUid, updateInfomation, getUserEmail, db, getUserPhone, checkIfRoomExists
 from database import getGuestBookedRooms, getAccountType
 from google.cloud import firestore
 
@@ -93,24 +93,22 @@ def guest_modification_func(app):
 
     @app.route('/bookings', methods=['GET', 'PUT', 'DELETE'])
     def bookings():
-        # check if user is logged in, uid checking
-        if checkUserIsLoggedIn() == False:
-            abort(make_response(jsonify(message="User is not logged in"), 404))
-        
         # Get guest's mybookings
         if request.method == 'GET':
             # Can return empty array if there are no bookings
             if getAccountType() == 'hotel':
                 abort(make_response(jsonify(message="User is not a guest!"), 404))
-            
-            return jsonify(getGuestBookedRooms(getUid()))
+            bookedRoom_ids = getGuestBookedRooms(getUid())
+            bookedRooms = []
+            for id in bookedRoom_ids:
+                # Each id corresponds to the rid of a booked room
+                if db.collection("room").document(id).get().exists == True:
+                    room_ref = db.collection("room").document(id)
+                    bookedRooms.append(room_ref.get().to_dict())
+            return jsonify(bookedRooms)
 
     @app.route('/bookings/<rid>', methods=['PUT', 'DELETE'])
     def modify_bookings(rid):
-        # check if user is logged in, uid checking
-        if checkUserIsLoggedIn() == False:
-            abort(make_response(jsonify(message="User is not logged in"), 404))
-        
         # test if rid exists
         if checkIfRoomExists(rid) == False:
             abort(make_response(jsonify(message="Rid and room does not exist"), 400))

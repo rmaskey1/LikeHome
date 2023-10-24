@@ -133,6 +133,9 @@ def checkUidExists(uid):
 
 # Function to return uid of current user
 def getUid():
+    # check if user is logged in, throw an error if user is not 
+    if checkUserIsLoggedIn() == False:
+            abort(make_response(jsonify(message="User is not logged in"), 404))
     # Get JSON of user's information
     user_info = pyrebase_auth.current_user
     user_info = jsonify(user_info)
