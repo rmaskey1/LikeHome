@@ -366,10 +366,11 @@ function AddListing() {
           <CheckboxItem>
             <Label>
               <Controller
+                
                 name="amenities[0].freeWifi"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="freeWifi-box" type="checkbox" />}
               />
               Free Wifi
             </Label>
@@ -378,7 +379,7 @@ function AddListing() {
                 name="amenities[1].pool"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="pool-box" type="checkbox" />}
               />
               Pool
             </Label>
@@ -387,7 +388,7 @@ function AddListing() {
                 name="amenities[2].tv"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="tv-box" type="checkbox" />}
               />
               TV
             </Label>
@@ -396,7 +397,7 @@ function AddListing() {
                 name="amenities[3].freeWasherInUnit"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="washer-box" type="checkbox" />}
               />
               Free washer - In unit
             </Label>
@@ -405,7 +406,7 @@ function AddListing() {
                 name="amenities[4].freeDryerInUnit"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="dryer-box" type="checkbox" />}
               />
               Free dryer - In unit
             </Label>
@@ -414,7 +415,7 @@ function AddListing() {
                 name="amenities[5].freeParking"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field}  id="parking-box" type="checkbox" />}
               />
               Free parking
             </Label>
@@ -423,7 +424,7 @@ function AddListing() {
                 name="amenities[6].airConditioning"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="ac-box" type="checkbox" />}
               />
               Air conditioning
             </Label>
@@ -434,7 +435,7 @@ function AddListing() {
                 name="amenities[7].freeBreakfast"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="breakfast-box" type="checkbox" />}
               />
               Free Breakfast
             </Label>
@@ -443,7 +444,7 @@ function AddListing() {
                 name="amenities[8].freeLunch"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="lunch-box" type="checkbox" />}
               />
               Free Lunch
             </Label>
@@ -452,7 +453,7 @@ function AddListing() {
                 name="amenities[9].freeDinner"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="dinner-box" type="checkbox" />}
               />
               Free Dinner
             </Label>
@@ -461,7 +462,7 @@ function AddListing() {
                 name="amenities[10].microwave"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="microwave-box" type="checkbox" />}
               />
               Microwave
             </Label>
@@ -470,7 +471,7 @@ function AddListing() {
                 name="amenities[11].refrigerator"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="refrigerator-box" type="checkbox" />}
               />
               Refrigerator
             </Label>
@@ -479,7 +480,7 @@ function AddListing() {
                 name="amenities[12].petFriendly"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="pet-box" type="checkbox" />}
               />
               Pet Friendly
             </Label>
@@ -488,14 +489,14 @@ function AddListing() {
                 name="amenities[13].spa"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="spa-box" type="checkbox" />}
               />
               Spa
             </Label>
           </CheckboxItem>
         </CheckboxGroup>
         <CenteredButtonContainer>
-          <SubmitButton type="submit">
+          <SubmitButton type="submit" id="submit-btn"> 
             {isFetching ? <Ellipsis color="white" size={30} /> : "Add"}
           </SubmitButton>
         </CenteredButtonContainer>
