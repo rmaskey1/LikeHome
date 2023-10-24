@@ -43,13 +43,13 @@ public class AddListingTest {
     public void setUp() {
 //        Configuration.browserCapabilities = new FirefoxOptions().addArguments("--remote-allow-origins=*");
         Configuration.browserCapabilities = new ChromeOptions().addArguments("--remote-allow-origins=*");
-        open("http://127.0.0.1:3000");
+        open("http://127.0.0.1:3000/room/add");
     }
 
     @Test
     public void addListing() throws Exception {
-
         Thread.sleep(500);
         add.price.sendKeys("150");
+
     }
 }
