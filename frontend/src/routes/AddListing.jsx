@@ -95,7 +95,8 @@ const SubmitButton = styled.button`
 
 const CenteredButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-top: 20px;
 `;
 
@@ -155,6 +156,7 @@ function AddListing() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <ListingTitle>Add a new listing:</ListingTitle>
         <SectionTitle>Basic Information</SectionTitle>
+        <SubTitle>Price:</SubTitle>
         <Input
           {...register("price", {
             valueAsNumber: true,
@@ -162,7 +164,6 @@ function AddListing() {
             required: "Price is required",
           })}
           type="number"
-          placeholder="Price"
           style={{ color: "black" }}
         />
         {errors.price && (
@@ -253,6 +254,7 @@ function AddListing() {
         <SectionTitle>Room Details</SectionTitle>
         <div style={{ display: "flex" }}>
           <div style={{ flex: 1, marginRight: "10px" }}>
+            <SubTitle>Number of Beds:</SubTitle>
             <Input
               {...register("beds", {
                 valueAsNumber: true,
@@ -263,7 +265,6 @@ function AddListing() {
                 required: "Number of Beds is required",
               })}
               type="number"
-              placeholder="# of Beds"
               style={{ color: "black" }}
             />
             {errors.beds && (
@@ -273,6 +274,7 @@ function AddListing() {
             )}
           </div>
           <div style={{ flex: 1 }}>
+            <SubTitle>Bed Type:</SubTitle>
             <Input
               {...register("bedType", {
                 required: "Bed Type is required",
@@ -286,7 +288,6 @@ function AddListing() {
                 },
               })}
               type="text"
-              placeholder="Bed Type"
               style={{ color: "black" }}
             />
             {errors.bedType && (
@@ -298,6 +299,7 @@ function AddListing() {
         </div>
         <div style={{ display: "flex" }}>
           <div style={{ flex: 1, marginRight: "10px" }}>
+            <SubTitle>Number of Guests:</SubTitle>
             <Input
               {...register("guests", {
                 valueAsNumber: true,
@@ -308,7 +310,6 @@ function AddListing() {
                 required: "Number of Guests is required",
               })}
               type="number"
-              placeholder="# of Guests"
               style={{ color: "black" }}
             />
             {errors.guests && (
@@ -318,6 +319,7 @@ function AddListing() {
             )}
           </div>
           <div style={{ flex: 1 }}>
+            <SubTitle>Number of Bathrooms:</SubTitle>
             <Input
               {...register("bathrooms", {
                 valueAsNumber: true,
@@ -328,7 +330,6 @@ function AddListing() {
                 required: "Number of Bathrooms is required",
               })}
               type="number"
-              placeholder="# of Bathrooms"
               style={{ color: "black" }}
             />
             {errors.bathrooms && (
@@ -339,18 +340,19 @@ function AddListing() {
           </div>
         </div>
 
+        <SubTitle>URL of Image:</SubTitle>
         <Input
           {...register("image", {
             required: "Image URL is required",
           })}
           type="url"
-          placeholder="URL of Image"
           style={{ color: "black" }}
         />
         {errors.image && (
           <ErrorMessage>{errors.image.message.toString()}</ErrorMessage>
         )}
 
+        <br />
         <br />
         <SectionTitle>Amenities Offered</SectionTitle>
         <CheckboxGroup>

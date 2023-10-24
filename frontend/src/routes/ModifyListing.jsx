@@ -94,7 +94,8 @@ const SubmitButton = styled.button`
 
 const CenteredButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-top: 20px;
 `;
 
@@ -179,6 +180,7 @@ function ModifyListing() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <ListingTitle>Modify listing</ListingTitle>
         <SectionTitle>Basic Information</SectionTitle>
+        <SubTitle>Price:</SubTitle>
         <Input
           {...register("price", {
             valueAsNumber: true,
@@ -186,7 +188,6 @@ function ModifyListing() {
             required: "Price is required",
           })}
           type="number"
-          placeholder="Price"
           style={{ color: "black" }}
           defaultValue={existingData.price}
         />
@@ -280,6 +281,7 @@ function ModifyListing() {
         <SectionTitle>Room Details</SectionTitle>
         <div style={{ display: "flex" }}>
           <div style={{ flex: 1, marginRight: "10px" }}>
+            <SubTitle>Number of Beds:</SubTitle>
             <Input
               {...register("beds", {
                 valueAsNumber: true,
@@ -290,7 +292,6 @@ function ModifyListing() {
                 required: "Number of Beds is required",
               })}
               type="number"
-              placeholder="# of Beds"
               style={{ color: "black" }}
               defaultValue={existingData.beds}
             />
@@ -301,6 +302,7 @@ function ModifyListing() {
             )}
           </div>
           <div style={{ flex: 1 }}>
+            <SubTitle>Bed Type:</SubTitle>
             <Input
               {...register("bedType", {
                 required: "Bed Type is required",
@@ -314,7 +316,6 @@ function ModifyListing() {
                 },
               })}
               type="text"
-              placeholder="Bed Type"
               style={{ color: "black" }}
               defaultValue={existingData.bedType}
             />
@@ -327,6 +328,7 @@ function ModifyListing() {
         </div>
         <div style={{ display: "flex" }}>
           <div style={{ flex: 1, marginRight: "10px" }}>
+            <SubTitle>Number of Guests:</SubTitle>
             <Input
               {...register("guests", {
                 valueAsNumber: true,
@@ -337,7 +339,6 @@ function ModifyListing() {
                 required: "Number of Guests is required",
               })}
               type="number"
-              placeholder="# of Guests"
               style={{ color: "black" }}
               defaultValue={existingData.guests}
             />
@@ -348,6 +349,7 @@ function ModifyListing() {
             )}
           </div>
           <div style={{ flex: 1 }}>
+            <SubTitle>Number of Bathrooms:</SubTitle>
             <Input
               {...register("bathrooms", {
                 valueAsNumber: true,
@@ -358,7 +360,6 @@ function ModifyListing() {
                 required: "Number of Bathrooms is required",
               })}
               type="number"
-              placeholder="# of Bathrooms"
               style={{ color: "black" }}
               defaultValue={existingData.bathrooms}
             />
@@ -370,12 +371,12 @@ function ModifyListing() {
           </div>
         </div>
 
+        <SubTitle>URL of Image:</SubTitle>
         <Input
           {...register("image", {
             required: "Image URL is required",
           })}
           type="url"
-          placeholder="URL of Image"
           style={{ color: "black" }}
           defaultValue={existingData.image}
         />
@@ -383,6 +384,7 @@ function ModifyListing() {
           <ErrorMessage>{errors.image.message.toString()}</ErrorMessage>
         )}
 
+        <br />
         <br />
         <SectionTitle>Amenities Offered</SectionTitle>
         <CheckboxGroup>

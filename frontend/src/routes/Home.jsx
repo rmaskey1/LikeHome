@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import PreviewCardsListing from "../components/PreviewCardsListing";
 import { getAllListings, getMyListings } from "api";
 import { useQuery } from "react-query";
+import LoadingCardsListing from "components/LoadingCardsListing";
 
 const Container = styled.main`
   width: 100vw;
@@ -82,18 +83,18 @@ function Home() {
             </Link>
           </Mylisting>
           {myListingsIsLoading ? (
-            <div>Loading...</div>
+            <LoadingCardsListing numCard={1} />
           ) : (
             <PreviewCardsListing listings={myListings} />
           )}
         </>
       )}
 
-      <Welcome>Welcome, Bob!</Welcome>
+      <Welcome>Welcome, {userinfo.firstName}!</Welcome>
       <Start>Start your journey here:</Start>
 
       {allListingsIsLoading ? (
-        <div>Loading...</div>
+        <LoadingCardsListing numCard={20} />
       ) : (
         <PreviewCardsListing listings={allListings} />
       )}

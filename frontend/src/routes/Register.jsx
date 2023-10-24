@@ -123,7 +123,7 @@ function Register() {
     resetField,
   } = useForm();
   const [isFetching, setIsFetching] = useState(false);
-  const [serverError, setServerError] = useState("");
+  const [serverError, setServerError] = useState({ status: 0, message: "" });
 
   const handleSignup = async (signupData) => {
     setIsFetching(true);
@@ -140,6 +140,7 @@ function Register() {
     // Data
     const data = await response.json();
     console.log(response.status, data);
+    setServerError({ status: response.status, message: data.message });
 
     /* If successfully signed up */
     if (response.ok) {
@@ -155,7 +156,6 @@ function Register() {
     } else {
       /* If sign up failed */
       console.log("Registration failed");
-      setServerError(data.message);
     }
     resetFields();
     setIsFetching(false);
@@ -223,8 +223,8 @@ function Register() {
         {errors.email && (
           <ErrorMessageArea>{errors.email.message.toString()}</ErrorMessageArea>
         )}
-        {serverError === "Email already in use." && (
-          <ErrorMessageArea>{serverError}</ErrorMessageArea>
+        {serverError.status === 409 && (
+          <ErrorMessageArea>{serverError.message}</ErrorMessageArea>
         )}
         <Label>Password</Label>
         <InputContainer>
@@ -257,8 +257,8 @@ function Register() {
         {errors.phone && (
           <ErrorMessageArea>{errors.phone.message.toString()}</ErrorMessageArea>
         )}
-        {serverError === "Phone number already in use." && (
-          <ErrorMessageArea>{serverError}</ErrorMessageArea>
+        {(serverError.status === 418 || serverError.status === 419) && (
+          <ErrorMessageArea>{serverError.message}</ErrorMessageArea>
         )}
 
         <Label>Who are you?</Label>

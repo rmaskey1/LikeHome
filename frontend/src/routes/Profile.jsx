@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import DeleteAccountWarning from "components/DeleteAccountWarning";
 import { useNavigate } from "react-router-dom";
+import { SERVER_URL } from "../api";
+import { isLoginAtom } from "../atom";
+import { useSetRecoilState } from "recoil";
 
 const Container = styled.div`
   position: relative;
@@ -72,6 +75,8 @@ const DeleteBtn = styled.div`
 function Profile() {
   const navigate = useNavigate();
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [serverError, setServerError] = useState({ status: 0, message: "" });
+  const setIsLogin = useSetRecoilState(isLoginAtom);
 
   const userinfo = localStorage.userinfo
     ? JSON.parse(localStorage.userinfo)
@@ -85,8 +90,37 @@ function Profile() {
     setShowDeleteConfirmation(false);
   };
 
-  const handleConfirmDelete = () => {
-    console.log("Account deleted");
+  const handleConfirmDelete = async () => {
+    //   const accessToken = localStorage.getItem("accessToken");
+    //   const id = localStorage.getItem("uid");
+    //   if (!accessToken || !id) {
+    //     console.log("Access token or user ID not found. Please log in.");
+    //     return;
+    //   }
+    const response = await fetch(`${SERVER_URL}/user?uid=${localStorage.uid}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // body: JSON.stringify(),
+    });
+
+    const userResult = await response.json();
+    console.log(response.status, userResult);
+
+    if (response.ok) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("uid");
+      localStorage.removeItem("userinfo");
+      localStorage.clear();
+      setServerError(null);
+      navigate("/");
+    } else {
+      setServerError(userResult.message);
+    }
+
+    setIsLogin(false);
     setShowDeleteConfirmation(false);
   };
 

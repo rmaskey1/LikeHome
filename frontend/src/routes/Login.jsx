@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { ReactComponent as PersonIcon } from "../icons/person-fill.svg";
 import { ReactComponent as KeyIcon } from "../icons/key.svg";
-import { useRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoginAtom } from "../atom";
 import { SERVER_URL } from "api";
 import { Ellipsis } from "react-spinners-css";
@@ -113,9 +113,10 @@ function Login() {
     formState: { errors },
     resetField,
   } = useForm();
-  const [isLogin, setIsLogin] = useRecoilState(isLoginAtom);
+  const setIsLogin = useSetRecoilState(isLoginAtom);
   const [isFetching, setIsFetching] = useState(false);
-  const [serverError, setServerError] = useState(null);
+  const [serverError, setServerError] = useState({ status: 0, message: "" });
+  const isLogin = useRecoilValue(isLoginAtom);
 
   const handleLogin = async (loginData) => {
     setIsFetching(true);
@@ -129,6 +130,7 @@ function Login() {
 
     const data = await response.json();
     console.log(response.status, data);
+    setServerError({ status: response.status, message: data.message });
 
     // Login Success
     if (response.ok) {
@@ -138,14 +140,10 @@ function Login() {
       localStorage.setItem("uid", data.localId);
       localStorage.setItem("userinfo", JSON.stringify(data.info));
 
-      setServerError(null);
       setIsLogin(true);
-
-      // Navigate to landing page
-      // navigate("/");
+      navigate("/home");
     } else {
       // Login Fail
-      setServerError(data.message);
       setIsLogin(false);
     }
     resetFields();
@@ -158,7 +156,9 @@ function Login() {
   };
 
   useEffect(() => {
-    isLogin && navigate("/home");
+    if (isLogin) {
+      navigate("/home");
+    }
   }, [isLogin, navigate]);
 
   return (
@@ -188,6 +188,9 @@ function Login() {
         {errors.email && (
           <ErrorMessageArea>{errors.email.message.toString()}</ErrorMessageArea>
         )}
+        {serverError.status === 404 && (
+          <ErrorMessageArea>{serverError.message}</ErrorMessageArea>
+        )}
         <Label>Password</Label>
         <InputContainer>
           <KeyIcon />
@@ -204,7 +207,9 @@ function Login() {
             {errors.password.message.toString()}
           </ErrorMessageArea>
         )}
-        {serverError && <ErrorMessageArea>{serverError}</ErrorMessageArea>}
+        {serverError.status === 401 && (
+          <ErrorMessageArea>{serverError.message}</ErrorMessageArea>
+        )}
         <SubmitBtn type="submit">
           {isFetching ? <Ellipsis color="white" size={30} /> : "Login"}
         </SubmitBtn>

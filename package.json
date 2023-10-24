@@ -3,6 +3,7 @@
     "react": "^18.2.0",
     "react-hook-form": "^7.47.0",
     "react-modal": "^3.16.1",
+    "react-query": "^3.39.3",
     "react-script": "^2.0.5",
     "react-spinners-css": "^2.0.1",
     "recoil": "^0.7.7",
