@@ -4,7 +4,7 @@ import database
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, abort, make_response, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
-from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType
+from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked
 from guest import is_valid_password, is_valid_phone_number
 
 
@@ -125,7 +125,6 @@ def login():
         print("Email does not exist.")
         abort(make_response(jsonify(message="Email does not exist"), 404))
 
-# No payment fields yet
 @app.route('/bookings', methods=['GET', 'POST']) # Expecting uid and rid passed in as variable
 def bookings():
     if request.method == 'POST':
@@ -137,56 +136,6 @@ def bookings():
         booking = addBooking(gid, rid, data['startDate'], data['endDate'], data['numGuest'])
         return jsonify(booking)
     
-    # Get guest's mybookings
-    if request.method == 'GET':
-        # Can return empty array if there are no bookings
-        if getAccountType() == 'hotel':
-            abort(make_response(jsonify(message="User is not a guest!"), 404))
-        bookedRoom_ids = getGuestBookedRooms(getUid())
-        bookedRooms = []
-        for id in bookedRoom_ids:
-            # Each id corresponds to the rid of a booked room
-            if db.collection("room").document(id).get().exists == True:
-                room_ref = db.collection("room").document(id)
-                bookedRooms.append(room_ref.get().to_dict())
-        return jsonify(bookedRooms)
-    
-# No get function, must call put/delete methods from frontend to work
-# No payment fields yet
-@app.route('/bookings/<rid>', methods=['GET','PUT', 'DELETE'])
-def modify_bookings(rid):
-# test if rid exists
-    if checkIfRoomExists(rid) == False:
-        abort(make_response(jsonify(message="Rid and room does not exist"), 400))
-
-    # Modify Booking Here
-    if request.method == 'PUT':
-        booking_ref = db.collection("booking")
-        # Search for the specific booking and update it 
-        query_ref = booking_ref.where("rid", "==", rid).where("gid", "==", getUid())
-        docs = query_ref.stream()
-        # Added updated data here, 4 is sample data
-        updatedData = {
-            "numGuest": 4
-        }
-        for doc in docs:
-            doc.reference.update(updatedData)
-        return jsonify(message= "Modification Successfull")
-
-    # Cancel Booking Here
-    elif request.method == 'DELETE':
-        booking_ref = db.collection("booking")
-        # Search for the specific booking and delete it
-        query_ref = booking_ref.where("rid", "==", rid).where("gid", "==", getUid())
-        docs = query_ref.stream()
-        for doc in docs:
-            doc.reference.delete()
-        # Delete the booked room in guest's bookedRooms array
-        uid = getUid()
-        user_ref = db.collection('user').document(uid)
-        user_ref.update({"bookedRooms": firestore.ArrayRemove([rid])})
-
-        return jsonify(message= "Deletion Successfull")
 
 if __name__ == '__main__':
     app.debug = True

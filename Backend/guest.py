@@ -5,7 +5,8 @@ import requests
 import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, make_response, abort
-from database import updateHotelDetails, updatePassword, getUid, updateInfomation, getUserEmail, db, getUserPhone
+from database import updateHotelDetails, updatePassword, getUid, updateInfomation, getUserEmail, db, getUserPhone, db
+
 
 def guest_modification_func(app):
     @app.route('/user', methods=['GET', 'PUT', 'DELETE'])
@@ -88,7 +89,6 @@ def guest_modification_func(app):
 
             # except auth.AuthError as e:
             #     abort(make_response(jsonify(message=f"Error deleting user: {str(e)}"), 500))
-
 
 
 # Function to verify phone
