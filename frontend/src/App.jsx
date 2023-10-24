@@ -12,6 +12,8 @@ import ModifyListing from "routes/ModifyListing";
 import AccountMod from "routes/AccountMod";
 import RegisterHotel from "routes/RegisterHotel";
 import Home from "routes/Home";
+import BookingForm from "routes/BookingForm";
+import BookingSuccess from "routes/BookingSuccess";
 
 function App() {
   return (
@@ -30,6 +32,9 @@ function App() {
         <Route path="/room/add" element={<AddListing />} />
         <Route path="/room/:id" element={<Details />} />
         <Route path="/room/:id/modify" element={<ModifyListing />} />
+        <Route path="/room/:id/book" element={<BookingForm />} />
+        <Route path="/room/:id/book/success" element={<BookingSuccess />} />
+
 
         <Route path="*" element={<NotFound />} />
       </Routes>
