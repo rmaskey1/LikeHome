@@ -129,7 +129,7 @@ def login():
 def bookings():
     if request.method == 'POST':
         rid = request.args['rid'] 
-        gid = request.args['uid'] # GID is used to refer to a guest's UID, both are the same thing
+        gid = getUid()
         data = request.get_json()
         if roomBooked(rid):
             abort(make_response(jsonify(message="Sorry, this room is already booked"), 409))
