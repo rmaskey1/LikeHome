@@ -126,9 +126,19 @@ def main():
 
     addBooking('RID HERE', 'UID HERE', "11/17/2023" , "11/27/2023")
 
+def checkUserIsLoggedIn():
+    # Check if user is logged in
+    return pyrebase_auth.current_user is not None
+
+def checkUidExists(uid):
+    # Check if user is logged in
+    return db.collection("user").document(uid).get().exists
 
 # Function to return uid of current user
 def getUid():
+    # check if user is logged in, throw an error if user is not
+    if checkUserIsLoggedIn() == False:
+            abort(make_response(jsonify(message="User is not logged in"), 404))
     # Get JSON of user's information
     user_info = pyrebase_auth.current_user
     user_info = jsonify(user_info)
@@ -233,7 +243,7 @@ def update_room(uid, rid, price, fromDate, toDate, beds, guests, bathrooms, bedT
         "numberOfBathrooms": bathrooms,
         "bedType": bedType,
         "imageUrl": image,
-        "Amenities": amenities
+        "Amenities": amenities,
     }
 
     # Update the document with the provided data
@@ -284,6 +294,16 @@ def roomBooked(rid):
     else:
         return False
     
+# Get room ids array from hotel user 
+def getGuestBookedRooms(uid):
+    # Get hotel information
+    doc_ref = db.collection("user").document(uid)
+    doc_data = doc_ref.get().to_dict()
+
+    # Get guest's bookedRooms array field
+    room_ids = doc_data.get('bookedRooms', [])
+    return room_ids
+    
 
 # Get room ids array from hotel user 
 def getRoomIds(uid):
@@ -295,7 +315,8 @@ def getRoomIds(uid):
     room_ids = doc_data.get('listedRooms', [])
     return room_ids
 
-
+def checkIfRoomExists(rid):
+    return db.collection("room").document(rid).get().exists
 
 
 def getHotelName():
@@ -310,5 +331,6 @@ def getAccountType():
     userDoc = user_ref.get().to_dict()
     accountType = userDoc['accountType']
     return accountType
+
 # Function to modify user's information
 #def changeGuestInfo(email, phone, password, first_name, ):
