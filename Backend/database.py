@@ -102,12 +102,15 @@ def addHotelInfo(userId, hotelName, street, city, zipcode, state, country):
     })
     return doc_ref.get().to_dict()
 
-def addBooking(rid, uid, start_date, end_date):
-    doc_ref = db.collection("booking").document(rid).set({
-        'uid': uid,
-        'startDate': start_date,
-        'endDate': end_date,
+def addBooking(gid, rid, startDate, endDate, numGuest):
+    doc_ref = db.collection("booking").add({
+        'gid': gid,
+        'rid': rid,
+        'startDate': startDate,
+        'endDate': endDate,
+        'numGuest': numGuest
     })
+    return doc_ref.get().to_dict()
 
 # Main method for testing
 def main():

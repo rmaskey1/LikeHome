@@ -4,7 +4,7 @@ import database
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, abort, make_response, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
-from database import addUser, addHotelInfo, pyrebase_auth, db, getUid
+from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked
 from guest import is_valid_password, is_valid_phone_number
 
 
@@ -124,6 +124,18 @@ def login():
     except auth.UserNotFoundError:
         print("Email does not exist.")
         abort(make_response(jsonify(message="Email does not exist"), 404))
+
+@app.route('/bookings', methods=['GET', 'POST']) # Expecting uid and rid passed in as variable
+def bookings():
+    if request.method == 'POST':
+        rid = request.args['rid'] 
+        gid = getUid()
+        data = request.get_json()
+        if roomBooked(rid):
+            abort(make_response(jsonify(message="Sorry, this room is already booked"), 409))
+        booking = addBooking(gid, rid, data['startDate'], data['endDate'], data['numGuest'])
+        return jsonify(booking)
+    
 
 if __name__ == '__main__':
     app.debug = True
