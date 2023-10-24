@@ -125,8 +125,8 @@ def login():
         print("Email does not exist.")
         abort(make_response(jsonify(message="Email does not exist"), 404))
 
-@app.route('/booking', methods=['POST']) # Expecting uid and rid passed in as variable
-def booking():
+@app.route('/bookings', methods=['GET', 'POST']) # Expecting uid and rid passed in as variable
+def bookings():
     if request.method == 'POST':
         rid = request.args['rid'] 
         gid = request.args['uid'] # GID is used to refer to a guest's UID, both are the same thing
