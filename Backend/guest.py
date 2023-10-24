@@ -5,9 +5,7 @@ import requests
 import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, make_response, abort
-from database import updateHotelDetails, updatePassword, getUid, updateInfomation, getUserEmail, db, getUserPhone, checkIfRoomExists
-from database import getGuestBookedRooms, getAccountType
-from google.cloud import firestore
+from database import updateHotelDetails, updatePassword, getUid, updateInfomation, getUserEmail, db, getUserPhone
 
 def guest_modification_func(app):
     @app.route('/user', methods=['GET', 'PUT', 'DELETE'])
@@ -91,56 +89,6 @@ def guest_modification_func(app):
             # except auth.AuthError as e:
             #     abort(make_response(jsonify(message=f"Error deleting user: {str(e)}"), 500))
 
-    @app.route('/bookings', methods=['GET', 'PUT', 'DELETE'])
-    def bookings():
-        # Get guest's mybookings
-        if request.method == 'GET':
-            # Can return empty array if there are no bookings
-            if getAccountType() == 'hotel':
-                abort(make_response(jsonify(message="User is not a guest!"), 404))
-            bookedRoom_ids = getGuestBookedRooms(getUid())
-            bookedRooms = []
-            for id in bookedRoom_ids:
-                # Each id corresponds to the rid of a booked room
-                if db.collection("room").document(id).get().exists == True:
-                    room_ref = db.collection("room").document(id)
-                    bookedRooms.append(room_ref.get().to_dict())
-            return jsonify(bookedRooms)
-
-    @app.route('/bookings/<rid>', methods=['PUT', 'DELETE'])
-    def modify_bookings(rid):
-        # test if rid exists
-        if checkIfRoomExists(rid) == False:
-            abort(make_response(jsonify(message="Rid and room does not exist"), 400))
-
-        # Modify Booking Here
-        if request.method == 'PUT':
-            booking_ref = db.collection("booking")
-            # Search for the specific booking and update it 
-            query_ref = booking_ref.where("rid", "==", rid)
-            docs = query_ref.stream()
-            # Added updated data here, 4 is sample data
-            updatedData = {
-                "numGuest": 4
-            }
-            for doc in docs:
-                doc.reference.update(updatedData)
-            return jsonify(message= "Modification Successfull")
-        
-        # Cancel Booking Here
-        elif request.method == 'DELETE':
-            booking_ref = db.collection("booking")
-            # Search for the specific booking and delete it
-            query_ref = booking_ref.where("rid", "==", rid)
-            docs = query_ref.stream()
-            for doc in docs:
-                doc.reference.delete()
-            # Delete the booked room in guest's bookedRooms array
-            uid = getUid()
-            user_ref = db.collection('user').document(uid)
-            user_ref.update({"bookedRooms": firestore.ArrayRemove([rid])})
-
-            return jsonify(message= "Deletion Successfull")
 
 # Function to verify phone
 def is_valid_phone_number(phone_number):
