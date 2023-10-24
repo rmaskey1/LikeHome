@@ -5,7 +5,8 @@ import requests
 import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, make_response, abort
-from database import updateHotelDetails, updatePassword, getUid, updateInfomation, getUserEmail, db, getUserPhone
+from database import updateHotelDetails, updatePassword, getUid, updateInfomation, getUserEmail, db, getUserPhone, db
+
 
 def guest_modification_func(app):
     @app.route('/user', methods=['GET', 'PUT', 'DELETE'])
@@ -101,7 +102,3 @@ def is_valid_phone_number(phone_number):
 
 def is_valid_password(password):
     return len(password) >= 6
-
-
-
-
