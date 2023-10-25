@@ -133,7 +133,7 @@ def hotel_modification_func(app):
             # Ensure user is hotel owner
             if hotelDoc['accountType'] != 'hotel':
                 abort(make_response(jsonify(message=f"Error: User is not a hotel owner!"), 400))
-            # Ensure listing is between 2023-2024
+            # Ensure listing is after 2022
             if get_year_from_date(roomData['fromDate']) < 2023:
                 abort(make_response(jsonify(message=f"Error: Listing should not be created before 2023"), 400))
             if get_year_from_date(roomData['toDate']) < 2023:
