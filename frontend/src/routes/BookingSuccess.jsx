@@ -1,14 +1,14 @@
 import styled from "styled-components";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { ReactComponent as CheckmarkIcon } from "../icons/checkmark.svg";
 
 const Container = styled.main`
   width: 100vw;
   height: 100vh;
   display: flex;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
 `;
 
 const StyledCheckmarkIcon = styled(CheckmarkIcon)`
@@ -45,22 +45,24 @@ const MyBookings = styled.button`
 
 function BookingSuccess() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const successText = window.location.pathname.includes("/cancel/success")
+    ? "Cancel Request Success!"
+    : "Booking Request Success!";
 
   const handleMyBookingsClick = () => {
     navigate("/mybooking");
   };
 
-    return (
-        <Container>
-          <div>
-          <StyledCheckmarkIcon />
-          <Text>Booking Request Success!</Text>
-          <MyBookings onClick={handleMyBookingsClick}>MyBookings</MyBookings>
-          </div>
-            
-        </Container>
-    );
-
+  return (
+    <Container>
+      <div>
+        <StyledCheckmarkIcon />
+        <Text>{successText}</Text>
+        <MyBookings onClick={handleMyBookingsClick}>MyBookings</MyBookings>
+      </div>
+    </Container>
+  );
 }
 
 export default BookingSuccess;

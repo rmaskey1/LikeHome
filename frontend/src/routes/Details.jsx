@@ -18,7 +18,7 @@ const Container = styled.main`
   align-items: flex-start;
   margin: 0 auto;
   margin-top: 36px;
-  width: fit-content;
+  width: 70%;
   height: 100vh;
   padding: 20px;
 `;

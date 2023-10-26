@@ -83,8 +83,9 @@ const Card = ({
   nights,
   totalCost,
   bookingId,
+  roomId,
 }) => (
-  <Link to={`/booking/${bookingId}/modify`} style={{ textDecoration: "none" }}>
+  <Link to={`/room/${roomId}`} style={{ textDecoration: "none" }}>
     <CardContainer>
       <RoomImage src={RoomImg} alt="Room" />
       <DetailsContainer>
@@ -115,6 +116,7 @@ function MyBookings() {
   const bookingsData = [
     {
       bookingId: 1,
+      roomId: "0z16IoOWxBhPAKWDfxLR",
       roomImage: RoomImg,
       address: "123 Main St, San Jose, CA, USA",
       fromDate: "12/24/23",
@@ -124,6 +126,7 @@ function MyBookings() {
     },
     {
       bookingId: 2,
+      roomId: "0z16IoOWxBhPAKWDfxLR",
       roomImage: RoomImg,
       address: "123 Main St, San Jose, CA, USA",
       fromDate: "12/28/23",
@@ -134,6 +137,7 @@ function MyBookings() {
 
     {
       bookingId: 3,
+      roomId: "0z16IoOWxBhPAKWDfxLR",
       roomImage: RoomImg,
       address: "123 Main St, San Jose, CA, USA",
       fromDate: "12/28/23",
