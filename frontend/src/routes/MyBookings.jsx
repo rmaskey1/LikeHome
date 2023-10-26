@@ -1,15 +1,14 @@
-import { SERVER_URL } from "api";
-import React, { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { useNavigate, Link } from "react-router-dom";
-import { Ellipsis } from "react-spinners-css";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { ReactComponent as CalendarIcon } from "../icons/calendar.svg";
 import { ReactComponent as MoonIcon } from "../icons/moon.svg";
 import { ReactComponent as MoneyIcon } from "../icons/money.svg";
 
-import RoomImg from "../img/hotel-room.jpg";
+import { useQuery } from "react-query";
+import { getMyBooking } from "api";
+import { RiDeleteBin5Line } from "react-icons/ri";
 
 const Container = styled.main`
   display: center;
@@ -42,7 +41,7 @@ const CardContainer = styled.div`
   background-color: #f3f3f5;
   border-radius: 15px;
   margin-top: 20px;
-  //padding: 20px;
+  padding-right: 20px;
   height: 225px; /* Set the card height, adjust as needed */
 `;
 
@@ -50,7 +49,7 @@ const RoomImage = styled.img`
   position: relative;
   border: none;
   width: 300px;
-  height: 100%;
+  height: 225px;
   object-fit: cover;
   overflow: hidden;
   border-top-left-radius: 15px;
@@ -75,88 +74,115 @@ const IconWithText = styled.div`
   margin-top: 15px;
 `;
 
-const Card = ({
-  roomImage,
-  address,
-  fromDate,
-  toDate,
-  nights,
-  totalCost,
-  bookingId,
-  roomId,
-}) => (
-  <Link to={`/room/${roomId}`} style={{ textDecoration: "none" }}>
-    <CardContainer>
-      <RoomImage src={RoomImg} alt="Room" />
-      <DetailsContainer>
-        <SectionTitle>{address}</SectionTitle>
-        <Divider />
-        <IconWithText>
-          <CalendarIcon style={{ marginRight: "15px" }} />
-          <SubTitle>
-            {" "}
-            Dates: {fromDate} - {toDate}
-          </SubTitle>
-        </IconWithText>
-        <IconWithText>
-          <MoonIcon style={{ marginRight: "15px" }} />
-          <SubTitle> {nights} Nights</SubTitle>
-        </IconWithText>
-        <IconWithText>
-          <MoneyIcon style={{ marginRight: "15px" }} />
-          <SubTitle> Total: ${totalCost}</SubTitle>
-        </IconWithText>
-      </DetailsContainer>
-    </CardContainer>
-  </Link>
+const ErrorMessageArea = styled.div`
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(207, 49, 106, 1);
+  margin-left: 200px;
+`;
+
+const Cancel = styled.div`
+  display: grid;
+  place-content: center;
+  margin-left: 20px;
+  height: 100%;
+  cursor: pointer;
+
+  &:hover {
+    color: red;
+  }
+  svg {
+    transition: none;
+    scale: 1.3;
+  }
+`;
+
+const CardLoading = () => (
+  <CardContainer>
+    <div
+      style={{ width: "300px", height: "100%", background: "#f3f3f3" }}
+    ></div>
+    <DetailsContainer></DetailsContainer>
+  </CardContainer>
 );
 
-function MyBookings() {
-  //SAMPLE bookings data, please replace!!
-  const bookingsData = [
-    {
-      bookingId: 1,
-      roomId: "0z16IoOWxBhPAKWDfxLR",
-      roomImage: RoomImg,
-      address: "123 Main St, San Jose, CA, USA",
-      fromDate: "12/24/23",
-      toDate: "12/26/23",
-      nights: "2",
-      totalCost: "2500.00",
-    },
-    {
-      bookingId: 2,
-      roomId: "0z16IoOWxBhPAKWDfxLR",
-      roomImage: RoomImg,
-      address: "123 Main St, San Jose, CA, USA",
-      fromDate: "12/28/23",
-      toDate: "12/30/23",
-      nights: "2",
-      totalCost: "3000.00",
-    },
+const Card = (booking) => {
+  const navigate = useNavigate();
+  const nights = Math.floor(
+    (new Date(booking.endDate).getTime() -
+      new Date(booking.startDate).getTime()) /
+      (24 * 3600 * 1000)
+  );
+  const subtotal = booking.price * nights;
+  const tax = subtotal * 0.08;
+  const total = subtotal + tax;
 
-    {
-      bookingId: 3,
-      roomId: "0z16IoOWxBhPAKWDfxLR",
-      roomImage: RoomImg,
-      address: "123 Main St, San Jose, CA, USA",
-      fromDate: "12/28/23",
-      toDate: "12/30/23",
-      nights: "2",
-      totalCost: "3000.00",
-    },
-  ];
+  let dollarString = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  });
+
+  return (
+    <CardContainer>
+      <Link
+        to={`/mybooking/${booking.rid}/modify`}
+        style={{ display: "flex", width: "100%", textDecoration: "none" }}
+      >
+        <RoomImage src={booking.imageUrl} alt="Room" />
+        <DetailsContainer>
+          <SectionTitle>{booking.hotelName}</SectionTitle>
+          <Divider />
+          <IconWithText>
+            <CalendarIcon style={{ marginRight: "15px" }} />
+            <SubTitle>
+              {" "}
+              Dates: {booking.startDate} - {booking.endDate}
+            </SubTitle>
+          </IconWithText>
+          <IconWithText>
+            <MoonIcon style={{ marginRight: "15px" }} />
+            <SubTitle> {nights} Nights</SubTitle>
+          </IconWithText>
+          <IconWithText>
+            <MoneyIcon style={{ marginRight: "15px" }} />
+            <SubTitle> Total: {dollarString.format(total)}</SubTitle>
+          </IconWithText>
+        </DetailsContainer>
+      </Link>
+      <Cancel
+        onClick={() =>
+          navigate(`${booking.rid}/cancel`, {
+            state: { roomData: booking },
+          })
+        }
+      >
+        <RiDeleteBin5Line />
+      </Cancel>
+    </CardContainer>
+  );
+};
+
+function MyBookings() {
+  const { isLoading, data } = useQuery(["myBooking"], getMyBooking);
+
+  console.log(data);
 
   return (
     <Container>
       <ListingTitle>My Bookings:</ListingTitle>
-
-      {bookingsData.map((booking) => (
-        <Card
-          key={booking.bookingId} // Ensure each card has a unique key
-          {...booking}
-        />
-      ))}
+      {isLoading ? (
+        [1, 2].map((i) => <CardLoading key={i} />)
+      ) : data.message ? (
+        <ErrorMessageArea>{data.message}</ErrorMessageArea>
+      ) : (
+        data.map((booking) => (
+          <Card
+            key={booking.rid} // Ensure each card has a unique key
+            {...booking}
+          />
+        ))
+      )}
     </Container>
   );
 }

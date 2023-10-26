@@ -134,8 +134,9 @@ def bookings():
         for id in bookedRoom_ids:
             # Each id corresponds to the rid of a booked room
             if db.collection("room").document(id).get().exists == True:
-                room_ref = db.collection("room").document(id)
-                bookedRooms.append(room_ref.get().to_dict())
+                bookedRoom_data = db.collection("room").document(id).get().to_dict()
+                bookedRoom_data['rid'] = id
+                bookedRooms.append(bookedRoom_data)
         return jsonify(bookedRooms)
     
 # No get function, must call put/delete methods from frontend to work

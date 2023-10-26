@@ -1,13 +1,14 @@
 import styled from "styled-components";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { SERVER_URL } from "api";
-import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import background from "../img/hotel-room.jpg";
+import { Ellipsis } from "react-spinners-css";
 
 const Container = styled.main`
   width: 100vw;
-  height: 100vh;
+  height: 110vh;
   display: flex;
   justify-content: center;
 `;
@@ -228,16 +229,42 @@ const TotalCost = styled.div`
   font-weight: bold;
 `;
 
+const ErrorMessageArea = styled.div`
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(207, 49, 106, 1);
+  margin-left: 200px;
+`;
+
 function BookingForm() {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const location = useLocation();
+  const isCancelRoute = window.location.pathname.includes("/cancel");
+  const { roomData, numGuests } = location.state;
+  const [isFetching, setIsFetching] = useState(false);
+  const [serverError, setServerError] = useState({ status: 0, message: "" });
+
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm();
-  const [isFetching, setIsFetching] = useState(false);
-  const isCancelRoute = window.location.pathname.includes("/cancel");
+
+  const nights = Math.floor(
+    (new Date(roomData.endDate).getTime() -
+      new Date(roomData.startDate).getTime()) /
+      (24 * 3600 * 1000)
+  );
+  const subtotal = roomData.price * nights;
+  const tax = subtotal * 0.08;
+  const total = subtotal + tax;
+
+  let dollarString = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  });
+
   //you can play with the date to see different cancellation fee msgs!! <3
   const checkInDate = new Date("2023-10-26"); //INTEGRATIONS!! replace with actual check-in date
   const currentDate = new Date(); //today's date
@@ -256,38 +283,47 @@ function BookingForm() {
   };
 
   const onSubmit = async (formData) => {
-    //THIS IS NOT ALLOWING MY BUTTON TO WORK so I commented it out for now!
-    //INTEGRATIONS, please uncomment and edit it! Thank you!
+    if (isCancelRoute) {
+      setIsFetching(true);
+      const response = await fetch(`${SERVER_URL}/bookings/${roomData.rid}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      console.log(response.status, data);
 
-    /*
-    setIsFetching(true);
-    console.log(formData);
-    const response = await fetch(
-      `${SERVER_URL}/listing?uid=${localStorage.uid}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      if (response.ok) {
+        navigate("success");
       }
-    );
 
-    const data = await response.json();
-    console.log(response.status, data);
-
-    if (response.ok) {
-      alert(isCancelRoute ? "Booking Canceled!" : "Booking created!");
-      console.log(
-        "Navigating to:",
-        `/room/${id}/${isCancelRoute ? "cancel" : "book"}/success`
+      setIsFetching(false);
+    } else {
+      const body = {
+        ...formData,
+        startDate: roomData.startDate,
+        endDate: roomData.endDate,
+        numGuest: numGuests,
+      };
+      setIsFetching(true);
+      const response = await fetch(
+        `${SERVER_URL}/bookings?rid=${roomData.rid}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
       );
-      navigate(`/room/:id/${isCancelRoute ? "cancel" : "book"}/success`);
-    }
-    setIsFetching(false);
-    */
 
-    navigate(`/room/:id/${isCancelRoute ? "cancel" : "book"}/success`);
+      const data = await response.json();
+      console.log(response.status, data);
+      setServerError({ status: response.status, message: data.message });
+
+      if (response.ok) {
+        navigate("/room/:id/book/success");
+      }
+      setIsFetching(false);
+    }
   };
 
   return (
@@ -307,13 +343,17 @@ function BookingForm() {
           )}
 
           <InfoTitle>Location:</InfoTitle>
-          <InfoText>123 Street, San Jose, California</InfoText>
+          <InfoText>
+            {roomData.street_name}, {roomData.city}, {roomData.state}
+          </InfoText>
 
           <InfoTitle>Dates:</InfoTitle>
-          <InfoText>10/01/23 - 10/03/23</InfoText>
+          <InfoText>
+            {roomData.startDate} - {roomData.endDate}
+          </InfoText>
 
           <InfoTitle>Number of Guests:</InfoTitle>
-          <InfoText>4</InfoText>
+          <InfoText>{numGuests}</InfoText>
         </div>
 
         <div>
@@ -393,7 +433,13 @@ function BookingForm() {
             </NoFee>
 
             <SubmitButton type="submit">
-              {isCancelRoute ? "Cancel Booking" : "Pay & Reserve"}
+              {isCancelRoute ? (
+                "Cancel Booking"
+              ) : isFetching ? (
+                <Ellipsis color="white" size={30} />
+              ) : (
+                "Pay & Reserve"
+              )}
             </SubmitButton>
           </form>
         </div>
@@ -406,23 +452,29 @@ function BookingForm() {
           </Image>
           <Pricing>{isCancelRoute ? "Amount Due:" : "Pricing:"}</Pricing>
           <CostAndAmount>
-            <div>{isCancelRoute ? "Cancellation Fees" : "$100 x 3 nights"}</div>
+            <div>
+              {isCancelRoute
+                ? "Cancellation Fees"
+                : `${roomData.price} x {nights} nights`}
+            </div>
             <Amount>
-              {isCancelRoute ? `$${getCancellationFee()}` : "$300"}
+              {isCancelRoute
+                ? `$${getCancellationFee()}`
+                : dollarString.format(subtotal)}
             </Amount>
           </CostAndAmount>
-
           {!isCancelRoute && (
             <CostAndAmount>
               <div>Tax (8%)</div>
-              <Amount>$24</Amount>
+              <Amount>{dollarString.format(tax)}</Amount>
             </CostAndAmount>
           )}
-
           <Total>
             <div>Total (USD):</div>
             <TotalCost>
-              {isCancelRoute ? `$${getCancellationFee()}` : "$324"}
+              {isCancelRoute
+                ? `$${getCancellationFee()}`
+                : dollarString.format(total)}
             </TotalCost>
           </Total>
         </Card>
