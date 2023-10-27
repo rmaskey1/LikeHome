@@ -5,7 +5,7 @@ import requests
 import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, make_response, abort
-from database import updateHotelDetails, updatePassword, getUid, updateInfomation, getUserEmail, db, getUserPhone, db
+from database import updateHotelDetails, updatePassword, getUid, updateInfomation, getUserEmail, db, getUserPhone, db, isBooked
 
 
 def guest_modification_func(app):
@@ -69,16 +69,22 @@ def guest_modification_func(app):
             try:
                 user_ref = db.collection('user').document(uid)
                 doc = user_ref.get()
-                
+                #Guests use bookedRooms. This part deletes guests
                 if 'bookedRooms' in doc.to_dict():
                     booked_rooms = doc.to_dict()['bookedRooms']
                     if (len(booked_rooms) > 0):
                         abort(make_response(jsonify(message="Cannot delete; User has a booked room"), 400))
                     else:
                         auth.delete_user(uid)
-                else:
-                    auth.delete_user(uid)
-                # delete them from the db in addition to deleting from auth
+                #hotel users use listedRooms. This part deletes hotel users        
+                elif 'listedRooms' in doc.to_dict():
+                    #don't delete if a room is booked
+                    if isBooked():
+                        abort(make_response(jsonify(message="Cannot delete; Room(s) are booked by guests"), 400))
+                    else:
+                        auth.delete_user(uid)
+
+                # delete them from the db in addition to deleting from auth. This doesn't run if abort was called above
                 if user_ref.get().exists:
                     user_ref.delete()
 
