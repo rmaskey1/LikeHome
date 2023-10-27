@@ -76,15 +76,10 @@ def hotel_modification_func(app):
 
         try:
             user_ref = db.collection('user').document(uid)
-            doc = user_ref.get()
+            
 
-            if 'bookedRooms' in doc.to_dict():
-                booked_rooms = doc.to_dict()['bookedRooms']
-                if (len(booked_rooms) > 0):
-                    abort(make_response(jsonify(message="Cannot delete; User has a booked room"), 400))
-
-                else:
-                    auth.delete_user(uid)
+            if isBooked():
+                abort(make_response(jsonify(message="Cannot delete; Room(s) are booked by guests"), 400))
             else:
                 auth.delete_user(uid)
 

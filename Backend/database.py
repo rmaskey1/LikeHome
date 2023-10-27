@@ -311,7 +311,7 @@ def getAccountType():
 #usage example: queryByRmAttribute("bedType", bedType)
 def queryByRmAttribute(attribute, value):
     try:
-        rooms_query = db.collection("room").where(attribute,"==",value).get()
+        rooms_query = db.collection("room").where(attribute, "==", value).get()
  
         matching_rooms = [room.to_dict() for room in rooms_query]
         return matching_rooms
