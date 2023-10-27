@@ -307,5 +307,16 @@ def getAccountType():
     userDoc = user_ref.get().to_dict()
     accountType = userDoc['accountType']
     return accountType
+def queryByRmAttribute():
+    try:
+        rooms_query = db.collection("room").where(attribute, "==", value).get()
+ 
+        matching_rooms = [room.to_dict() for room in rooms_query]
+        return matching_rooms
+    except Exception as e:
+        
+        print("Error querying rooms:", e)
+        return []
+
 # Function to modify user's information
 #def changeGuestInfo(email, phone, password, first_name, ):
