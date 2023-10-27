@@ -307,7 +307,9 @@ def getAccountType():
     userDoc = user_ref.get().to_dict()
     accountType = userDoc['accountType']
     return accountType
-def queryByRmAttribute():
+
+#usage example: queryByRmAttribute("bedType", bedType)
+def queryByRmAttribute(attribute, value):
     try:
         rooms_query = db.collection("room").where(attribute, "==", value).get()
  
