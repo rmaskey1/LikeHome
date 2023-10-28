@@ -108,7 +108,3 @@ def is_valid_phone_number(phone_number):
 
 def is_valid_password(password):
     return len(password) >= 6
-
-
-
-
