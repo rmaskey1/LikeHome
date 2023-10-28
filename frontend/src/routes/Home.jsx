@@ -192,7 +192,6 @@ function Home() {
           </Mylisting>
           {myListingsIsLoading ? (
             <LoadingCardsListing numCard={1} />
-            <LoadingCardsListing numCard={1} />
           ) : (
             <PreviewCardsListing listings={myListings} />
           )}
@@ -230,7 +229,6 @@ function Home() {
       </div>
 
       {allListingsIsLoading ? (
-        <LoadingCardsListing numCard={20} />
         <LoadingCardsListing numCard={20} />
       ) : (
         <PreviewCardsListing

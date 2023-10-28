@@ -49,14 +49,6 @@ const NoFee = styled.div`
   margin-top: 30px;
 `;
 
-const NoFee = styled.div`
-  font-size: 16px;
-  font-weight: normal;
-  padding: 10px 200px;
-  color: #293545;
-  margin-top: 30px;
-`;
-
 const Payment = styled.div`
   font-size: 20px;
   font-weight: bold;
@@ -76,15 +68,6 @@ const ErrorText2 = styled.span`
   color: #cf316a;
   font-size: 14px;
   margin-top: 5px;
-  display: flex;
-`;
-
-const CheckInWarning = styled.span`
-  color: #cf316a;
-  font-size: 14px;
-  margin-top: 5px;
-  margin-bottom: 10px;
-  margin-left: 200px;
   display: flex;
 `;
 
