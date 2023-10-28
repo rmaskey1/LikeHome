@@ -111,63 +111,6 @@ def login():
     except auth.UserNotFoundError:
         print("Email does not exist.")
         abort(make_response(jsonify(message="Email does not exist"), 404))
-        
-@app.route('/query', methods=['POST', 'GET'])
-def queryByRmAttribute():
-    try:
-        if request.method == 'POST':
-            # Get JSON data from the frontend
-            data = request.get_json()
-            
-            #amneties
-            amenities=data['amenities']
-            
-            query = db.collection("room")
-            #query amenities if they are true
-            for amenity in amenities:
-                query = query.where(amenities[amenity], '==', True)
-              
-            #the other rm attributes
-            bathrooms = data['bathrooms']
-            bedType = data['bedType']
-            beds = data['beds']
-            guests = data['guests']
-            minPrice = data['minPrice']
-            maxPrice = data['maxPrice']
-            
-            
-            
-            #this part checks if each attribute exists or not
-            
-            if 'bathrooms' in data:
-                query = query.where('bathrooms', '<=', bathrooms)
-            if 'bedType' in data:
-                query = query.where('bedType', '==', bedType)
-            if 'beds' in data:
-                query = query.where('beds', '<=', beds)
-            if 'guests' in data:
-                query = query.where('guests', '==', guests)
-            if 'minPrice' in data:
-                query = query.where('minPrice', '<=', minPrice)
-            if 'maxPrice' in data:
-                query = query.where('maxPrice', '==', maxPrice)
-
-            
-            results = query.stream()
-
-            matching_rooms = []
-
-            for room in results:
-                matching_rooms.append(room.to_dict())
-
-            return jsonify(matching_rooms)
-
-        else:
-            return jsonify([])
-
-    except Exception as e:
-        print("Error querying rooms:", e)
-        return jsonify([])
 
 # No payment fields yet
 @app.route('/bookings', methods=['GET', 'POST']) # Expecting uid and rid passed in as variable
@@ -232,6 +175,63 @@ def modify_bookings(rid):
         user_ref.update({"bookedRooms": firestore.ArrayRemove([rid])})
 
         return jsonify(message= "Deletion Successfull")
+        
+@app.route('/query', methods=['POST', 'GET'])
+def queryByRmAttribute():
+    try:
+        if request.method == 'POST':
+            # Get JSON data from the frontend
+            data = request.get_json()
+            
+            #amneties
+            amenities=data['amenities']
+            
+            query = db.collection("room")
+            #query amenities if they are true
+            for amenity in amenities:
+                query = query.where(amenities[amenity], '==', True)
+              
+            #the other rm attributes
+            bathrooms = data['bathrooms']
+            bedType = data['bedType']
+            beds = data['beds']
+            guests = data['guests']
+            minPrice = data['minPrice']
+            maxPrice = data['maxPrice']
+            
+            
+            
+            #this part checks if each attribute exists or not
+            
+            if 'bathrooms' in data:
+                query = query.where('bathrooms', '<=', bathrooms)
+            if 'bedType' in data:
+                query = query.where('bedType', '==', bedType)
+            if 'beds' in data:
+                query = query.where('beds', '<=', beds)
+            if 'guests' in data:
+                query = query.where('guests', '==', guests)
+            if 'minPrice' in data:
+                query = query.where('minPrice', '<=', minPrice)
+            if 'maxPrice' in data:
+                query = query.where('maxPrice', '==', maxPrice)
+
+            
+            results = query.stream()
+
+            matching_rooms = []
+
+            for room in results:
+                matching_rooms.append(room.to_dict())
+
+            return jsonify(matching_rooms)
+
+        else:
+            return jsonify([])
+
+    except Exception as e:
+        print("Error querying rooms:", e)
+        return jsonify([])
 
 if __name__ == '__main__':
     app.debug = True
