@@ -89,7 +89,7 @@ def guest_modification_func(app):
                 if user_ref.get().exists:
                     user_ref.delete()
 
-            return jsonify({'message': f'Guest {uid} has been deleted'})
+                return jsonify({'message': f'Guest {uid} has been deleted'})
 
             except auth.UserNotFoundError:
                 abort(make_response(jsonify(message="User doesn't exist"), 404))
