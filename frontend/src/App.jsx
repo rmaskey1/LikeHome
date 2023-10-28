@@ -16,6 +16,7 @@ import ModifyBooking from "routes/ModifyBooking";
 import Home from "routes/Home";
 import BookingForm from "routes/BookingForm";
 import BookingSuccess from "routes/BookingSuccess";
+import CancelForm from "routes/CancelForm";
 
 function App() {
   return (
@@ -36,6 +37,9 @@ function App() {
         <Route path="/room/:id/modify" element={<ModifyListing />} />
         <Route path="/room/:id/book" element={<BookingForm />} />
         <Route path="/room/:id/book/success" element={<BookingSuccess />} />
+        <Route path="/room/:id/modifybooking" element={<ModifyBooking />} />
+        <Route path="/room/:id/cancel" element={<CancelForm />} />
+        <Route path="/room/:id/cancel/success" element={<BookingSuccess />} />
 
         <Route path="/mybooking" element={<MyBookings />} />
         <Route path="/mybooking/:id/modify" element={<ModifyBooking />} />

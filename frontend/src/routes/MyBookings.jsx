@@ -74,6 +74,7 @@ const IconWithText = styled.div`
   margin-top: 15px;
 `;
 
+<<<<<<< HEAD
 const ErrorMessageArea = styled.div`
   font-size: 12px;
   font-weight: 400;
@@ -167,6 +168,79 @@ function MyBookings() {
   const { isLoading, data } = useQuery(["myBooking"], getMyBooking);
 
   console.log(data);
+=======
+const Card = ({
+  roomImage,
+  address,
+  fromDate,
+  toDate,
+  nights,
+  totalCost,
+  bookingId,
+  roomId,
+}) => (
+  <Link to={`/room/${roomId}`} style={{ textDecoration: "none" }}>
+    <CardContainer>
+      <RoomImage src={RoomImg} alt="Room" />
+      <DetailsContainer>
+        <SectionTitle>{address}</SectionTitle>
+        <Divider />
+        <IconWithText>
+          <CalendarIcon style={{ marginRight: "15px" }} />
+          <SubTitle>
+            {" "}
+            Dates: {fromDate} - {toDate}
+          </SubTitle>
+        </IconWithText>
+        <IconWithText>
+          <MoonIcon style={{ marginRight: "15px" }} />
+          <SubTitle> {nights} Nights</SubTitle>
+        </IconWithText>
+        <IconWithText>
+          <MoneyIcon style={{ marginRight: "15px" }} />
+          <SubTitle> Total: ${totalCost}</SubTitle>
+        </IconWithText>
+      </DetailsContainer>
+    </CardContainer>
+  </Link>
+);
+
+function MyBookings() {
+  //SAMPLE bookings data, please replace!!
+  const bookingsData = [
+    {
+      bookingId: 1,
+      roomId: "0z16IoOWxBhPAKWDfxLR",
+      roomImage: RoomImg,
+      address: "123 Main St, San Jose, CA, USA",
+      fromDate: "12/24/23",
+      toDate: "12/26/23",
+      nights: "2",
+      totalCost: "2500.00",
+    },
+    {
+      bookingId: 2,
+      roomId: "0z16IoOWxBhPAKWDfxLR",
+      roomImage: RoomImg,
+      address: "123 Main St, San Jose, CA, USA",
+      fromDate: "12/28/23",
+      toDate: "12/30/23",
+      nights: "2",
+      totalCost: "3000.00",
+    },
+
+    {
+      bookingId: 3,
+      roomId: "0z16IoOWxBhPAKWDfxLR",
+      roomImage: RoomImg,
+      address: "123 Main St, San Jose, CA, USA",
+      fromDate: "12/28/23",
+      toDate: "12/30/23",
+      nights: "2",
+      totalCost: "3000.00",
+    },
+  ];
+>>>>>>> 07bf3b1 (cancel request success page done)
 
   return (
     <Container>
