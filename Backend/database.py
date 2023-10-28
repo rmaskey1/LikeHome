@@ -308,17 +308,29 @@ def getAccountType():
     accountType = userDoc['accountType']
     return accountType
 
-#usage example: queryByRmAttribute("bedType", bedType)
-def queryByRmAttribute(attribute, value):
+def queryByRmAttribute():
     try:
-        rooms_query = db.collection("room").where(attribute, "==", value).get()
- 
-        matching_rooms = [room.to_dict() for room in rooms_query]
+        dateFrom=request.args['dateForm']
+        dateTo=request.args['dateTo']
+        guests=request.args['guests']
+        location=request.args['location']
+        
+        date_query = db.collection("room").where('dateFrom', '<=', dateTo).where('dateTo', '>=', dateFrom)
+        guests_query = db.collection("room").where('guests', "==", guests).get()
+        location_query = db.collection("room").where('location', "==", location).get()
+        
+        results = query.stream()
+        
+        matching_rooms=[]
+        
+        for room in results:
+            matching_rooms.append(room.to_dict())
         return matching_rooms
     except Exception as e:
         
         print("Error querying rooms:", e)
         return []
+
 
 # Function to modify user's information
 #def changeGuestInfo(email, phone, password, first_name, ):
