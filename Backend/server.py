@@ -218,7 +218,7 @@ def queryByRmAttribute():
 
             
             results = query.stream()
-
+            print(results)
             matching_rooms = []
 
             for room in results:
