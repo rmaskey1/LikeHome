@@ -115,6 +115,7 @@ function AddListing() {
     getValues,
   } = useForm();
   const [isFetching, setIsFetching] = useState(false);
+  const [responseCode, setResponseCode] = useState(0);
 
   const isLetter = (str) => {
     return /^[A-Za-z]+$/.test(str);
@@ -142,13 +143,16 @@ function AddListing() {
 
     const data = await response.json();
     console.log(response.status, data);
+    setResponseCode(response.status);
 
     if (response.ok) {
-      alert("Listing created!");
-      navigate("/home");
+    //   // alert("Listing created!");
+      navigate("/home", {state: response.status});
     }
     setIsFetching(false);
   };
+
+
 
   return (
     <Container>
@@ -168,7 +172,7 @@ function AddListing() {
         />
         {errors.price && (
           <ErrorMessage className="error-text">
-            <span>{errors.price.message.toString()}</span>
+            <span id="price-error">{errors.price.message.toString()}</span>
           </ErrorMessage>
         )}
         <br />
@@ -501,6 +505,8 @@ function AddListing() {
           </SubmitButton>
         </CenteredButtonContainer>
       </form>
+
+      <input type="hidden" id="add-listing-response-code" value={responseCode}/>
     </Container>
   );
 }

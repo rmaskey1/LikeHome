@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, {useState} from "react";
+import {Link, useLocation} from "react-router-dom";
 import styled from "styled-components";
 import PreviewCardsListing from "../components/PreviewCardsListing";
 import { getAllListings, getMyListings } from "api";
@@ -72,6 +72,8 @@ function Home() {
     }
   );
 
+    const state = useLocation();
+
   return (
     <Container>
       {userinfo.accountType === "hotel" && ( //Render if hotel owner
@@ -79,7 +81,7 @@ function Home() {
           <Mylisting>
             My listings:
             <Link to="/room/add">
-              <Addbutton>Add +</Addbutton>
+              <Addbutton id="add-btn" >Add +</Addbutton>
             </Link>
           </Mylisting>
           {myListingsIsLoading ? (
@@ -98,6 +100,8 @@ function Home() {
       ) : (
         <PreviewCardsListing listings={allListings} />
       )}
+
+        <input type="hidden" id="home-response-code" value={state.state}/>
     </Container>
   );
 }

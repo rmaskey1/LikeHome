@@ -183,6 +183,7 @@ function Login() {
               },
             })}
             placeholder="Enter email"
+            id="email-input"
           />
         </InputContainer>
         {errors.email && (
@@ -200,6 +201,7 @@ function Login() {
             })}
             type="password"
             placeholder="Enter password"
+            id="password-input"
           />
         </InputContainer>
         {errors.password && (
@@ -210,7 +212,7 @@ function Login() {
         {serverError.status === 401 && (
           <ErrorMessageArea>{serverError.message}</ErrorMessageArea>
         )}
-        <SubmitBtn type="submit">
+        <SubmitBtn type="submit" id="submit-btn">
           {isFetching ? <Ellipsis color="white" size={30} /> : "Login"}
         </SubmitBtn>
       </Form>

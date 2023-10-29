@@ -34,5 +34,10 @@ public class AddListing {
     // submit
     public SelenideElement submitBtn = $x("//*[@id='submit-btn']");
 
+    //response code
+    public SelenideElement responseCode = $x("//*[@id='add-listing-response-code']");
+
+    // errors
+    public SelenideElement priceError = $x("//*[@id='price-error']");
 
 }
