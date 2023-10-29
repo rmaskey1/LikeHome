@@ -280,8 +280,8 @@ def updateHotelForRoom(uid, new_hotel_name, state, streetName,zipcode, country, 
 
 
 # Checks if any user has booked the hotel 
-def isBooked():
-    room_ids = getRoomIds()
+def isBooked(uid):
+    room_ids = getRoomIds(uid)
     # Check if there's no rid
     if room_ids[0] == 0:
         return False

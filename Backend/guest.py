@@ -79,7 +79,7 @@ def guest_modification_func(app):
                 #hotel users use listedRooms. This part deletes hotel users        
                 elif 'listedRooms' in doc.to_dict():
                     #don't delete if a room is booked
-                    if isBooked():
+                    if isBooked(uid):
                         abort(make_response(jsonify(message="Cannot delete; Room(s) are booked by guests"), 400))
                     else:
                         auth.delete_user(uid)

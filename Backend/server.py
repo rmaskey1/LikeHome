@@ -189,7 +189,7 @@ def queryByRmAttribute():
             query = db.collection("room")
             #query amenities if they are true
             for amenity in amenities:
-                query = query.where(amenities[amenity], '==', True)
+                query = db.collection("room").where(amenity, '==', True)
               
             #the other rm attributes
             bathrooms = data['bathrooms']
