@@ -36,9 +36,6 @@ function App() {
         <Route path="/room/:id/modify" element={<ModifyListing />} />
         <Route path="/room/:id/book" element={<BookingForm />} />
         <Route path="/room/:id/book/success" element={<BookingSuccess />} />
-        <Route path="/room/:id/modifybooking" element={<ModifyBooking />} />
-        <Route path="/room/:id/cancel" element={<BookingForm />} />
-        <Route path="/room/:id/cancel/success" element={<BookingSuccess />} />
 
         <Route path="/mybooking" element={<MyBookings />} />
         <Route path="/mybooking/:id/modify" element={<ModifyBooking />} />
