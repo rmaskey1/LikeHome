@@ -43,16 +43,16 @@ const CardContainer = styled.div`
   border-radius: 15px;
   margin-top: 20px;
   padding-right: 20px;
-  height: 225px; /* Set the card height, adjust as needed */
+  height: 225px; //Set the card height, adjust as needed
+  overflow: hidden;
 `;
 
 const RoomImage = styled.img`
   position: relative;
   border: none;
   width: 300px;
-  height: 225px;
-  object-fit: cover;
-  overflow: hidden;
+  height: 250px;
+  object-fit: cover; //Ensure the image fits within the defined dimensions
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
 `;
