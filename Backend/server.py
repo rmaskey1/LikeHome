@@ -189,7 +189,7 @@ def queryByRmAttribute():
             query = db.collection("room")
             #query amenities if they are true
             for amenity in amenities:
-                query = db.collection("room").where(amenity, '==', True)
+                query = db.collection("room").where(amenity, '==', True).get()
               
             #the other rm attributes
             bathrooms = data['bathrooms']
@@ -204,17 +204,17 @@ def queryByRmAttribute():
             #this part checks if each attribute exists or not
             
             if 'bathrooms' in data:
-                query = query.where('bathrooms', '<=', bathrooms)
+                query = query.where('bathrooms', '<=', bathrooms).get()
             if 'bedType' in data:
-                query = query.where('bedType', '==', bedType)
+                query = query.where('bedType', '==', bedType).get()
             if 'beds' in data:
-                query = query.where('beds', '<=', beds)
+                query = query.where('beds', '<=', beds).get()
             if 'guests' in data:
-                query = query.where('guests', '==', guests)
+                query = query.where('guests', '==', guests).get()
             if 'minPrice' in data:
-                query = query.where('minPrice', '<=', minPrice)
+                query = query.where('minPrice', '<=', minPrice).get()
             if 'maxPrice' in data:
-                query = query.where('maxPrice', '==', maxPrice)
+                query = query.where('maxPrice', '==', maxPrice).get()
 
             
             results = query.stream()
