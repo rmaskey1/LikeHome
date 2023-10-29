@@ -127,7 +127,7 @@ const Card = (booking) => {
   return (
     <CardContainer>
       <Link
-        to={`/mybooking/${booking.rid}/modify`}
+        to={`/room/${booking.rid}`}
         state={booking}
         style={{ display: "flex", width: "100%", textDecoration: "none" }}
       >
