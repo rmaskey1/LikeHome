@@ -272,7 +272,7 @@ function BookingForm() {
   });
 
   //you can play with the date to see different cancellation fee msgs!! <3
-  const checkInDate = new Date("2023-10-26"); //INTEGRATIONS!! replace with actual check-in date
+  const checkInDate = new Date("2023-10-29"); //INTEGRATIONS!! replace with actual check-in date
   const currentDate = new Date(); //today's date
 
   const isWithin24Hours = (date1, date2) => {
