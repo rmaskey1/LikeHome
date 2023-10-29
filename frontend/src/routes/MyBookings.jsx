@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { ReactComponent as CalendarIcon } from "../icons/calendar.svg";
 import { ReactComponent as MoonIcon } from "../icons/moon.svg";
 import { ReactComponent as MoneyIcon } from "../icons/money.svg";
+import { ReactComponent as GuestIcon } from "../icons/person-fill.svg";
 
 import { useQuery } from "react-query";
 import { getMyBooking } from "api";
@@ -126,7 +127,8 @@ const Card = (booking) => {
   return (
     <CardContainer>
       <Link
-        to={`/mybooking/${booking.rid}/modify`}
+        to={`/room/${booking.rid}`}
+        state={booking}
         style={{ display: "flex", width: "100%", textDecoration: "none" }}
       >
         <RoomImage src={booking.imageUrl} alt="Room" />
@@ -143,6 +145,12 @@ const Card = (booking) => {
           <IconWithText>
             <MoonIcon style={{ marginRight: "15px" }} />
             <SubTitle> {nights} Nights</SubTitle>
+          </IconWithText>
+          <IconWithText>
+            <GuestIcon
+              style={{ marginRight: "15px", width: "24px", height: "24px" }}
+            />
+            <SubTitle> {booking.reserved_guests} Guests</SubTitle>
           </IconWithText>
           <IconWithText>
             <MoneyIcon style={{ marginRight: "15px" }} />

@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { SERVER_URL } from "api";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import background from "../img/hotel-room.jpg";
 import { Ellipsis } from "react-spinners-css";
 
 const Container = styled.main`
@@ -360,7 +359,7 @@ function BookingForm() {
           </InfoText>
 
           <InfoTitle>Number of Guests:</InfoTitle>
-          <InfoText>{numGuests}</InfoText>
+          <InfoText>{roomData.reserved_guests}</InfoText>
         </div>
 
         <div>
@@ -455,7 +454,7 @@ function BookingForm() {
       <RightSide>
         <Card>
           <Image>
-            <img src={background} alt="hotel-room" />
+            <img src={roomData.imageUrl} alt="hotel-room" />
           </Image>
           <Pricing>{isCancelRoute ? "Amount Due:" : "Pricing:"}</Pricing>
           <CostAndAmount>
