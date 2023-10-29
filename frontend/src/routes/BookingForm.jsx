@@ -136,6 +136,7 @@ const CVC = styled.div`
 
 const SubmitButton = styled.button`
   margin-top: 30px;
+  margin-top: 30px;
   margin-left: 200px;
   width: 500px;
   height: 60px;
@@ -157,7 +158,11 @@ const Card = styled.div`
   border: 1px solid #293545;
   border-radius: 10px;
   padding: 10px;
+  border: 1px solid #293545;
+  border-radius: 10px;
+  padding: 10px;
   color: #293545;
+  //height: 490px;
   //height: 490px;
   width: 390px;
   display: block;
@@ -179,6 +184,7 @@ const RightSide = styled.div`
 `;
 
 const Image = styled.div`
+  padding: 15px;
   padding: 15px;
   height: 250px;
 
@@ -214,6 +220,7 @@ const Amount = styled.div`
 const Total = styled.div`
   margin-top: 60px;
   margin-left: 20px;
+  margin-bottom: 20px;
   margin-bottom: 20px;
   font-size: 20px;
   font-weight: bold;
