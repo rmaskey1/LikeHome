@@ -129,13 +129,16 @@ def bookings():
         # Can return empty array if there are no bookings
         if getAccountType() == 'hotel':
             abort(make_response(jsonify(message="User is not a guest!"), 404))
-        bookedRoom_ids = getGuestBookedRooms(getUid())
+        booking_docs = db.collection("booking").where("gid", "==", getUid()).stream()
         bookedRooms = []
-        for id in bookedRoom_ids:
+        for doc in booking_docs:
+            booking_ref = doc.to_dict()
+            id = booking_ref['rid']
             # Each id corresponds to the rid of a booked room
             if db.collection("room").document(id).get().exists == True:
                 bookedRoom_data = db.collection("room").document(id).get().to_dict()
                 bookedRoom_data['rid'] = id
+                bookedRoom_data['reserved_guests'] = booking_ref['numGuest']
                 bookedRooms.append(bookedRoom_data)
         return jsonify(bookedRooms)
     
@@ -149,13 +152,14 @@ def modify_bookings(rid):
 
     # Modify Booking Here
     if request.method == 'PUT':
+        numGuest = request.get_json()['guests']
         booking_ref = db.collection("booking")
         # Search for the specific booking and update it 
         query_ref = booking_ref.where("rid", "==", rid).where("gid", "==", getUid())
         docs = query_ref.stream()
         # Added updated data here, 4 is sample data
         updatedData = {
-            "numGuest": 4
+            "numGuest": numGuest
         }
         for doc in docs:
             doc.reference.update(updatedData)
