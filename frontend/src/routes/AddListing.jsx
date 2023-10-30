@@ -209,7 +209,7 @@ function AddListing() {
                 />
                 {errors.fromDate && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.fromDate.message.toString()}</span>
+                    <span id="fromDate-error">{errors.fromDate.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
@@ -249,7 +249,7 @@ function AddListing() {
                 />
                 {errors.toDate && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.toDate.message.toString()}</span>
+                    <span id="toDate-error">{errors.toDate.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
@@ -276,7 +276,7 @@ function AddListing() {
             />
             {errors.beds && (
               <ErrorMessage className="error-text">
-                <span>{errors.beds.message.toString()}</span>
+                <span id="beds-error">{errors.beds.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -300,7 +300,7 @@ function AddListing() {
             />
             {errors.bedType && (
               <ErrorMessage className="error-text">
-                <span>{errors.bedType.message.toString()}</span>
+                <span id="bedType-error">{errors.bedType.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -323,7 +323,7 @@ function AddListing() {
             />
             {errors.guests && (
               <ErrorMessage className="error-text">
-                <span>{errors.guests.message.toString()}</span>
+                <span id="guests-error">{errors.guests.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -344,7 +344,7 @@ function AddListing() {
             />
             {errors.bathrooms && (
               <ErrorMessage className="error-text">
-                <span>{errors.bathrooms.message.toString()}</span>
+                <span id="bathrooms-error">{errors.bathrooms.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -360,7 +360,7 @@ function AddListing() {
           id="image-input"
         />
         {errors.image && (
-          <ErrorMessage>{errors.image.message.toString()}</ErrorMessage>
+          <ErrorMessage id="image-error">{errors.image.message.toString()}</ErrorMessage>
         )}
 
         <br />

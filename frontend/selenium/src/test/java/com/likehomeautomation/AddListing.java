@@ -39,5 +39,12 @@ public class AddListing {
 
     // errors
     public SelenideElement priceError = $x("//*[@id='price-error']");
+    public SelenideElement fromDateError = $x("//*[@id='fromDate-error']");
+    public SelenideElement toDateError = $x("//*[@id='toDate-error']");
+    public SelenideElement bedsError = $x("//*[@id='beds-error']");
+    public SelenideElement bedTypeError = $x("//*[@id='bedType-error']");
+    public SelenideElement guestsError = $x("//*[@id='guests-error']");
+    public SelenideElement bathroomsError = $x("//*[@id='bathrooms-error']");
+    public SelenideElement imageUrlError = $x("//*[@id='image-error']");
 
 }

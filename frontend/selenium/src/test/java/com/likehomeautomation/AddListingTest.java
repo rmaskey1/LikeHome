@@ -117,10 +117,170 @@ public class AddListingTest {
 
         ArrayList<SelenideElement> amenities = this.selectRandomAmenities();
         add.submitBtn.click();
-        
+
         assert(add.priceError.isDisplayed());
     }
 
+    @Test
+    public void addListing_fail_fromDate() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        open("/room/add");
+        Thread.sleep(1000);
+        add.price.sendKeys("150");
+        Thread.sleep(1000);
+        add.fromDate.sendKeys("-5");
+        add.toDate.sendKeys("11/18/2023");
+        add.beds.sendKeys("2");
+        add.bedType.sendKeys("queen");
+        add.guests.sendKeys("4");
+        add.bathrooms.sendKeys("1");
+        add.imageUrl.sendKeys("https://www.google.com/url?sa=i&url=https%3A%2F%2Frhotelgeelong.com.au%2Faccommodation%2Fhotel-rooms%2F&psig=AOvVaw19gTfbYSnHKylnsvwBBEEF&ust=1698201232861000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCKC5mN3SjYIDFQAAAAAdAAAAABAD");
+        Thread.sleep(1000);
+
+        ArrayList<SelenideElement> amenities = this.selectRandomAmenities();
+        add.submitBtn.click();
+
+        assert(add.fromDateError.isDisplayed());
+    }
+
+    @Test
+    public void addListing_fail_toDate() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        open("/room/add");
+        Thread.sleep(1000);
+        add.price.sendKeys("150");
+        Thread.sleep(1000);
+        add.fromDate.sendKeys("03/26/2021");
+        add.toDate.sendKeys("-83");
+        add.beds.sendKeys("2");
+        add.bedType.sendKeys("queen");
+        add.guests.sendKeys("4");
+        add.bathrooms.sendKeys("1");
+        add.imageUrl.sendKeys("https://www.google.com/url?sa=i&url=https%3A%2F%2Frhotelgeelong.com.au%2Faccommodation%2Fhotel-rooms%2F&psig=AOvVaw19gTfbYSnHKylnsvwBBEEF&ust=1698201232861000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCKC5mN3SjYIDFQAAAAAdAAAAABAD");
+        Thread.sleep(1000);
+
+        ArrayList<SelenideElement> amenities = this.selectRandomAmenities();
+        add.submitBtn.click();
+
+        assert(add.toDateError.isDisplayed());
+    }
+
+    @Test
+    public void addListing_fail_beds() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        open("/room/add");
+        Thread.sleep(1000);
+        add.price.sendKeys("150");
+        Thread.sleep(1000);
+        add.fromDate.sendKeys("03/26/2021");
+        add.toDate.sendKeys("10/29/2023");
+        add.beds.sendKeys("");
+        add.bedType.sendKeys("queen");
+        add.guests.sendKeys("4");
+        add.bathrooms.sendKeys("1");
+        add.imageUrl.sendKeys("https://www.google.com/url?sa=i&url=https%3A%2F%2Frhotelgeelong.com.au%2Faccommodation%2Fhotel-rooms%2F&psig=AOvVaw19gTfbYSnHKylnsvwBBEEF&ust=1698201232861000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCKC5mN3SjYIDFQAAAAAdAAAAABAD");
+        Thread.sleep(1000);
+
+        ArrayList<SelenideElement> amenities = this.selectRandomAmenities();
+        add.submitBtn.click();
+
+        assert(add.bedsError.isDisplayed());
+    }
+
+    @Test
+    public void addListing_fail_bedType() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        open("/room/add");
+        Thread.sleep(1000);
+        add.price.sendKeys("150");
+        Thread.sleep(1000);
+        add.fromDate.sendKeys("03/26/2021");
+        add.toDate.sendKeys("10/29/2023");
+        add.beds.sendKeys("2");
+        add.bedType.sendKeys("");
+        add.guests.sendKeys("4");
+        add.bathrooms.sendKeys("1");
+        add.imageUrl.sendKeys("https://www.google.com/url?sa=i&url=https%3A%2F%2Frhotelgeelong.com.au%2Faccommodation%2Fhotel-rooms%2F&psig=AOvVaw19gTfbYSnHKylnsvwBBEEF&ust=1698201232861000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCKC5mN3SjYIDFQAAAAAdAAAAABAD");
+        Thread.sleep(1000);
+
+        ArrayList<SelenideElement> amenities = this.selectRandomAmenities();
+        add.submitBtn.click();
+
+        assert(add.bedTypeError.isDisplayed());
+    }
+
+    @Test
+    public void addListing_fail_guests() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        open("/room/add");
+        Thread.sleep(1000);
+        add.price.sendKeys("150");
+        Thread.sleep(1000);
+        add.fromDate.sendKeys("03/26/2021");
+        add.toDate.sendKeys("10/29/2023");
+        add.beds.sendKeys("2");
+        add.bedType.sendKeys("queen");
+        add.guests.sendKeys("0");
+        add.bathrooms.sendKeys("1");
+        add.imageUrl.sendKeys("https://www.google.com/url?sa=i&url=https%3A%2F%2Frhotelgeelong.com.au%2Faccommodation%2Fhotel-rooms%2F&psig=AOvVaw19gTfbYSnHKylnsvwBBEEF&ust=1698201232861000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCKC5mN3SjYIDFQAAAAAdAAAAABAD");
+        Thread.sleep(1000);
+
+        ArrayList<SelenideElement> amenities = this.selectRandomAmenities();
+        add.submitBtn.click();
+
+        assert(add.guestsError.isDisplayed());
+    }
+
+    @Test
+    public void addListing_fail_bathrooms() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        open("/room/add");
+        Thread.sleep(1000);
+        add.price.sendKeys("150");
+        Thread.sleep(1000);
+        add.fromDate.sendKeys("03/26/2021");
+        add.toDate.sendKeys("10/29/2023");
+        add.beds.sendKeys("2");
+        add.bedType.sendKeys("queen");
+        add.guests.sendKeys("4");
+        add.bathrooms.sendKeys("");
+        add.imageUrl.sendKeys("https://www.google.com/url?sa=i&url=https%3A%2F%2Frhotelgeelong.com.au%2Faccommodation%2Fhotel-rooms%2F&psig=AOvVaw19gTfbYSnHKylnsvwBBEEF&ust=1698201232861000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCKC5mN3SjYIDFQAAAAAdAAAAABAD");
+        Thread.sleep(1000);
+
+        ArrayList<SelenideElement> amenities = this.selectRandomAmenities();
+        add.submitBtn.click();
+
+        assert(add.bathroomsError.isDisplayed());
+    }
+
+    @Test
+    public void addListing_fail_image() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        open("/room/add");
+        Thread.sleep(1000);
+        add.price.sendKeys("150");
+        Thread.sleep(1000);
+        add.fromDate.sendKeys("03/26/2021");
+        add.toDate.sendKeys("10/29/2023");
+        add.beds.sendKeys("2");
+        add.bedType.sendKeys("queen");
+        add.guests.sendKeys("4");
+        add.bathrooms.sendKeys("1");
+        add.imageUrl.sendKeys("");
+        Thread.sleep(1000);
+
+        ArrayList<SelenideElement> amenities = this.selectRandomAmenities();
+        add.submitBtn.click();
+
+        assert(add.imageUrlError.isDisplayed());
+    }
 
     ArrayList<SelenideElement> selectRandomAmenities(){
         ArrayList<SelenideElement> selectedAmenities = new ArrayList<>();
@@ -133,26 +293,6 @@ public class AddListingTest {
         }
         return selectedAmenities;
     }
-
-//    int getResponseCode(WebDriver driver, String urlString){
-//        System.out.println("[getResponseCode()]: " + urlString);
-//        try{
-//            HttpURLConnection cn = (HttpURLConnection) new URL(urlString).openConnection();
-//
-//            // mocks call to flask server
-//            cn.setRequestMethod("POST");
-//            cn.setRequestProperty("Content-Type", "application/json");
-//            JSONObject formData = new JSONObject();
-//            cn.setRequestProperty("body", "test");
-//            cn.connect();
-//            return cn.getResponseCode();
-//        }
-//        catch(Exception e){
-//            e.printStackTrace();
-//        }
-//        return -1;
-//    }
-
     void loginAsHotel() throws Exception{
         login.email.sendKeys("vip@hotel.com");
         login.password.sendKeys("123456");
