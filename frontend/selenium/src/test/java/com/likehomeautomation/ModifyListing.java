@@ -4,16 +4,15 @@ import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selenide.$x;
 
-public class AddListing {
-    // required inputs
-    public SelenideElement price = $x("//*[@id='price-input']");
-    public SelenideElement fromDate = $x("//*[@id='fromDate-input']");
-    public SelenideElement toDate = $x("//*[@id='toDate-input']");
-    public SelenideElement beds = $x("//*[@id='beds-input']");
-    public SelenideElement bedType = $x("//*[@id='bedType-input']");
-    public SelenideElement guests = $x("//*[@id='guests-input']");
-    public SelenideElement bathrooms = $x("//*[@id='bathrooms-input']");
-    public SelenideElement imageUrl = $x("//*[@id='image-input']");
+public class ModifyListing {
+    public SelenideElement price = $x("//*[@id='price-field']");
+    public SelenideElement fromDate = $x("//*[@id='fromDate-field']");
+    public SelenideElement toDate = $x("//*[@id='toDate-field']");
+    public SelenideElement beds = $x("//*[@id='beds-field']");
+    public SelenideElement bedType = $x("//*[@id='bedType-field']");
+    public SelenideElement guests = $x("//*[@id='guests-field']");
+    public SelenideElement bathrooms = $x("//*[@id='bathrooms-field']");
+    public SelenideElement imageUrl = $x("//*[@id='image-field']");
 
     // optional amenities
     public SelenideElement freeWifi = $x("//*[@id='freeWifi-box']");
@@ -43,5 +42,4 @@ public class AddListing {
     public SelenideElement guestsError = $x("//*[@id='guests-error']");
     public SelenideElement bathroomsError = $x("//*[@id='bathrooms-error']");
     public SelenideElement imageUrlError = $x("//*[@id='image-error']");
-
 }

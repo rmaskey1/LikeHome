@@ -3,39 +3,27 @@ package com.likehomeautomation;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
-import com.likehomeautomation.AddListing;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.selenide.AllureSelenide;
-import org.json.simple.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import com.codeborne.selenide.logevents.SelenideLogger;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import static com.codeborne.selenide.Selenide.open;
-import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.openqa.selenium.devtools.v85.tracing.model.StreamFormat.JSON;
 
 public class AddListingTest {
     WebDriver driver;
 
     Login login = new Login();
     Home home = new Home();
-
     AddListing add = new AddListing();
     HashMap<Integer, SelenideElement> amenitiesMap = new HashMap<>();
 
@@ -64,7 +52,6 @@ public class AddListingTest {
         amenitiesMap.put(12, add.pet);
         amenitiesMap.put(13, add.spa);
 
-//        Configuration.browserCapabilities = ;
         WebDriverRunner.setWebDriver(new ChromeDriver(new ChromeOptions().addArguments("--remote-allow-origins=*")));
         Configuration.baseUrl = "http://127.0.0.1:3000" ;
         open("/login");

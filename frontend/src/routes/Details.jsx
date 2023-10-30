@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Modal from "react-modal";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import { ReactComponent as PersonIcon } from "../icons/person-fill.svg";
 import { ReactComponent as BedIcon } from "../icons/bed.svg";
@@ -195,6 +195,7 @@ const SectionTitle = styled.div`
 function Details() {
   const params = useParams();
   const navigate = useNavigate();
+  const state = useLocation();
 
   const rid = params.id;
   const userinfo = localStorage.userinfo
@@ -259,14 +260,14 @@ function Details() {
             </div>
             <div>
               {userinfo.accountType === "hotel" && (
-                <Dropdown onClick={toggleDropdown}>
+                <Dropdown id="dropdown-btn" onClick={toggleDropdown}>
                   . . .
                   {isDropdownOpen && (
                     <DropdownContent>
-                      <DropdownItem onClick={handleEditListingClick}>
+                      <DropdownItem id="edit-btn" onClick={handleEditListingClick}>
                         Edit Listing
                       </DropdownItem>
-                      <DropdownItem onClick={openDeleteModal}>
+                      <DropdownItem id="delete-btn" onClick={openDeleteModal}>
                         Delete Listing
                       </DropdownItem>
                     </DropdownContent>
@@ -287,7 +288,7 @@ function Details() {
             </ImgContainer>
             <Reserve>
               <div>
-                <span style={{ fontSize: "30px", fontWeight: 600 }}>
+                <span id="price-detail" style={{ fontSize: "30px", fontWeight: 600 }}>
                   ${data.price}
                 </span>{" "}
                 <span style={{ fontSize: "20px", fontWeight: 400 }}>
@@ -311,6 +312,7 @@ function Details() {
                         onClickDay={toggleShowCheckIn}
                         value={checkInValue}
                         locale="en-GB"
+                        id="fromDate-detail"
                       />
                     </CalendarContainer>
                   )}
@@ -334,6 +336,7 @@ function Details() {
                         onClickDay={toggleShowCheckOut}
                         value={checkOnValue}
                         locale="en-GB"
+                        id="toDate-detail"
                       />
                     </CalendarContainer>
                   )}
@@ -351,17 +354,17 @@ function Details() {
             <h1>Room Details</h1>
             <DetailItem>
               <PersonIcon />
-              <span>{data.numberGuests} Guests</span>
+              <span id="guests-detail">{data.numberGuests} Guests</span>
             </DetailItem>
             <DetailItem>
               <BedIcon />
-              <span>
-                {data.numberOfBeds} Beds / 2 {data.bedType}
-              </span>
+              <span id="beds-detail">{data.numberOfBeds} Beds <span id="bedType-detail">({data.bedType})
+              </span></span>
+
             </DetailItem>
             <DetailItem>
               <SinkIcon />
-              <span>{data.numberOfBathrooms} Bath</span>
+              <span id="bathrooms-detail">{data.numberOfBathrooms} Bath</span>
             </DetailItem>
           </Detail>
           <Divider />
@@ -415,6 +418,8 @@ function Details() {
           </Modal>
         </>
       )}
+
+      {/*<input type="hidden" id="modify-response-code" value={state.state}/>*/}
     </Container>
   );
 }

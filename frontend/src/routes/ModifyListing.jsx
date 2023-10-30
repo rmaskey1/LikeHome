@@ -170,7 +170,7 @@ function ModifyListing() {
     console.log(response.status, data);
 
     if (response.ok) {
-      navigate(location.pathname.replace("/modify", ""));
+      navigate(location.pathname.replace("/modify", ""), {state: response.status});
     }
   };
 
@@ -189,10 +189,11 @@ function ModifyListing() {
           type="number"
           style={{ color: "black" }}
           defaultValue={existingData.price}
+          id="price-field"
         />
         {errors.price && (
           <ErrorMessage className="error-text">
-            <span>{errors.price.message.toString()}</span>
+            <span id="price-error">{errors.price.message.toString()}</span>
           </ErrorMessage>
         )}
         <br />
@@ -226,10 +227,11 @@ function ModifyListing() {
                   placeholder="mm/dd/yyyy"
                   style={{ color: "black" }}
                   defaultValue={existingData.fromDate}
+                  id="fromDate-field"
                 />
                 {errors.fromDate && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.fromDate.message.toString()}</span>
+                    <span id="fromDate-error">{errors.fromDate.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
@@ -266,10 +268,11 @@ function ModifyListing() {
                   placeholder="mm/dd/yyyy"
                   style={{ color: "black" }}
                   defaultValue={existingData.toDate}
+                  id="toDate-field"
                 />
                 {errors.toDate && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.toDate.message.toString()}</span>
+                    <span id="toDate-error">{errors.toDate.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
@@ -293,10 +296,11 @@ function ModifyListing() {
               type="number"
               style={{ color: "black" }}
               defaultValue={existingData.beds}
+              id="beds-field"
             />
             {errors.beds && (
               <ErrorMessage className="error-text">
-                <span>{errors.beds.message.toString()}</span>
+                <span id="beds-error">{errors.beds.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -317,10 +321,11 @@ function ModifyListing() {
               type="text"
               style={{ color: "black" }}
               defaultValue={existingData.bedType}
+              id="bedType-field"
             />
             {errors.bedType && (
               <ErrorMessage className="error-text">
-                <span>{errors.bedType.message.toString()}</span>
+                <span id="bedType-error">{errors.bedType.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -340,10 +345,11 @@ function ModifyListing() {
               type="number"
               style={{ color: "black" }}
               defaultValue={existingData.guests}
+              id="guests-field"
             />
             {errors.guests && (
               <ErrorMessage className="error-text">
-                <span>{errors.guests.message.toString()}</span>
+                <span id="guests-error">{errors.guests.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -361,10 +367,11 @@ function ModifyListing() {
               type="number"
               style={{ color: "black" }}
               defaultValue={existingData.bathrooms}
+              id="bathrooms-field"
             />
             {errors.bathrooms && (
               <ErrorMessage className="error-text">
-                <span>{errors.bathrooms.message.toString()}</span>
+                <span id="bathrooms-error">{errors.bathrooms.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -378,9 +385,10 @@ function ModifyListing() {
           type="url"
           style={{ color: "black" }}
           defaultValue={existingData.image}
+          id="imageUrl-field"
         />
         {errors.image && (
-          <ErrorMessage>{errors.image.message.toString()}</ErrorMessage>
+          <ErrorMessage id="image-error">{errors.image.message.toString()}</ErrorMessage>
         )}
 
         <br />
@@ -405,6 +413,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
+                  id="pool-box"
                 name="amenities[1].pool"
                 control={control}
                 defaultValue={existingData.amenities[1].pool}
@@ -420,6 +429,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
+                  id="tv-box"
                 name="amenities[2].tv"
                 control={control}
                 defaultValue={existingData.amenities[2].tv}
@@ -435,6 +445,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
+                  id="washer-box"
                 name="amenities[3].freeWasherInUnit"
                 control={control}
                 defaultValue={existingData.amenities[3].freeWasherInUnit}
@@ -450,6 +461,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
+                  id="dryer-box"
                 name="amenities[4].freeDryerInUnit"
                 control={control}
                 defaultValue={existingData.amenities[4].freeDryerInUnit}
@@ -465,6 +477,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
+                  id="parking-box"
                 name="amenities[5].freeParking"
                 control={control}
                 defaultValue={existingData.amenities[5].freeParking}
@@ -480,6 +493,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
+                  id="ac-box"
                 name="amenities[6].airConditioning"
                 control={control}
                 defaultValue={existingData.amenities[6].airConditioning}
@@ -497,6 +511,7 @@ function ModifyListing() {
           <CheckboxItem>
             <Label>
               <Controller
+                  id="breakfast-box"
                 name="amenities[7].freeBreakfast"
                 control={control}
                 defaultValue={existingData.amenities[7].freeBreakfast}
@@ -512,6 +527,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
+                  id="lunch-box"
                 name="amenities[8].freeLunch"
                 control={control}
                 defaultValue={existingData.amenities[8].freeLunch}
@@ -527,6 +543,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
+                  id="dinner-box"
                 name="amenities[9].freeDinner"
                 control={control}
                 defaultValue={existingData.amenities[9].freeDinner}
@@ -542,6 +559,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
+                  id="microwave-box"
                 name="amenities[10].microwave"
                 control={control}
                 defaultValue={existingData.amenities[10].microwave}
@@ -557,6 +575,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
+                  id="refrigerator-box"
                 name="amenities[11].refrigerator"
                 control={control}
                 defaultValue={existingData.amenities[11].refrigerator}
@@ -572,6 +591,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
+                  id="pet-box"
                 name="amenities[12].petFriendly"
                 control={control}
                 defaultValue={existingData.amenities[12].petFriendly}
@@ -587,6 +607,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
+                  id="spa-box"
                 name="amenities[13].spa"
                 control={control}
                 defaultValue={existingData.amenities[13].spa}
@@ -603,7 +624,7 @@ function ModifyListing() {
           </CheckboxItem>
         </CheckboxGroup>
         <CenteredButtonContainer>
-          <SubmitButton type="submit">Save</SubmitButton>
+          <SubmitButton id="submit-btn" type="submit">Save</SubmitButton>
         </CenteredButtonContainer>
       </form>
     </Container>
