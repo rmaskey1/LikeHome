@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "chromedriver": "^118.0.1",
+    "geckodriver": "^4.2.1",
     "react": "^18.2.0",
     "react-hook-form": "^7.47.0",
     "react-icons": "^4.11.0",
@@ -9,6 +11,7 @@
     "react-script": "^2.0.5",
     "react-spinners-css": "^2.0.1",
     "recoil": "^0.7.7",
+    "selenium-webdriver": "^4.14.0",
     "styled-component": "^2.8.0",
     "styled-components": "^6.1.0"
   }
