@@ -94,7 +94,8 @@ const SubmitButton = styled.button`
 
 const CenteredButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-top: 20px;
 `;
 

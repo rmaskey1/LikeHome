@@ -15,3 +15,7 @@ export function getMyListings(uid) {
     response.json()
   );
 }
+
+export function getMyBooking() {
+  return fetch(`${SERVER_URL}/bookings`).then((response) => response.json());
+}

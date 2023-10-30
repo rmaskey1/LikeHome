@@ -5,7 +5,7 @@ import jwt
 import datetime
 from flask import Flask, request, jsonify, make_response, abort
 from datetime import timedelta
-
+from google.cloud.firestore_v1.base_query import FieldFilter
 # -----------IMPORTANT-------------
 # 1. On your terminal execute this command "pip install firebase-admin"
 # 2. Also install Flask: "pip install flask"
@@ -102,12 +102,26 @@ def addHotelInfo(userId, hotelName, street, city, zipcode, state, country):
     })
     return doc_ref.get().to_dict()
 
-def addBooking(rid, uid, start_date, end_date):
-    doc_ref = db.collection("booking").document(rid).set({
-        'uid': uid,
-        'startDate': start_date,
-        'endDate': end_date,
+def addBooking(gid, rid, startDate, endDate, numGuest):
+    # Add rid to user's bookedRooms
+    doc_ref = db.collection("user").document(gid)
+    x = doc_ref.get().to_dict()["bookedRooms"]
+    x.append(rid)
+    doc_ref.update({
+        'bookedRooms' : x
     })
+
+    doc_ref = db.collection("booking").add({
+        'gid': gid,
+        'rid': rid,
+        'startDate': startDate,
+        'endDate': endDate,
+        'numGuest': numGuest
+    })
+    docs = db.collection("booking").where(filter=FieldFilter("gid", "==", gid)).where(filter=FieldFilter("rid", "==", rid)).stream()
+    for doc in docs:
+        return doc.to_dict()
+    return docs[0].to_dict()
 
 # Main method for testing
 def main():
@@ -123,9 +137,19 @@ def main():
 
     addBooking('RID HERE', 'UID HERE', "11/17/2023" , "11/27/2023")
 
+def checkUserIsLoggedIn():
+    # Check if user is logged in
+    return pyrebase_auth.current_user is not None
+
+def checkUidExists(uid):
+    # Check if user is logged in
+    return db.collection("user").document(uid).get().exists
 
 # Function to return uid of current user
 def getUid():
+    # check if user is logged in, throw an error if user is not
+    if checkUserIsLoggedIn() == False:
+            abort(make_response(jsonify(message="User is not logged in"), 404))
     # Get JSON of user's information
     user_info = pyrebase_auth.current_user
     user_info = jsonify(user_info)
@@ -230,7 +254,7 @@ def update_room(uid, rid, price, fromDate, toDate, beds, guests, bathrooms, bedT
         "numberOfBathrooms": bathrooms,
         "bedType": bedType,
         "imageUrl": image,
-        "Amenities": amenities
+        "Amenities": amenities,
     }
 
     # Update the document with the provided data
@@ -281,6 +305,16 @@ def roomBooked(rid):
     else:
         return False
     
+# Get room ids array from hotel user 
+def getGuestBookedRooms(uid):
+    # Get hotel information
+    doc_ref = db.collection("user").document(uid)
+    doc_data = doc_ref.get().to_dict()
+
+    # Get guest's bookedRooms array field
+    room_ids = doc_data.get('bookedRooms', [])
+    return room_ids
+    
 
 # Get room ids array from hotel user 
 def getRoomIds(uid):
@@ -292,7 +326,8 @@ def getRoomIds(uid):
     room_ids = doc_data.get('listedRooms', [])
     return room_ids
 
-
+def checkIfRoomExists(rid):
+    return db.collection("room").document(rid).get().exists
 
 
 def getHotelName():
@@ -305,7 +340,9 @@ def getHotelName():
 def getAccountType():
     user_ref = db.collection("user").document(getUid())
     userDoc = user_ref.get().to_dict()
+    print(userDoc)
     accountType = userDoc['accountType']
     return accountType
+
 # Function to modify user's information
 #def changeGuestInfo(email, phone, password, first_name, ):
