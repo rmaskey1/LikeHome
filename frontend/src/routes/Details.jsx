@@ -8,7 +8,7 @@ import { ReactComponent as BedIcon } from "../icons/bed.svg";
 import { ReactComponent as SinkIcon } from "../icons/sink.svg";
 import { useQuery } from "react-query";
 import "react-calendar/dist/Calendar.css";
-import { SERVER_URL, getListing } from "api";
+import { SERVER_URL, getListing, getMyBooking } from "api";
 import Amenity from "components/Amenity";
 
 const Container = styled.main`
@@ -242,6 +242,11 @@ function Details() {
     ? JSON.parse(localStorage.userinfo)
     : {};
 
+  const { isLoading: bookingIsLoading, data: bookingData } = useQuery(
+    ["myBooking"],
+    getMyBooking
+  );
+
   const { isLoading, data } = useQuery(["listing"], () => getListing(rid));
   const [numGuests, setNumGuests] = useState(2);
 
@@ -292,7 +297,7 @@ function Details() {
   };
 
   const isGuest = userinfo.accountType === "guest";
-  const isReserved = true; //INTEGRATIONS! Add method to check if the user has reserved this listing
+  const isReserved = bookingData.find((b) => b.rid === rid); //INTEGRATIONS! Add method to check if the user has reserved this listing
 
   return (
     <Container>
@@ -343,12 +348,20 @@ function Details() {
               <Reserve>
                 <div>You are currently reserving this listing.</div>
                 <Reservebtn
-                  onClick={() => navigate(`/mybooking/${rid}/modify`)}
+                  onClick={() =>
+                    navigate(`/mybooking/${rid}/modify`, {
+                      state: { roomData: data, numGuests },
+                    })
+                  }
                 >
                   Modify Booking
                 </Reservebtn>
                 <Reservebtn
-                  onClick={() => navigate(`/mybooking/${rid}/cancel`)}
+                  onClick={() =>
+                    navigate(`/mybooking/${rid}/cancel`, {
+                      state: { roomData: data, numGuests },
+                    })
+                  }
                 >
                   Cancel Booking
                 </Reservebtn>

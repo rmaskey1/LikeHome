@@ -359,7 +359,7 @@ function BookingForm() {
           </InfoText>
 
           <InfoTitle>Number of Guests:</InfoTitle>
-          <InfoText>{roomData.reserved_guests}</InfoText>
+          <InfoText>{numGuests}</InfoText>
         </div>
 
         <div>
