@@ -88,41 +88,28 @@ function ModifyBooking() {
   //const roominfo = location.state;
   const [isFetching, setIsFetching] = useState(false);
 
+  const room = location.state;
+
   const isDateValid = (date) => {
     const parsedDate = Date.parse(date); // Try to parse the date string
     return !isNaN(parsedDate); // Check if it's a valid date
   };
 
-  //SORRY I tried implementing for once and i got errors and now im scared
-  const existingData = {
-    fromDate: "10/23/2024", //new Date(roominfo.startDate).toLocaleDateString(),
-    toDate: "11/25/2024", //new Date(roominfo.endDate).toLocaleDateString(),
-    guests: 3, //roominfo.numberGuests,
-  };
-
   //INTEGRATIONS!! replace with availability check logic??
   const checkAvailability = (formFromDate, formToDate) => {
-    return false; //made it false so I can check if it works LOL
+    return true; //made it false so I can check if it works LOL
   };
 
   const onSubmit = async (formData) => {
-    //handle form submission here
-
-    /*
     setIsFetching(true);
     console.log(formData);
-    const response = await fetch(
-      `${SERVER_URL}/listing?uid=${localStorage.uid}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      }
-    );
-
-    */
+    const response = await fetch(`${SERVER_URL}/bookings/${room.rid}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
 
     const datesAvailable = checkAvailability(
       formData.fromDate,
@@ -137,15 +124,13 @@ function ModifyBooking() {
       return;
     }
 
-    /*
     const data = await response.json();
     console.log(response.status, data);
 
-    if (response.ok) {
-      navigate(location.pathname.replace("/mybooking", ""));
-    }
-    */
-
+    // if (response.ok) {
+    //   navigate(location.pathname.replace("/mybooking", ""));
+    // }
+    setIsFetching(false);
     navigate("/mybooking");
   };
 
@@ -182,7 +167,11 @@ function ModifyBooking() {
                   type="text"
                   placeholder="mm/dd/yyyy"
                   style={{ color: "black" }}
-                  defaultValue={existingData.fromDate}
+                  defaultValue={new Date(room.startDate).toLocaleDateString(
+                    "en-US",
+                    { year: "numeric", month: "2-digit", day: "2-digit" }
+                  )}
+                  readOnly
                 />
                 {errors.fromDate && (
                   <ErrorMessage className="error-text">
@@ -222,7 +211,11 @@ function ModifyBooking() {
                   type="text"
                   placeholder="mm/dd/yyyy"
                   style={{ color: "black" }}
-                  defaultValue={existingData.toDate}
+                  defaultValue={new Date(room.endDate).toLocaleDateString(
+                    "en-US",
+                    { year: "numeric", month: "2-digit", day: "2-digit" }
+                  )}
+                  readOnly
                 />
                 {errors.toDate && (
                   <ErrorMessage className="error-text">
@@ -248,7 +241,7 @@ function ModifyBooking() {
           })}
           type="number"
           style={{ color: "black" }}
-          defaultValue={existingData.guests}
+          defaultValue={room.numberGuests}
         />
         {errors.guests && (
           <ErrorMessage className="error-text">
@@ -265,7 +258,9 @@ function ModifyBooking() {
               <span>{errors.datesAvailable.message.toString()}</span>
             </ErrorMessage>
           )}
-          <SubmitButton type="submit">Update</SubmitButton>
+          <SubmitButton type="submit">
+            {isFetching ? <Ellipsis color="white" size={30} /> : "Update"}
+          </SubmitButton>
         </CenteredButtonContainer>
       </form>
     </Container>
