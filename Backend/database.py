@@ -5,7 +5,7 @@ import jwt
 import datetime
 from flask import Flask, request, jsonify, make_response, abort
 from datetime import timedelta
-
+from google.cloud.firestore_v1.base_query import FieldFilter
 # -----------IMPORTANT-------------
 # 1. On your terminal execute this command "pip install firebase-admin"
 # 2. Also install Flask: "pip install flask"
@@ -103,6 +103,14 @@ def addHotelInfo(userId, hotelName, street, city, zipcode, state, country):
     return doc_ref.get().to_dict()
 
 def addBooking(gid, rid, startDate, endDate, numGuest):
+    # Add rid to user's bookedRooms
+    doc_ref = db.collection("user").document(gid)
+    x = doc_ref.get().to_dict()["bookedRooms"]
+    x.append(rid)
+    doc_ref.update({
+        'bookedRooms' : x
+    })
+
     doc_ref = db.collection("booking").add({
         'gid': gid,
         'rid': rid,
@@ -110,7 +118,10 @@ def addBooking(gid, rid, startDate, endDate, numGuest):
         'endDate': endDate,
         'numGuest': numGuest
     })
-    return doc_ref.get().to_dict()
+    docs = db.collection("booking").where(filter=FieldFilter("gid", "==", gid)).where(filter=FieldFilter("rid", "==", rid)).stream()
+    for doc in docs:
+        return doc.to_dict()
+    return docs[0].to_dict()
 
 # Main method for testing
 def main():
@@ -329,6 +340,7 @@ def getHotelName():
 def getAccountType():
     user_ref = db.collection("user").document(getUid())
     userDoc = user_ref.get().to_dict()
+    print(userDoc)
     accountType = userDoc['accountType']
     return accountType
 

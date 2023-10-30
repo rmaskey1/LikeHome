@@ -37,9 +37,13 @@ function App() {
         <Route path="/room/:id/book" element={<BookingForm />} />
         <Route path="/room/:id/book/success" element={<BookingSuccess />} />
 
-
         <Route path="/mybooking" element={<MyBookings />} />
-        <Route path="/booking/:id/modify" element={<ModifyBooking />} />
+        <Route path="/mybooking/:id/modify" element={<ModifyBooking />} />
+        <Route path="/mybooking/:id/cancel" element={<BookingForm />} />
+        <Route
+          path="/mybooking/:id/cancel/success"
+          element={<BookingSuccess />}
+        />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

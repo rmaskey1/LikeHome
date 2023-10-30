@@ -1,7 +1,7 @@
 import { SERVER_URL } from "api";
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useParams, Link, useLocation } from "react-router-dom";
 import { Ellipsis } from "react-spinners-css";
 import styled from "styled-components";
 
@@ -82,27 +82,52 @@ function ModifyBooking() {
     formState: { errors },
     getValues,
   } = useForm();
+  const location = useLocation();
+  const navigate = useNavigate();
+  //const rid = useParams().id;
+  //const roominfo = location.state;
+  const [isFetching, setIsFetching] = useState(false);
 
   const isDateValid = (date) => {
     const parsedDate = Date.parse(date); // Try to parse the date string
     return !isNaN(parsedDate); // Check if it's a valid date
   };
 
+  //SORRY I tried implementing for once and i got errors and now im scared
   const existingData = {
-    fromDate: "12/13/2024",
-    toDate: "01/14/2025",
-    guests: 3,
+    fromDate: "10/23/2024", //new Date(roominfo.startDate).toLocaleDateString(),
+    toDate: "11/25/2024", //new Date(roominfo.endDate).toLocaleDateString(),
+    guests: 3, //roominfo.numberGuests,
   };
 
   //INTEGRATIONS!! replace with availability check logic??
-  const checkAvailability = (fromDate, toDate) => {
+  const checkAvailability = (formFromDate, formToDate) => {
     return false; //made it false so I can check if it works LOL
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (formData) => {
     //handle form submission here
 
-    const datesAvailable = checkAvailability(data.fromDate, data.toDate);
+    /*
+    setIsFetching(true);
+    console.log(formData);
+    const response = await fetch(
+      `${SERVER_URL}/listing?uid=${localStorage.uid}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
+
+    */
+
+    const datesAvailable = checkAvailability(
+      formData.fromDate,
+      formData.toDate
+    );
 
     if (!datesAvailable) {
       setError("datesAvailable", {
@@ -112,7 +137,16 @@ function ModifyBooking() {
       return;
     }
 
-    console.log(data);
+    /*
+    const data = await response.json();
+    console.log(response.status, data);
+
+    if (response.ok) {
+      navigate(location.pathname.replace("/mybooking", ""));
+    }
+    */
+
+    navigate("/mybooking");
   };
 
   return (
