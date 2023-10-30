@@ -1,10 +1,14 @@
-import React, {useState} from "react";
 import {Link, useLocation} from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PreviewCardsListing from "../components/PreviewCardsListing";
 import { getAllListings, getMyListings } from "api";
 import { useQuery } from "react-query";
 import LoadingCardsListing from "components/LoadingCardsListing";
+import SearchBar from "../components/SearchBar";
+import FilterForm from "../components/FilterForm";
+import filterIcon from "../icons/filter.svg";
+import { SERVER_URL } from "api";
 
 const Container = styled.main`
   width: 100vw;
@@ -54,6 +58,22 @@ const Addbutton = styled.button`
   }
 `;
 
+const FilterButton = styled.button`
+  display: flex;
+  padding: 10px 20px;
+  border-radius: 20px;
+  color: black;
+  font-weight: 400;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: white;
+  border: 1px solid black;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+`;
+
 function Home() {
   const userinfo = localStorage.userinfo
     ? JSON.parse(localStorage.userinfo)
@@ -72,7 +92,95 @@ function Home() {
     }
   );
 
+
     const state = useLocation();
+  // const [displayListings, setDisplayListings] = useState(allListings);
+
+  /* Search Function Section Start */
+  const [searchedListings, setSearchedListings] = useState([]);
+  // const [searchCriteria, setSearchCriteria] = useState({
+  //   location: "",
+  //   guests: 1,
+  //   dateFrom: "",
+  //   dateTo: "",
+  // });
+
+  const handleSearch = (formData) => {
+    console.log("Searching");
+    // e.preventDefault();
+    const searchedListings = allListings.filter((listing) => {
+      const { location, guests, dateFrom, dateTo } = formData;
+      const dateStart = dateFrom ? new Date(dateFrom) : null;
+      const dateEnd = dateTo ? new Date(dateTo) : null;
+      const { city, state, startDate, endDate, numberGuests } = listing;
+
+      const isLocationMatch =
+        !location ||
+        `${city}, ${state}`.toLowerCase().includes(location.toLowerCase());
+
+      const isGuestMatch = numberGuests >= guests;
+
+      const isDateMatch =
+        !dateStart ||
+        !dateEnd || // No date range specified, or
+        (dateStart >= new Date(startDate) && dateEnd <= new Date(endDate));
+
+      return isLocationMatch && isDateMatch && isGuestMatch;
+    });
+    setSearchedListings(searchedListings);
+    // setSearchCriteria({
+    //   location: "",
+    //   guests: 1,
+    //   dateFrom: "",
+    //   dateTo: "",
+    // });
+  };
+
+  useEffect(() => {}, [searchedListings]);
+
+  /* Search Function Section End */
+
+  // useEffect(() => {
+  //   handleSearch();
+  // }, [searchCriteria]);
+
+  /* Filter Function Section Start */
+  const [showFilterForm, setShowFilterForm] = useState(false);
+  const [filteredListings, setFilteredListings] = useState([]);
+
+  const handleFilterClick = () => {
+    setShowFilterForm(true);
+  };
+
+  const handleCancelFilter = () => {
+    setShowFilterForm(false);
+  };
+
+  const handleFilter = async (formData) => {
+    console.log("Filtering");
+    console.log(formData);
+    // try {
+    //   const response = await fetch(`${SERVER_URL}/endpointOfFilter`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(formData),
+    //   });
+    //   const data = await response.json();
+    //   if (response.ok) {
+    //     setSearchedListings(data);
+    //     // Update filteredListings
+    //   } else {
+    //     // Handle errors
+    //     console.log(response.status, data);
+    //   }
+    // } catch (error) {
+    //   console.error("Filter request failed:", error);
+    // }
+  };
+
+  /* Filter Function Section Start */
 
   return (
     <Container>
@@ -91,14 +199,45 @@ function Home() {
           )}
         </>
       )}
-
       <Welcome>Welcome, {userinfo.firstName}!</Welcome>
       <Start>Start your journey here:</Start>
+      {allListingsIsLoading ? null : (
+        <SearchBar
+          // searchCriteria={searchCriteria}
+          // setSearchCriteria={setSearchCriteria}
+          handleSearch={handleSearch}
+        />
+      )}
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          paddingLeft: "10px",
+          paddingRight: "250px",
+          paddingBottom: "20px",
+        }}
+      >
+        <Start>Available Rooms:</Start>
+        <FilterButton onClick={handleFilterClick}>
+          <div style={{ display: "flex" }}>
+            <img src={filterIcon} alt="" />
+            Filters
+          </div>
+        </FilterButton>
+        {showFilterForm && (
+          <FilterForm onClose={handleCancelFilter} onFilter={handleFilter} />
+        )}
+      </div>
 
       {allListingsIsLoading ? (
         <LoadingCardsListing numCard={20} />
       ) : (
-        <PreviewCardsListing listings={allListings} />
+        <PreviewCardsListing
+          listings={
+            searchedListings.length > 0 ? searchedListings : allListings
+          }
+        />
       )}
 
         <input type="hidden" id="home-response-code" value={state.state}/>
