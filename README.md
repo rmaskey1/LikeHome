@@ -19,3 +19,6 @@ Python 3.11 and above works
 8. Execute python Backend/server.py
 9. If step 8 does not work try clicking on server.py and then click on the triangle icon to run the file
 ![image](https://github.com/trishnguyen2001/cmpe165-likehome/assets/102846798/af458a66-bd66-403b-a5bb-5f31bfd9db1b)
+10. If python is still not working, check your path to your vscode and update it if it is not 3.11+
+![image](https://github.com/trishnguyen2001/cmpe165-likehome/assets/102846798/af6bec6a-7c3a-4165-b7ec-85145d632419)
+![image](https://github.com/trishnguyen2001/cmpe165-likehome/assets/102846798/37113463-214e-4dd3-a5d0-b1bec1be9779)
