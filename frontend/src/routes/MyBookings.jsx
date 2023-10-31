@@ -1,14 +1,14 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { ReactComponent as CalendarIcon } from "../icons/calendar.svg";
 import { ReactComponent as MoonIcon } from "../icons/moon.svg";
 import { ReactComponent as MoneyIcon } from "../icons/money.svg";
+import { ReactComponent as GuestIcon } from "../icons/person-fill.svg";
 
 import { useQuery } from "react-query";
 import { getMyBooking } from "api";
-import { RiDeleteBin5Line } from "react-icons/ri";
 
 const Container = styled.main`
   display: center;
@@ -42,16 +42,16 @@ const CardContainer = styled.div`
   border-radius: 15px;
   margin-top: 20px;
   padding-right: 20px;
-  height: 225px; /* Set the card height, adjust as needed */
+  height: 225px; //Set the card height, adjust as needed
+  overflow: hidden;
 `;
 
 const RoomImage = styled.img`
   position: relative;
   border: none;
   width: 300px;
-  height: 225px;
-  object-fit: cover;
-  overflow: hidden;
+  height: 250px;
+  object-fit: cover; //Ensure the image fits within the defined dimensions
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
 `;
@@ -81,22 +81,6 @@ const ErrorMessageArea = styled.div`
   margin-left: 200px;
 `;
 
-const Cancel = styled.div`
-  display: grid;
-  place-content: center;
-  margin-left: 20px;
-  height: 100%;
-  cursor: pointer;
-
-  &:hover {
-    color: red;
-  }
-  svg {
-    transition: none;
-    scale: 1.3;
-  }
-`;
-
 const CardLoading = () => (
   <CardContainer>
     <div
@@ -107,7 +91,6 @@ const CardLoading = () => (
 );
 
 const Card = (booking) => {
-  const navigate = useNavigate();
   const nights = Math.floor(
     (new Date(booking.endDate).getTime() -
       new Date(booking.startDate).getTime()) /
@@ -126,7 +109,8 @@ const Card = (booking) => {
   return (
     <CardContainer>
       <Link
-        to={`/mybooking/${booking.rid}/modify`}
+        to={`/room/${booking.rid}`}
+        state={booking}
         style={{ display: "flex", width: "100%", textDecoration: "none" }}
       >
         <RoomImage src={booking.imageUrl} alt="Room" />
@@ -145,20 +129,17 @@ const Card = (booking) => {
             <SubTitle> {nights} Nights</SubTitle>
           </IconWithText>
           <IconWithText>
+            <GuestIcon
+              style={{ marginRight: "15px", width: "24px", height: "24px" }}
+            />
+            <SubTitle> {booking.reserved_guests} Guests</SubTitle>
+          </IconWithText>
+          <IconWithText>
             <MoneyIcon style={{ marginRight: "15px" }} />
             <SubTitle> Total: {dollarString.format(total)}</SubTitle>
           </IconWithText>
         </DetailsContainer>
       </Link>
-      <Cancel
-        onClick={() =>
-          navigate(`${booking.rid}/cancel`, {
-            state: { roomData: booking },
-          })
-        }
-      >
-        <RiDeleteBin5Line />
-      </Cancel>
     </CardContainer>
   );
 };

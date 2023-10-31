@@ -8,7 +8,7 @@ import { ReactComponent as BedIcon } from "../icons/bed.svg";
 import { ReactComponent as SinkIcon } from "../icons/sink.svg";
 import { useQuery } from "react-query";
 import "react-calendar/dist/Calendar.css";
-import { SERVER_URL, getListing } from "api";
+import { SERVER_URL, getListing, getMyBooking } from "api";
 import Amenity from "components/Amenity";
 
 const Container = styled.main`
@@ -17,8 +17,7 @@ const Container = styled.main`
   align-items: flex-start;
   margin: 0 auto;
   margin-top: 36px;
-  width: 80vw;
-  max-width: 773px;
+  width: 70%;
   height: 100vh;
   padding: 20px;
 `;
@@ -243,6 +242,11 @@ function Details() {
     ? JSON.parse(localStorage.userinfo)
     : {};
 
+  const { isLoading: bookingIsLoading, data: bookingData } = useQuery(
+    ["myBooking"],
+    getMyBooking
+  );
+
   const { isLoading, data } = useQuery(["listing"], () => getListing(rid));
   const [numGuests, setNumGuests] = useState(2);
 
@@ -292,6 +296,9 @@ function Details() {
     await navigate("/home");
   };
 
+  const isGuest = userinfo.accountType === "guest";
+  const isReserved = bookingData.find((b) => b.rid === rid); //INTEGRATIONS! Add method to check if the user has reserved this listing
+
   return (
     <Container>
       {isLoading ? (
@@ -336,16 +343,41 @@ function Details() {
             <ImgContainer>
               <img src={data.imageUrl} alt="example" />
             </ImgContainer>
-            <Reserve>
-              <div>
-                <span style={{ fontSize: "30px", fontWeight: 600 }}>
-                  ${data.price}
-                </span>{" "}
-                <span style={{ fontSize: "20px", fontWeight: 400 }}>
-                  per night
-                </span>
-              </div>
-              {/* <ReserveDateContainer>
+
+            {isGuest && isReserved ? (
+              <Reserve>
+                <div>You are currently reserving this listing.</div>
+                <Reservebtn
+                  onClick={() =>
+                    navigate(`/mybooking/${rid}/modify`, {
+                      state: { roomData: data, numGuests },
+                    })
+                  }
+                >
+                  Modify Booking
+                </Reservebtn>
+                <Reservebtn
+                  onClick={() =>
+                    navigate(`/mybooking/${rid}/cancel`, {
+                      state: { roomData: data, numGuests },
+                    })
+                  }
+                >
+                  Cancel Booking
+                </Reservebtn>
+              </Reserve>
+            ) : (
+              //Render the default reserve container if not a guest or not reserved
+              <Reserve>
+                <div>
+                  <span style={{ fontSize: "30px", fontWeight: 600 }}>
+                    ${data.price}
+                  </span>{" "}
+                  <span style={{ fontSize: "20px", fontWeight: 400 }}>
+                    per night
+                  </span>
+                </div>
+                {/* <ReserveDateContainer>
                 <ReserveDate
                   style={{
                     border: showCheckIn
@@ -394,56 +426,58 @@ function Details() {
                   </DateSelector>
                 </ReserveDate>
               </ReserveDateContainer> */}
-              <ReserveForm>
-                <ReserveDateContainer>
-                  <ReserveInputContainer>
-                    <ReserveInputLabel>Check-in Date</ReserveInputLabel>
-                    <ReserveDate>{dateFormatted(data.startDate)}</ReserveDate>
-                  </ReserveInputContainer>
-                  <ReserveInputContainer>
-                    <ReserveInputLabel>Check-out Date</ReserveInputLabel>
-                    <ReserveDate>{dateFormatted(data.endDate)}</ReserveDate>
-                  </ReserveInputContainer>
-                </ReserveDateContainer>
-                <ReserveDateContainer>
-                  <ReserveInputContainer>
-                    <ReserveInputLabel>Guests</ReserveInputLabel>
-                    <ReserveDate
-                      style={{
-                        width: "100%",
-                        justifyContent: "space-between",
-                        padding: "0 20px",
-                      }}
-                    >
-                      <GuestModBtn
-                        onClick={() =>
-                          numGuests > 1 && setNumGuests(numGuests - 1)
-                        }
+
+                <ReserveForm>
+                  <ReserveDateContainer>
+                    <ReserveInputContainer>
+                      <ReserveInputLabel>Check-in Date</ReserveInputLabel>
+                      <ReserveDate>{dateFormatted(data.startDate)}</ReserveDate>
+                    </ReserveInputContainer>
+                    <ReserveInputContainer>
+                      <ReserveInputLabel>Check-out Date</ReserveInputLabel>
+                      <ReserveDate>{dateFormatted(data.endDate)}</ReserveDate>
+                    </ReserveInputContainer>
+                  </ReserveDateContainer>
+                  <ReserveDateContainer>
+                    <ReserveInputContainer>
+                      <ReserveInputLabel>Guests</ReserveInputLabel>
+                      <ReserveDate
+                        style={{
+                          width: "100%",
+                          justifyContent: "space-between",
+                          padding: "0 20px",
+                        }}
                       >
-                        -
-                      </GuestModBtn>
-                      <div>{numGuests} Guests</div>
-                      <GuestModBtn
-                        onClick={() =>
-                          numGuests < data.numberGuests &&
-                          setNumGuests(numGuests + 1)
-                        }
-                      >
-                        {" "}
-                        +
-                      </GuestModBtn>
-                    </ReserveDate>
-                  </ReserveInputContainer>
-                </ReserveDateContainer>
-              </ReserveForm>
-              <Reservebtn
-                onClick={() =>
-                  navigate("book", { state: { roomData: data, numGuests } })
-                }
-              >
-                Reserve
-              </Reservebtn>
-            </Reserve>
+                        <GuestModBtn
+                          onClick={() =>
+                            numGuests > 1 && setNumGuests(numGuests - 1)
+                          }
+                        >
+                          -
+                        </GuestModBtn>
+                        <div>{numGuests} Guests</div>
+                        <GuestModBtn
+                          onClick={() =>
+                            numGuests < data.numberGuests &&
+                            setNumGuests(numGuests + 1)
+                          }
+                        >
+                          {" "}
+                          +
+                        </GuestModBtn>
+                      </ReserveDate>
+                    </ReserveInputContainer>
+                  </ReserveDateContainer>
+                </ReserveForm>
+                <Reservebtn
+                  onClick={() =>
+                    navigate("book", { state: { roomData: data, numGuests } })
+                  }
+                >
+                  Reserve
+                </Reservebtn>
+              </Reserve>
+            )}
           </Board>
           <Divider />
           <Detail>

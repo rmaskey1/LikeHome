@@ -116,6 +116,7 @@ function AddListing() {
     getValues,
   } = useForm();
   const [isFetching, setIsFetching] = useState(false);
+  const [responseCode, setResponseCode] = useState(0);
 
   const isLetter = (str) => {
     return /^[A-Za-z]+$/.test(str);
@@ -143,13 +144,16 @@ function AddListing() {
 
     const data = await response.json();
     console.log(response.status, data);
+    setResponseCode(response.status);
 
     if (response.ok) {
-      alert("Listing created!");
-      navigate("/home");
+    //   // alert("Listing created!");
+      navigate("/home", {state: response.status});
     }
     setIsFetching(false);
   };
+
+
 
   return (
     <Container>
@@ -157,7 +161,7 @@ function AddListing() {
         <ListingTitle>Add a new listing:</ListingTitle>
         <SectionTitle>Basic Information</SectionTitle>
         <SubTitle>Price:</SubTitle>
-        <Input
+        <Input 
           {...register("price", {
             valueAsNumber: true,
             min: { value: 0, message: "Price must be non-negative" },
@@ -165,10 +169,11 @@ function AddListing() {
           })}
           type="number"
           style={{ color: "black" }}
+          id="price-input"
         />
         {errors.price && (
           <ErrorMessage className="error-text">
-            <span>{errors.price.message.toString()}</span>
+            <span id="price-error">{errors.price.message.toString()}</span>
           </ErrorMessage>
         )}
         <br />
@@ -201,10 +206,11 @@ function AddListing() {
                   type="text"
                   placeholder="mm/dd/yyyy"
                   style={{ color: "black" }}
+                  id="fromDate-input"
                 />
                 {errors.fromDate && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.fromDate.message.toString()}</span>
+                    <span id="fromDate-error">{errors.fromDate.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
@@ -240,10 +246,11 @@ function AddListing() {
                   type="text"
                   placeholder="mm/dd/yyyy"
                   style={{ color: "black" }}
+                  id="toDate-input"
                 />
                 {errors.toDate && (
                   <ErrorMessage className="error-text">
-                    <span>{errors.toDate.message.toString()}</span>
+                    <span id="toDate-error">{errors.toDate.message.toString()}</span>
                   </ErrorMessage>
                 )}
               </div>
@@ -266,10 +273,11 @@ function AddListing() {
               })}
               type="number"
               style={{ color: "black" }}
+              id="beds-input"
             />
             {errors.beds && (
               <ErrorMessage className="error-text">
-                <span>{errors.beds.message.toString()}</span>
+                <span id="beds-error">{errors.beds.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -289,10 +297,11 @@ function AddListing() {
               })}
               type="text"
               style={{ color: "black" }}
+              id="bedType-input"
             />
             {errors.bedType && (
               <ErrorMessage className="error-text">
-                <span>{errors.bedType.message.toString()}</span>
+                <span id="bedType-error">{errors.bedType.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -311,10 +320,11 @@ function AddListing() {
               })}
               type="number"
               style={{ color: "black" }}
+              id="guests-input"
             />
             {errors.guests && (
               <ErrorMessage className="error-text">
-                <span>{errors.guests.message.toString()}</span>
+                <span id="guests-error">{errors.guests.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -331,10 +341,11 @@ function AddListing() {
               })}
               type="number"
               style={{ color: "black" }}
+              id="bathrooms-input"
             />
             {errors.bathrooms && (
               <ErrorMessage className="error-text">
-                <span>{errors.bathrooms.message.toString()}</span>
+                <span id="bathrooms-error">{errors.bathrooms.message.toString()}</span>
               </ErrorMessage>
             )}
           </div>
@@ -347,9 +358,10 @@ function AddListing() {
           })}
           type="url"
           style={{ color: "black" }}
+          id="image-input"
         />
         {errors.image && (
-          <ErrorMessage>{errors.image.message.toString()}</ErrorMessage>
+          <ErrorMessage id="image-error">{errors.image.message.toString()}</ErrorMessage>
         )}
 
         <br />
@@ -359,10 +371,11 @@ function AddListing() {
           <CheckboxItem>
             <Label>
               <Controller
+                
                 name="amenities[0].freeWifi"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="freeWifi-box" type="checkbox" />}
               />
               Free Wifi
             </Label>
@@ -371,7 +384,7 @@ function AddListing() {
                 name="amenities[1].pool"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="pool-box" type="checkbox" />}
               />
               Pool
             </Label>
@@ -380,7 +393,7 @@ function AddListing() {
                 name="amenities[2].tv"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="tv-box" type="checkbox" />}
               />
               TV
             </Label>
@@ -389,7 +402,7 @@ function AddListing() {
                 name="amenities[3].freeWasherInUnit"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="washer-box" type="checkbox" />}
               />
               Free washer - In unit
             </Label>
@@ -398,7 +411,7 @@ function AddListing() {
                 name="amenities[4].freeDryerInUnit"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="dryer-box" type="checkbox" />}
               />
               Free dryer - In unit
             </Label>
@@ -407,7 +420,7 @@ function AddListing() {
                 name="amenities[5].freeParking"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field}  id="parking-box" type="checkbox" />}
               />
               Free parking
             </Label>
@@ -416,7 +429,7 @@ function AddListing() {
                 name="amenities[6].airConditioning"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="ac-box" type="checkbox" />}
               />
               Air conditioning
             </Label>
@@ -427,7 +440,7 @@ function AddListing() {
                 name="amenities[7].freeBreakfast"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="breakfast-box" type="checkbox" />}
               />
               Free Breakfast
             </Label>
@@ -436,7 +449,7 @@ function AddListing() {
                 name="amenities[8].freeLunch"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="lunch-box" type="checkbox" />}
               />
               Free Lunch
             </Label>
@@ -445,7 +458,7 @@ function AddListing() {
                 name="amenities[9].freeDinner"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="dinner-box" type="checkbox" />}
               />
               Free Dinner
             </Label>
@@ -454,7 +467,7 @@ function AddListing() {
                 name="amenities[10].microwave"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="microwave-box" type="checkbox" />}
               />
               Microwave
             </Label>
@@ -463,7 +476,7 @@ function AddListing() {
                 name="amenities[11].refrigerator"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="refrigerator-box" type="checkbox" />}
               />
               Refrigerator
             </Label>
@@ -472,7 +485,7 @@ function AddListing() {
                 name="amenities[12].petFriendly"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="pet-box" type="checkbox" />}
               />
               Pet Friendly
             </Label>
@@ -481,18 +494,20 @@ function AddListing() {
                 name="amenities[13].spa"
                 control={control}
                 defaultValue={false}
-                render={({ field }) => <Checkbox {...field} type="checkbox" />}
+                render={({ field }) => <Checkbox {...field} id="spa-box" type="checkbox" />}
               />
               Spa
             </Label>
           </CheckboxItem>
         </CheckboxGroup>
         <CenteredButtonContainer>
-          <SubmitButton type="submit">
+          <SubmitButton type="submit" id="submit-btn"> 
             {isFetching ? <Ellipsis color="white" size={30} /> : "Add"}
           </SubmitButton>
         </CenteredButtonContainer>
       </form>
+
+      <input type="hidden" id="add-listing-response-code" value={responseCode}/>
     </Container>
   );
 }
