@@ -144,8 +144,8 @@ function Profile() {
         <Label>Phone Number</Label>
         <Content>{userinfo.phone}</Content>
       </ProfileBox>
-      <EditBtn onClick={handleEditProfileClick}>Edit Profile</EditBtn>
-      <DeleteBtn onClick={handleDeleteClick}>Delete Account</DeleteBtn>
+      <EditBtn onClick={handleEditProfileClick} id="edit-profile-button">Edit Profile</EditBtn>
+      <DeleteBtn onClick={handleDeleteClick} id="delete-account-button">Delete Account</DeleteBtn>
       {showDeleteConfirmation && (
         <DeleteAccountWarning
           onConfirm={handleConfirmDelete}

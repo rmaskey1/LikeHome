@@ -5,7 +5,7 @@ import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Selenide.$x;
 
 public class Login {
-
+        // inputs
         public SelenideElement email = $x("//*[@id='email-input']");
         public SelenideElement password = $x("//*[@id='password-input']");
 

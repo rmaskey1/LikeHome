@@ -1,5 +1,8 @@
+com\likehomeautomation\Modification.class
+com\likehomeautomation\AddListingTest.class
 com\likehomeautomation\AddListing.class
 com\likehomeautomation\LoginTest.class
-com\likehomeautomation\AddListingTest.class
+com\likehomeautomation\RegisterTest.class
+com\likehomeautomation\Register.class
 com\likehomeautomation\Home.class
 com\likehomeautomation\Login.class
