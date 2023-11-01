@@ -217,24 +217,20 @@ def queryByRmAttribute():
         if request.method == 'POST':
             # Get JSON data from the frontend
             data = request.get_json()
-            
+
             #amneties
             amenities=data['amenities']
-            
-            
+
+
             query = db.collection("room")
-            #query amenities if they are true (doesn't actually execute query until .get())
-            
+            # Generate list of amenities to filter based on true value, make sure it is lowercase and has no space or dashes
+            filter = []
             for dict in amenities:
                 key = list(dict.keys())[0]
                 if (dict[key]==True):
-                    print(key)
-                    query=query.where("amenities", "array_contains", True)
-                    
-            
-            
-            #the other rm attributes
-            
+                    filter.append(key.lower().replace(' ', '').replace('-', ''))
+
+
             bathrooms = data['bathrooms']
             bedType = data['bedType']
             beds = data['beds']
@@ -244,40 +240,44 @@ def queryByRmAttribute():
 
             #this part checks if each attribute is null or not. Shouldn't factor into query if it's null
             #bedType is str, not int
-            
-            #first value in query.where() is from db
-            if bedType is not False:
-                print("BEDTYPE")
-                query = query.where('bedType', '==', bedType)
-            print("Before bathrooms condition:", query)
-            #bathrooms!= None
-            if bathrooms != None:
-                print("BATHROOMS")
-                query = query.where('numberOfBathrooms', '==', bathrooms)
-            print("After bathrooms condition:", query)
-            
-            if beds is not None:
-                print("BEDS")
-                query = query.where('numberOfBeds', '==', beds)
-            
-            if guests is not None:
-                print("GUESTS")
-                query = query.where('numberGuests', '==', guests)
-            
-            if minPrice is not None and maxPrice is not None:
-                query = query.where('price', '>=', minPrice).where('price', '<=', maxPrice)
-                
-            
-            
+
             results = query.stream()
-            print("[")
             matching_rooms = []
-            
+
             #
             for doc in results:
-                print((str)(doc.to_dict()))
-            print("]")
-            
+                add = False
+                amenities = doc.to_dict()['Amenities']
+                if set(filter).issubset(set(amenities)):
+                    add = True
+                if bathrooms is not None:
+                    if doc.to_dict()['numberOfBathrooms'] != bathrooms:
+                        add = False
+
+                if bedType is not None:
+                    if bedType.lower() not in doc.to_dict()['bedType'].lower():
+                        add = False
+                
+                if beds is not None:
+                    if doc.to_dict()['numberOfBeds'] != beds:
+                        add = False
+                
+                if guests is not None:
+                    if doc.to_dict()['numberGuests'] != guests:
+                        add = False
+                
+                if minPrice is not None:
+                    if doc.to_dict()['price'] < minPrice:
+                        add = False
+
+                if maxPrice is not None:
+                    if doc.to_dict()['price'] > maxPrice:
+                        add = False
+
+                if add:
+                    matching_rooms.append(doc.to_dict())
+            print(matching_rooms)
+
             return jsonify(matching_rooms)
 
         else:
