@@ -292,7 +292,7 @@ function Details() {
   };
 
   const isGuest = userinfo.accountType === "guest";
-  const isReserved = true; //INTEGRATIONS! Add method to check if the user has reserved this listing
+  const isReserved = false; //INTEGRATIONS! Add method to check if the user has reserved this listing
 
   return (
     <Container>
