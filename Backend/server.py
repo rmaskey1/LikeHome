@@ -229,7 +229,7 @@ def queryByRmAttribute():
                 key = list(dict.keys())[0]
                 if (dict[key]==True):
                     print(key)
-                    query=query.where("amenities", "==", True)
+                    query=query.where("amenities", "array_contains", True)
                     
             
             
