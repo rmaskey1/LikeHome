@@ -18,4 +18,5 @@ public class Details {
     public SelenideElement bedType = $x("//*[@id='bedType-detail']");
     public SelenideElement guests = $x("//*[@id='guests-detail']");
     public SelenideElement bathrooms = $x("//*[@id='bathrooms-detail']");
+    public SelenideElement amenities = $x("//*[@id='amenities-detail']");
 }

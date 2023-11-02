@@ -298,7 +298,8 @@ function Details() {
   };
 
   const isGuest = userinfo.accountType === "guest";
-  const isReserved = bookingData.find((b) => b.rid === rid); //INTEGRATIONS! Add method to check if the user has reserved this listing
+  // const isReserved = bookingData.find((b) => b.rid === rid); //INTEGRATIONS! Add method to check if the user has reserved this listing
+  const isReserved = true;
 
   return (
     <Container>
@@ -344,18 +345,6 @@ function Details() {
             <ImgContainer>
               <img src={data.imageUrl} alt="example" />
             </ImgContainer>
-{/*<<<<<<< HEAD*/}
-{/*            <Reserve>*/}
-{/*              <div>*/}
-{/*                <span id="price-detail" style={{ fontSize: "30px", fontWeight: 600 }}>*/}
-{/*                  ${data.price}*/}
-{/*                </span>{" "}*/}
-{/*                <span style={{ fontSize: "20px", fontWeight: 400 }}>*/}
-{/*                  per night*/}
-{/*                </span>*/}
-{/*              </div>*/}
-              {/*<ReserveDateContainer>*/}
-{/*=======*/}
 
             {isGuest && isReserved ? (
               <Reserve>
@@ -383,75 +372,22 @@ function Details() {
               //Render the default reserve container if not a guest or not reserved
               <Reserve>
                 <div>
-                  <span style={{ fontSize: "30px", fontWeight: 600 }}>
+                  <span id="price-detail" style={{ fontSize: "30px", fontWeight: 600 }}>
                     ${data.price}
                   </span>{" "}
                   <span style={{ fontSize: "20px", fontWeight: 400 }}>
                     per night
                   </span>
                 </div>
-                {/* <ReserveDateContainer>
->>>>>>> main
-                <ReserveDate
-                  style={{
-                    border: showCheckIn
-                      ? "1px solid black"
-                      : "1px solid transparent",
-                  }}
-                >
-                  {showCheckIn && (
-                    <CalendarContainer style={{ top: "49px", right: "-1px" }}>
-                      <Calendar
-                        hover
-                        // @ts-ignore
-                        onChange={checkInOnChange}
-                        onClickDay={toggleShowCheckIn}
-                        value={checkInValue}
-                        locale="en-GB"
-                        id="fromDate-detail"
-                      />
-                    </CalendarContainer>
-                  )}
-                  <span>CHECK-IN</span>
-                  <DateSelector onClick={toggleShowCheckIn}>
-                    {checkInValue.toLocaleDateString()}
-                  </DateSelector>
-                </ReserveDate>
-                <ReserveDate
-                  style={{
-                    border: showCheckOut
-                      ? "1px solid black"
-                      : "1px solid transparent",
-                  }}
-                >
-                  {showCheckOut && (
-                    <CalendarContainer style={{ top: "49px", left: "-1px" }}>
-                      <Calendar
-                        // @ts-ignore
-                        onChange={checkOnOnChange}
-                        onClickDay={toggleShowCheckOut}
-                        value={checkOnValue}
-                        locale="en-GB"
-                        id="toDate-detail"
-                      />
-                    </CalendarContainer>
-                  )}
-                  <span>CHECK-OUT</span>
-                  <DateSelector onClick={toggleShowCheckOut}>
-                    {checkOnValue.toLocaleDateString()}
-                  </DateSelector>
-                </ReserveDate>
-              </ReserveDateContainer> */}
-
                 <ReserveForm>
                   <ReserveDateContainer>
                     <ReserveInputContainer>
                       <ReserveInputLabel>Check-in Date</ReserveInputLabel>
-                      <ReserveDate>{dateFormatted(data.startDate)}</ReserveDate>
+                      <ReserveDate id="fromDate-detail">{dateFormatted(data.startDate)}</ReserveDate>
                     </ReserveInputContainer>
                     <ReserveInputContainer>
                       <ReserveInputLabel>Check-out Date</ReserveInputLabel>
-                      <ReserveDate>{dateFormatted(data.endDate)}</ReserveDate>
+                      <ReserveDate id="toDate-detail">{dateFormatted(data.endDate)}</ReserveDate>
                     </ReserveInputContainer>
                   </ReserveDateContainer>
                   <ReserveDateContainer>
@@ -504,7 +440,7 @@ function Details() {
             </DetailItem>
             <DetailItem>
               <BedIcon />
-              <span id="beds-detail">{data.numberOfBeds} Beds <span id="bedType-detail">({data.bedType})
+              <span id="beds-detail">{data.numberOfBeds} Bed(s) <span id="bedType-detail">({data.bedType})
               </span></span>
 
             </DetailItem>
@@ -514,7 +450,7 @@ function Details() {
             </DetailItem>
           </Detail>
           <Divider />
-          <Detail>
+          <Detail id="amenities-detail">
             <h1>Amenities</h1>
             {data.Amenities.map((item, i) => (
               <Amenity key={i} item={item} />

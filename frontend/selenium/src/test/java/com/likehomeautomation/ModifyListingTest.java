@@ -71,7 +71,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("idtiFj"));
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -88,7 +88,6 @@ public class ModifyListingTest {
         modify.submitBtn.click();
         Thread.sleep(2000);
 
-//        assertEquals("200", details.responseCode.val());
         assertEquals(details.price.text(), "$"+modifiedPrice);
     }
 
@@ -97,7 +96,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("idtiFj"));
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -119,7 +118,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("idtiFj"));
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -130,12 +129,11 @@ public class ModifyListingTest {
         Thread.sleep(1000);
 
         modify.fromDate.clear();
-        modify.price.sendKeys("10/30/2023");
+        modify.fromDate.sendKeys("10/30/2023");
         modify.submitBtn.click();
         Thread.sleep(2000);
 
-//        assertEquals("200", details.responseCode.val());
-        assertEquals(details.fromDate.val(), "10/30/2023");
+        assertEquals(details.fromDate.innerText(), "Oct 30, 23");
     }
 
     @Test
@@ -143,7 +141,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("idtiFj"));
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -158,6 +156,286 @@ public class ModifyListingTest {
         Thread.sleep(2000);
 
         assert(modify.fromDateError.isDisplayed());
+    }
+
+    @Test
+    public void modify_toDate_pass() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        Thread.sleep(1000);
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        previewCard.click();
+        ((JavascriptExecutor) driver).executeScript(
+                "window.scrollTo(0, -document.body.scrollHeight)");
+        Thread.sleep(2000);
+        details.dropdownBtn.click();
+        Thread.sleep(500);
+        details.editBtn.click();
+        Thread.sleep(1000);
+
+        modify.toDate.clear();
+        modify.toDate.sendKeys("07/19/2024");
+        modify.submitBtn.click();
+        Thread.sleep(2000);
+
+        assertEquals(details.toDate.innerText(), "Jul 19, 24");
+    }
+
+    @Test
+    public void modify_toDate_fail() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        Thread.sleep(1000);
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        previewCard.click();
+        ((JavascriptExecutor) driver).executeScript(
+                "window.scrollTo(0, -document.body.scrollHeight)");
+        Thread.sleep(2000);
+        details.dropdownBtn.click();
+        details.editBtn.click();
+        Thread.sleep(1000);
+
+        modify.toDate.clear();
+        modify.submitBtn.click();
+        Thread.sleep(2000);
+
+        assert(modify.toDateError.isDisplayed());
+    }
+
+    @Test
+    public void modify_guests_pass() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        Thread.sleep(1000);
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        previewCard.click();
+        ((JavascriptExecutor) driver).executeScript(
+                "window.scrollTo(0, -document.body.scrollHeight)");
+        Thread.sleep(2000);
+        details.dropdownBtn.click();
+        Thread.sleep(500);
+        details.editBtn.click();
+        Thread.sleep(1000);
+
+        modify.fromDate.clear();
+        modify.fromDate.sendKeys("5");
+        modify.submitBtn.click();
+        Thread.sleep(2000);
+
+        assertEquals(details.guests.innerText(), "5 Guests");
+    }
+
+    @Test
+    public void modify_guests_fail() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        Thread.sleep(1000);
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        previewCard.click();
+        ((JavascriptExecutor) driver).executeScript(
+                "window.scrollTo(0, -document.body.scrollHeight)");
+        Thread.sleep(2000);
+        details.dropdownBtn.click();
+        details.editBtn.click();
+        Thread.sleep(1000);
+
+        modify.guests.clear();
+        modify.guests.sendKeys("-1");
+        modify.submitBtn.click();
+        Thread.sleep(2000);
+
+        assert(modify.guestsError.isDisplayed());
+    }
+
+    @Test
+    public void modify_beds_pass() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        Thread.sleep(1000);
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        previewCard.click();
+        ((JavascriptExecutor) driver).executeScript(
+                "window.scrollTo(0, -document.body.scrollHeight)");
+        Thread.sleep(2000);
+        details.dropdownBtn.click();
+        Thread.sleep(500);
+        details.editBtn.click();
+        Thread.sleep(1000);
+
+        modify.beds.clear();
+        modify.beds.sendKeys("1");
+        modify.submitBtn.click();
+        Thread.sleep(2000);
+
+        assertEquals(details.beds.innerText(), "1 Bed(s)");
+    }
+
+    @Test
+    public void modify_beds_fail() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        Thread.sleep(1000);
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        previewCard.click();
+        ((JavascriptExecutor) driver).executeScript(
+                "window.scrollTo(0, -document.body.scrollHeight)");
+        Thread.sleep(2000);
+        details.dropdownBtn.click();
+        details.editBtn.click();
+        Thread.sleep(1000);
+
+        modify.beds.clear();
+        modify.beds.sendKeys("-1");
+        modify.submitBtn.click();
+        Thread.sleep(2000);
+
+        assert(modify.bedsError.isDisplayed());
+    }
+
+    @Test
+    public void modify_bedType_pass() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        Thread.sleep(1000);
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        previewCard.click();
+        ((JavascriptExecutor) driver).executeScript(
+                "window.scrollTo(0, -document.body.scrollHeight)");
+        Thread.sleep(2000);
+        details.dropdownBtn.click();
+        Thread.sleep(500);
+        details.editBtn.click();
+        Thread.sleep(1000);
+
+        modify.bedType.clear();
+        modify.bedType.sendKeys("king");
+        modify.submitBtn.click();
+        Thread.sleep(2000);
+
+        assertEquals(details.bedType.innerText(), "(king)");
+    }
+
+    @Test
+    public void modify_bedType_fail() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        Thread.sleep(1000);
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        previewCard.click();
+        ((JavascriptExecutor) driver).executeScript(
+                "window.scrollTo(0, -document.body.scrollHeight)");
+        Thread.sleep(2000);
+        details.dropdownBtn.click();
+        details.editBtn.click();
+        Thread.sleep(1000);
+
+        modify.bedType.clear();
+        modify.bedType.sendKeys("-1");
+        modify.submitBtn.click();
+        Thread.sleep(2000);
+
+        assert(modify.bedTypeError.isDisplayed());
+    }
+
+    @Test
+    public void modify_bathrooms_pass() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        Thread.sleep(1000);
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        previewCard.click();
+        ((JavascriptExecutor) driver).executeScript(
+                "window.scrollTo(0, -document.body.scrollHeight)");
+        Thread.sleep(2000);
+        details.dropdownBtn.click();
+        Thread.sleep(500);
+        details.editBtn.click();
+        Thread.sleep(1000);
+
+        modify.bathrooms.clear();
+        modify.bathrooms.sendKeys("5");
+        modify.submitBtn.click();
+        Thread.sleep(2000);
+
+        assertEquals(details.bathrooms.innerText(), "5 Bath");
+    }
+
+    @Test
+    public void modify_bathrooms_fail() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        Thread.sleep(1000);
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        previewCard.click();
+        ((JavascriptExecutor) driver).executeScript(
+                "window.scrollTo(0, -document.body.scrollHeight)");
+        Thread.sleep(2000);
+        details.dropdownBtn.click();
+        details.editBtn.click();
+        Thread.sleep(1000);
+
+        modify.bathrooms.clear();
+        modify.bathrooms.sendKeys("-1");
+        modify.submitBtn.click();
+        Thread.sleep(2000);
+
+        assert(modify.bathroomsError.isDisplayed());
+    }
+
+    @Test
+    public void modify_amenities_pass() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        loginAsHotel();
+        Thread.sleep(1000);
+        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        previewCard.click();
+        ((JavascriptExecutor) driver).executeScript(
+                "window.scrollTo(0, -document.body.scrollHeight)");
+        Thread.sleep(2000);
+        details.dropdownBtn.click();
+        Thread.sleep(500);
+        details.editBtn.click();
+        Thread.sleep(1000);
+
+        clearAmenities();
+        ArrayList<SelenideElement> selected = selectRandomAmenities();
+        modify.submitBtn.click();
+        Thread.sleep(2000);
+
+
+        assertEquals(details.guests.innerText(), "5 Bath");
+    }
+
+    ArrayList<SelenideElement> getDisplayedAmenities(){
+        ArrayList<SelenideElement> displayedAmenities = new ArrayList<>();
+        for(int i = 0; i < 14; i++){
+            SelenideElement amenity = amenitiesMap.get(i);  
+            if(amenity.isSelected())
+                displayedAmenities.add(amenity);
+        }
+        return displayedAmenities;
+    }
+
+
+    ArrayList<SelenideElement> selectRandomAmenities(){
+        ArrayList<SelenideElement> selectedAmenities = new ArrayList<>();
+        Random r = new Random();
+        int amnt = r.nextInt(14);
+        for(int i = 0; i < amnt; i++){
+            int selected = r.nextInt(13);
+            selectedAmenities.add(amenitiesMap.get(selected));
+            amenitiesMap.get(selected).click();
+        }
+        return selectedAmenities;
+    }
+
+    void clearAmenities(){
+        ArrayList<SelenideElement> selectedAmenities = new ArrayList<>();
+        for(int i = 0; i < 13; i++){
+            SelenideElement amenity = amenitiesMap.get(i);
+            if(amenity.isSelected())
+                amenity.click(); //unchecks amenity
+        }
     }
 
     void loginAsHotel() throws Exception{
