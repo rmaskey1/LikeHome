@@ -291,7 +291,7 @@ function Details() {
               alignItems: "center",
             }}
           >
-            <div>
+            <div style={{ marginRight: "530px" }}>
               <HotelName>{roomData.hotelName}</HotelName>
             </div>
             <div>
