@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Rating from "../icons/rating.svg";
 import Favorite from "../icons/favorite.svg";
 import FavoriteFilled from "../icons/favorite-filled.svg";
+import { useNavigate } from "react-router-dom";
 
 const StyledP = styled.p`
   font-family: Rubik, sans-serif;
@@ -46,43 +47,12 @@ const StyledCardDetails = styled.div`
 `;
 
 const formatMonthAndDate = (dateString) => {
-  // const options = ;
-  const date = new Date(dateString);
-
-  // if (includeYear) {
-  //   options.year = "numeric";
-  // }
-  return date.toLocaleDateString(undefined, {
+  return new Date(dateString).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
 };
-
-// const SliderNavsContainer = styled.div`
-//   position: absolute;
-//   bottom: 10px;
-//   left: 50%;
-//   transform: translateX(-50%);
-//   display: flex;
-//   align-items: center;
-// `;
-
-// const SliderNav = styled.span`
-//   width: 5px;
-//   height: 5px;
-//   border-radius: 50%;
-//   background-color: #c1bebe;
-//   margin: 0 5px;
-//   transition: transform 0.2s, width 0.2s, height 0.2s;
-//   cursor: pointer;
-
-//   &.active {
-//     width: 7px;
-//     height: 7px;
-//     background-color: #f8f9fa;
-//   }
-// `;
 
 const SaveFavoriteIcon = styled.img`
   position: absolute;
@@ -93,39 +63,33 @@ const SaveFavoriteIcon = styled.img`
   height: 30px;
 `;
 
-function PreviewCard({ previewCard, onClick }) {
-  // const {
-  //   location,
-  //   rating,
-  //   description,
-  //   startDate,
-  //   endDate,
-  //   price,
-  //   imageUrls,
-  // } = previewCard;
-  // const [currentIndex, setCurrentIndex] = useState(0);
-  // const imageUrl = imageUrls[currentIndex];
+const descArr = [
+  "Ocean views",
+  "Mountain views",
+  "Beach and ocean views",
+  "22 miles away",
+  "Mountain and ocean views",
+  "24 miles away",
+];
 
-  // useEffect(() => {
-  //   // Automatically switch images at regular intervals
-  //   const intervalId = setInterval(() => {
-  //     setCurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
-  //   }, 2000);
-  //   return () => clearInterval(intervalId);
-  // }, [imageUrls.length]);
-
+function PreviewCard({ previewCard }) {
+  const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(false);
+
+  const { imageUrl, rid, startDate, endDate, price, city, state } = previewCard;
 
   const toggleFavorite = () => {
     setIsFavorite((prevIsFavorite) => !prevIsFavorite);
   };
 
-  const { imageUrl, rid, startDate, endDate, price, city, state } = previewCard;
+  const handleCardClick = () => {
+    console.log(`card ${rid} clicked`);
+    navigate(`/room/${rid}`, { state: previewCard });
+  };
 
   return (
     <StyledCard>
       <ImgContainer>
-        {/* <StyledImg src={imageUrl} alt={`Image ${currentIndex + 1}`} /> */}
         <StyledImg src={imageUrl} alt={`Image ${rid}`} />
         <SaveFavoriteIcon
           src={isFavorite ? FavoriteFilled : Favorite}
@@ -133,17 +97,8 @@ function PreviewCard({ previewCard, onClick }) {
           onClick={toggleFavorite}
           style={{ cursor: "pointer" }}
         />
-        {/* <SliderNavsContainer>
-          {imageUrls.map((_, index) => (
-            <SliderNav
-              key={index}
-              className={index === currentIndex ? "active" : ""}
-              onClick={() => setCurrentIndex(index)}
-            ></SliderNav>
-          ))}
-        </SliderNavsContainer> */}
       </ImgContainer>
-      <StyledCardDetails onClick={onClick}>
+      <StyledCardDetails onClick={handleCardClick}>
         <div
           style={{
             display: "flex",
@@ -151,7 +106,6 @@ function PreviewCard({ previewCard, onClick }) {
             width: "300px",
           }}
         >
-          {/* <StyledP style={{ fontWeight: "500" }}>{location}</StyledP> */}
           <StyledP style={{ fontWeight: "500" }}>{`${city}, ${state}`}</StyledP>
           <div style={{ display: "flex", alignItems: "center" }}>
             <img
@@ -159,12 +113,12 @@ function PreviewCard({ previewCard, onClick }) {
               style={{ width: "15px", height: "15px" }}
               alt="Rating"
             />
-            {/* <StyledP style={{ marginLeft: "3px" }}>{rating}</StyledP> */}
-            <StyledP style={{ marginLeft: "3px" }}>{4.5}</StyledP>
+            <StyledP style={{ marginLeft: "3px" }}>
+              {2 + Math.floor(Math.random() * 30) / 10}
+            </StyledP>
           </div>
         </div>
-        {/* <StyledP>{description}</StyledP> */}
-        <StyledP>Ocean views</StyledP>
+        <StyledP>{descArr[Math.floor(Math.random() * descArr.length)]}</StyledP>
         <StyledP>
           {formatMonthAndDate(startDate)} - {formatMonthAndDate(endDate)}
         </StyledP>
