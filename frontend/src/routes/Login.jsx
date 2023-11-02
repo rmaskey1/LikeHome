@@ -187,10 +187,10 @@ function Login() {
           />
         </InputContainer>
         {errors.email && (
-          <ErrorMessageArea>{errors.email.message.toString()}</ErrorMessageArea>
+          <ErrorMessageArea id="email-validation-error">{errors.email.message.toString()}</ErrorMessageArea>
         )}
         {serverError.status === 404 && (
-          <ErrorMessageArea>{serverError.message}</ErrorMessageArea>
+          <ErrorMessageArea id="error-message">{serverError.message}</ErrorMessageArea>
         )}
         <Label>Password</Label>
         <InputContainer>
@@ -210,7 +210,7 @@ function Login() {
           </ErrorMessageArea>
         )}
         {serverError.status === 401 && (
-          <ErrorMessageArea>{serverError.message}</ErrorMessageArea>
+          <ErrorMessageArea id="password-error-message">{serverError.message}</ErrorMessageArea>
         )}
         <SubmitBtn type="submit" id="submit-btn">
           {isFetching ? <Ellipsis color="white" size={30} /> : "Login"}
