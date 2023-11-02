@@ -31,6 +31,7 @@ public class ModifyListingTest {
     Details details = new Details();
 
     HashMap<Integer, SelenideElement> amenitiesMap = new HashMap<>();
+    HashMap<SelenideElement, String> amenitiesDescr = new HashMap<>();
 
 
     @BeforeAll
@@ -42,20 +43,7 @@ public class ModifyListingTest {
 
     @BeforeEach
     public void setUp() {
-        amenitiesMap.put(0, modify.freeWifi);
-        amenitiesMap.put(1, modify.pool);
-        amenitiesMap.put(2, modify.tv);
-        amenitiesMap.put(3, modify.washer);
-        amenitiesMap.put(4, modify.dryer);
-        amenitiesMap.put(5, modify.parking);
-        amenitiesMap.put(6, modify.ac);
-        amenitiesMap.put(7, modify.breakfast);
-        amenitiesMap.put(8, modify.lunch);
-        amenitiesMap.put(9, modify.dinner);
-        amenitiesMap.put(10, modify.microwave);
-        amenitiesMap.put(11, modify.refrigerator);
-        amenitiesMap.put(12, modify.pet);
-        amenitiesMap.put(13, modify.spa);
+
         WebDriverRunner.setWebDriver(new ChromeDriver(new ChromeOptions().addArguments("--remote-allow-origins=*")));
         Configuration.baseUrl = "http://127.0.0.1:3000" ;
         open("/login");
@@ -384,6 +372,9 @@ public class ModifyListingTest {
 
     @Test
     public void modify_amenities_pass() throws Exception {
+        initializeAmenitiesMap();
+        initializeAmenitiesDesr();
+
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
@@ -402,18 +393,17 @@ public class ModifyListingTest {
         modify.submitBtn.click();
         Thread.sleep(2000);
 
-
-        assertEquals(details.guests.innerText(), "5 Bath");
+        assert(checkAmenities(selected));
     }
 
-    ArrayList<SelenideElement> getDisplayedAmenities(){
-        ArrayList<SelenideElement> displayedAmenities = new ArrayList<>();
-        for(int i = 0; i < 14; i++){
-            SelenideElement amenity = amenitiesMap.get(i);  
-            if(amenity.isSelected())
-                displayedAmenities.add(amenity);
+    boolean checkAmenities(ArrayList<SelenideElement> amenitiesUnderTest){
+        String displayedAmenities = details.amenities.innerText();
+
+        for(SelenideElement a: amenitiesUnderTest){
+            if(!displayedAmenities.contains(amenitiesDescr.get(a)))
+                return false;
         }
-        return displayedAmenities;
+        return true;
     }
 
 
@@ -443,6 +433,40 @@ public class ModifyListingTest {
         login.password.sendKeys("123456");
         login.submitBtn.click();
         Thread.sleep(3000);
+    }
+
+    void initializeAmenitiesDesr(){
+        amenitiesDescr.put(modify.freeWifi, "Free Wifi");
+        amenitiesDescr.put(modify.pool, "Pool");
+        amenitiesDescr.put(modify.tv, "TV");
+        amenitiesDescr.put(modify.washer, "Free Washer - In Unit");
+        amenitiesDescr.put(modify.dryer, "Free Dryer - In Unit");
+        amenitiesDescr.put(modify.parking, "Free Parking");
+        amenitiesDescr.put(modify.ac, "Air Conditioning");
+        amenitiesDescr.put(modify.breakfast, "Free Breakfast");
+        amenitiesDescr.put(modify.lunch, "Free Lunch");
+        amenitiesDescr.put(modify.dinner, "Free Dinner");
+        amenitiesDescr.put(modify.microwave, "Microwave");
+        amenitiesDescr.put(modify.refrigerator, "Refrigerator");
+        amenitiesDescr.put(modify.pet, "Pet Friendly");
+        amenitiesDescr.put(modify.spa, "Spa");
+    }
+
+    void initializeAmenitiesMap(){
+        amenitiesMap.put(0, modify.freeWifi);
+        amenitiesMap.put(1, modify.pool);
+        amenitiesMap.put(2, modify.tv);
+        amenitiesMap.put(3, modify.washer);
+        amenitiesMap.put(4, modify.dryer);
+        amenitiesMap.put(5, modify.parking);
+        amenitiesMap.put(6, modify.ac);
+        amenitiesMap.put(7, modify.breakfast);
+        amenitiesMap.put(8, modify.lunch);
+        amenitiesMap.put(9, modify.dinner);
+        amenitiesMap.put(10, modify.microwave);
+        amenitiesMap.put(11, modify.refrigerator);
+        amenitiesMap.put(12, modify.pet);
+        amenitiesMap.put(13, modify.spa);
     }
 
 }
