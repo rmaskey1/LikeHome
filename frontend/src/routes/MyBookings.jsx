@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { ReactComponent as CalendarIcon } from "../icons/calendar.svg";
@@ -9,7 +9,6 @@ import { ReactComponent as GuestIcon } from "../icons/person-fill.svg";
 
 import { useQuery } from "react-query";
 import { getMyBooking } from "api";
-import { RiDeleteBin5Line } from "react-icons/ri";
 
 const Container = styled.main`
   display: center;
@@ -82,22 +81,6 @@ const ErrorMessageArea = styled.div`
   margin-left: 200px;
 `;
 
-const Cancel = styled.div`
-  display: grid;
-  place-content: center;
-  margin-left: 20px;
-  height: 100%;
-  cursor: pointer;
-
-  &:hover {
-    color: red;
-  }
-  svg {
-    transition: none;
-    scale: 1.3;
-  }
-`;
-
 const CardLoading = () => (
   <CardContainer>
     <div
@@ -108,7 +91,6 @@ const CardLoading = () => (
 );
 
 const Card = (booking) => {
-  const navigate = useNavigate();
   const nights = Math.floor(
     (new Date(booking.endDate).getTime() -
       new Date(booking.startDate).getTime()) /
@@ -158,15 +140,6 @@ const Card = (booking) => {
           </IconWithText>
         </DetailsContainer>
       </Link>
-      <Cancel
-        onClick={() =>
-          navigate(`${booking.rid}/cancel`, {
-            state: { roomData: booking },
-          })
-        }
-      >
-        <RiDeleteBin5Line />
-      </Cancel>
     </CardContainer>
   );
 };

@@ -88,7 +88,7 @@ function ModifyBooking() {
   //const roominfo = location.state;
   const [isFetching, setIsFetching] = useState(false);
 
-  const room = location.state;
+  const { roomData, numGuests } = location.state;
 
   const isDateValid = (date) => {
     const parsedDate = Date.parse(date); // Try to parse the date string
@@ -103,7 +103,7 @@ function ModifyBooking() {
   const onSubmit = async (formData) => {
     setIsFetching(true);
     console.log(formData);
-    const response = await fetch(`${SERVER_URL}/bookings/${room.rid}`, {
+    const response = await fetch(`${SERVER_URL}/bookings/${roomData.rid}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -127,11 +127,10 @@ function ModifyBooking() {
     const data = await response.json();
     console.log(response.status, data);
 
-    // if (response.ok) {
-    //   navigate(location.pathname.replace("/mybooking", ""));
-    // }
+    if (response.ok) {
+      navigate("/mybooking");
+    }
     setIsFetching(false);
-    navigate("/mybooking");
   };
 
   return (
@@ -167,7 +166,7 @@ function ModifyBooking() {
                   type="text"
                   placeholder="mm/dd/yyyy"
                   style={{ color: "black" }}
-                  defaultValue={new Date(room.startDate).toLocaleDateString(
+                  defaultValue={new Date(roomData.startDate).toLocaleDateString(
                     "en-US",
                     { year: "numeric", month: "2-digit", day: "2-digit" }
                   )}
@@ -211,7 +210,7 @@ function ModifyBooking() {
                   type="text"
                   placeholder="mm/dd/yyyy"
                   style={{ color: "black" }}
-                  defaultValue={new Date(room.endDate).toLocaleDateString(
+                  defaultValue={new Date(roomData.endDate).toLocaleDateString(
                     "en-US",
                     { year: "numeric", month: "2-digit", day: "2-digit" }
                   )}
@@ -241,7 +240,7 @@ function ModifyBooking() {
           })}
           type="number"
           style={{ color: "black" }}
-          defaultValue={room.numberGuests}
+          defaultValue={numGuests}
         />
         {errors.guests && (
           <ErrorMessage className="error-text">

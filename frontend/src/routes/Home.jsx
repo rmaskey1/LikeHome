@@ -1,5 +1,5 @@
+import {Link, useLocation} from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import PreviewCardsListing from "../components/PreviewCardsListing";
 import { getAllListings, getMyListings } from "api";
@@ -92,6 +92,8 @@ function Home() {
     }
   );
 
+
+    const state = useLocation();
   // const [displayListings, setDisplayListings] = useState(allListings);
 
   /* Search Function Section Start */
@@ -187,7 +189,7 @@ function Home() {
           <Mylisting>
             My listings:
             <Link to="/room/add">
-              <Addbutton>Add +</Addbutton>
+              <Addbutton id="add-btn" >Add +</Addbutton>
             </Link>
           </Mylisting>
           {myListingsIsLoading ? (
@@ -237,6 +239,8 @@ function Home() {
           }
         />
       )}
+
+        <input type="hidden" id="home-response-code" value={state.state}/>
     </Container>
   );
 }
