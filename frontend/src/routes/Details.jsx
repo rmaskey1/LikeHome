@@ -491,10 +491,10 @@ function Details() {
               }}
             >
               <div style={{ marginRight: "20px" }}>
-                <Buttons onClick={deleteListing}>Yes</Buttons>
+                <Buttons id="confirm-delete-btn" onClick={deleteListing}>Yes</Buttons>
               </div>
               <div>
-                <Buttons onClick={closeDeleteModal}>No</Buttons>
+                <Buttons id="cancel-delete-btn" onClick={closeDeleteModal}>No</Buttons>
               </div>
             </div>
           </Modal>
