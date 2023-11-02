@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Modal from "react-modal";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { ReactComponent as PersonIcon } from "../icons/person-fill.svg";
 import { ReactComponent as BedIcon } from "../icons/bed.svg";
 import { ReactComponent as SinkIcon } from "../icons/sink.svg";
 import { useQuery } from "react-query";
 import "react-calendar/dist/Calendar.css";
-import { SERVER_URL, getListing, getMyBooking } from "api";
+import { SERVER_URL, getMyBooking } from "api";
 import Amenity from "components/Amenity";
 
 const Container = styled.main`
@@ -135,17 +135,6 @@ const GuestModBtn = styled.button`
   }
 `;
 
-const DateSelector = styled.div`
-  margin-top: 5px;
-  font-size: 16px;
-  font-weight: 200;
-  cursor: pointer;
-`;
-
-const CalendarContainer = styled.div`
-  position: absolute;
-`;
-
 const Divider = styled.div`
   width: 744px;
   height: 1px;
@@ -236,6 +225,7 @@ const SectionTitle = styled.div`
 function Details() {
   const params = useParams();
   const navigate = useNavigate();
+  const { state: roomData } = useLocation();
 
   const rid = params.id;
   const userinfo = localStorage.userinfo
@@ -247,7 +237,7 @@ function Details() {
     getMyBooking
   );
 
-  const { isLoading, data } = useQuery(["listing"], () => getListing(rid));
+  // const { isLoading, data } = useQuery(["listing"], () => getListing(rid));
   const [numGuests, setNumGuests] = useState(2);
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -256,7 +246,7 @@ function Details() {
   // Function to handle the "Edit Listing" click event
   const handleEditListingClick = () => {
     // Use navigate to navigate to the desired route
-    navigate(`modify`, { state: data });
+    navigate(`modify`, { state: roomData });
   };
 
   const toggleDropdown = () => {
@@ -270,18 +260,6 @@ function Details() {
   const closeDeleteModal = () => {
     setDeleteModalOpen(false);
   };
-
-  const [checkInValue, checkInOnChange] = useState(
-    data ? new Date(data.startDate) : new Date()
-  );
-  const [checkOnValue, checkOnOnChange] = useState(
-    data ? new Date(data.endDate) : new Date()
-  );
-  const [showCheckIn, setShowCheckIn] = useState(false);
-  const [showCheckOut, setShowCheckOut] = useState(false);
-
-  const toggleShowCheckIn = () => setShowCheckIn(!showCheckIn);
-  const toggleShowCheckOut = () => setShowCheckOut(!showCheckOut);
 
   const dateFormatted = (date) => {
     return new Date(date).toLocaleDateString("en-US", {
@@ -297,11 +275,12 @@ function Details() {
   };
 
   const isGuest = userinfo.accountType === "guest";
-  const isReserved = bookingData.find((b) => b.rid === rid); //INTEGRATIONS! Add method to check if the user has reserved this listing
+  const isReserved =
+    !bookingIsLoading && bookingData.find((b) => b.rid === rid); //INTEGRATIONS! Add method to check if the user has reserved this listing
 
   return (
     <Container>
-      {isLoading ? (
+      {false ? (
         "Loading..."
       ) : (
         <>
@@ -313,7 +292,7 @@ function Details() {
             }}
           >
             <div>
-              <HotelName>{data.hotelName}</HotelName>
+              <HotelName>{roomData.hotelName}</HotelName>
             </div>
             <div>
               {userinfo.accountType === "hotel" && (
@@ -334,14 +313,14 @@ function Details() {
             </div>
           </div>
 
-          <Location>{`${data.street_name}, ${data.city}, ${data.state}`}</Location>
+          <Location>{`${roomData.street_name}, ${roomData.city}, ${roomData.state}`}</Location>
           <Summary>
-            {data.numberGuests} Guests - {data.numberOfBeds} Beds -{" "}
-            {data.numberOfBathrooms} Bath
+            {roomData.numberGuests} Guests - {roomData.numberOfBeds} Beds -{" "}
+            {roomData.numberOfBathrooms} Bath
           </Summary>
           <Board>
             <ImgContainer>
-              <img src={data.imageUrl} alt="example" />
+              <img src={roomData.imageUrl} alt="example" />
             </ImgContainer>
 
             {isGuest && isReserved ? (
@@ -350,7 +329,7 @@ function Details() {
                 <Reservebtn
                   onClick={() =>
                     navigate(`/mybooking/${rid}/modify`, {
-                      state: { roomData: data, numGuests },
+                      state: { roomData, numGuests },
                     })
                   }
                 >
@@ -359,7 +338,7 @@ function Details() {
                 <Reservebtn
                   onClick={() =>
                     navigate(`/mybooking/${rid}/cancel`, {
-                      state: { roomData: data, numGuests },
+                      state: { roomData, numGuests },
                     })
                   }
                 >
@@ -371,7 +350,7 @@ function Details() {
               <Reserve>
                 <div>
                   <span style={{ fontSize: "30px", fontWeight: 600 }}>
-                    ${data.price}
+                    ${roomData.price}
                   </span>{" "}
                   <span style={{ fontSize: "20px", fontWeight: 400 }}>
                     per night
@@ -431,11 +410,15 @@ function Details() {
                   <ReserveDateContainer>
                     <ReserveInputContainer>
                       <ReserveInputLabel>Check-in Date</ReserveInputLabel>
-                      <ReserveDate>{dateFormatted(data.startDate)}</ReserveDate>
+                      <ReserveDate>
+                        {dateFormatted(roomData.startDate)}
+                      </ReserveDate>
                     </ReserveInputContainer>
                     <ReserveInputContainer>
                       <ReserveInputLabel>Check-out Date</ReserveInputLabel>
-                      <ReserveDate>{dateFormatted(data.endDate)}</ReserveDate>
+                      <ReserveDate>
+                        {dateFormatted(roomData.endDate)}
+                      </ReserveDate>
                     </ReserveInputContainer>
                   </ReserveDateContainer>
                   <ReserveDateContainer>
@@ -458,7 +441,7 @@ function Details() {
                         <div>{numGuests} Guests</div>
                         <GuestModBtn
                           onClick={() =>
-                            numGuests < data.numberGuests &&
+                            numGuests < roomData.numberGuests &&
                             setNumGuests(numGuests + 1)
                           }
                         >
@@ -471,7 +454,7 @@ function Details() {
                 </ReserveForm>
                 <Reservebtn
                   onClick={() =>
-                    navigate("book", { state: { roomData: data, numGuests } })
+                    navigate("book", { state: { roomData, numGuests } })
                   }
                 >
                   Reserve
@@ -484,23 +467,23 @@ function Details() {
             <h1>Room Details</h1>
             <DetailItem>
               <PersonIcon />
-              <span>{data.numberGuests} Guests</span>
+              <span>{roomData.numberGuests} Guests</span>
             </DetailItem>
             <DetailItem>
               <BedIcon />
               <span>
-                {data.numberOfBeds} Beds / 2 {data.bedType}
+                {roomData.numberOfBeds} Beds / 2 {roomData.bedType}
               </span>
             </DetailItem>
             <DetailItem>
               <SinkIcon />
-              <span>{data.numberOfBathrooms} Bath</span>
+              <span>{roomData.numberOfBathrooms} Bath</span>
             </DetailItem>
           </Detail>
           <Divider />
           <Detail>
             <h1>Amenities</h1>
-            {data.Amenities.map((item, i) => (
+            {roomData.Amenities.map((item, i) => (
               <Amenity key={i} item={item} />
             ))}
           </Detail>
