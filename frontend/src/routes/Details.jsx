@@ -275,8 +275,8 @@ function Details() {
   };
 
   const isGuest = userinfo.accountType === "guest";
-  const isReserved =
-    !bookingIsLoading && bookingData.find((b) => b.rid === rid); //INTEGRATIONS! Add method to check if the user has reserved this listing
+  const isReserved = isGuest ? bookingData.find((b) => b.rid === rid) : null;
+  //bookingData.find((b) => b.rid === rid); //INTEGRATIONS! Add method to check if the user has reserved this listing
 
   return (
     <Container>
