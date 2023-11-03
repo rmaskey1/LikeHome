@@ -9,6 +9,7 @@ from flask import Flask, abort, make_response, request, jsonify, render_template
 from flask_cors import CORS
 from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType
 from guest import is_valid_password, is_valid_phone_number
+import datetime
 
 
 app = Flask(__name__)
@@ -144,11 +145,10 @@ def bookings():
         rid = request.args['rid']
         gid = getUid()
         data = request.get_json()
+        date = datetime.now()
         if roomBooked(rid):
-            abort(make_response(
-                jsonify(message="Sorry, this room is already booked"), 409))
-        booking = addBooking(
-            gid, rid, data['startDate'], data['endDate'], data['numGuest'])
+            abort(make_response(jsonify(message="Sorry, this room is already booked"), 409))
+        booking = addBooking(gid, rid, data['pointsUsed'], data['totalPrice'], data['startDate'], data['endDate'], data['numGuest'], date)
         return jsonify(booking)
 
     # Get guest's mybookings
