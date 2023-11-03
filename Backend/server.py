@@ -239,13 +239,6 @@ def update_reward_points():
             if end_date <= today:
                 total_price = booking_data.get('totalPrice', 0)
 
-                # Convert pointUsed to an integer
-                point_used = int(booking_data.get('pointUsed', 0))
-
-                # Add pointUsed to rewardPoints if it's greater than 0
-                if point_used > 0:
-                    reward_points += point_used
-
                 # Calculate reward points (50% of the total price)
                 reward_points += round(total_price * 0.5)
 
