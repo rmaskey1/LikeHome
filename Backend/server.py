@@ -2,6 +2,7 @@ from guest import guest_modification_func
 from hotel import hotel_modification_func
 import firebase_admin
 import database
+from datetime import datetime
 # import pyrebase
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, abort, make_response, request, jsonify, render_template, redirect, url_for, session
@@ -209,6 +210,7 @@ def modify_bookings(rid):
         user_ref.update({"bookedRooms": firestore.ArrayRemove([rid])})
 
         return jsonify(message="Deletion Successfull")
+
 
 if __name__ == '__main__':
     app.debug = True
