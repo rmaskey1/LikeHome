@@ -105,7 +105,7 @@ def addHotelInfo(userId, hotelName, street, city, zipcode, state, country):
     })
     return doc_ref.get().to_dict()
 
-def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest, date):
+def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest):
     # Add rid to user's bookedRooms
     doc_ref = db.collection("user").document(gid)
     x = doc_ref.get().to_dict()["bookedRooms"]
@@ -121,8 +121,7 @@ def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest, d
         'totalPrice': totalPrice,
         'startDate': startDate,
         'endDate': endDate,
-        'numGuest': numGuest,
-        'date': date
+        'numGuest': numGuest
     })
     docs = db.collection("booking").where(filter=FieldFilter("gid", "==", gid)).where(filter=FieldFilter("rid", "==", rid)).stream()
     for doc in docs:
