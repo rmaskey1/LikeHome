@@ -9,7 +9,7 @@ from flask import Flask, abort, make_response, request, jsonify, render_template
 from flask_cors import CORS
 from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType
 from guest import is_valid_password, is_valid_phone_number
-import datetime
+from datetime import datetime
 
 
 app = Flask(__name__)
