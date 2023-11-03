@@ -145,10 +145,10 @@ def bookings():
         rid = request.args['rid']
         gid = getUid()
         data = request.get_json()
-        date = datetime.now()
+        # time = datetime.now().strftime("%H:%M:%S")
         if roomBooked(rid):
             abort(make_response(jsonify(message="Sorry, this room is already booked"), 409))
-        booking = addBooking(gid, rid, data['pointsUsed'], data['totalPrice'], data['startDate'], data['endDate'], data['numGuest'], date)
+        booking = addBooking(gid, rid, data['pointsUsed'], data['totalPrice'], data['startDate'], data['endDate'], data['numGuest'])
         return jsonify(booking)
 
     # Get guest's mybookings
