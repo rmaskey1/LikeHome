@@ -6,6 +6,7 @@ import datetime
 from flask import Flask, request, jsonify, make_response, abort
 from datetime import timedelta
 from google.cloud.firestore_v1.base_query import FieldFilter
+import stripe
 # -----------IMPORTANT-------------
 # 1. On your terminal execute this command "pip install firebase-admin"
 # 2. Also install Flask: "pip install flask"
@@ -28,6 +29,8 @@ config = {
 }
 firebase = pyrebase.initialize_app(config)
 pyrebase_auth = firebase.auth()
+
+stripe.api_key = 'sk_test_51O7eg3BeDJOROtaCd2D3qBBa3G32SwNfI0c0Z9FxKbs8gTFKxOZmrKRlgZEehOweHAKQvnGvivNnB25eFIwtYguf00nnU3B80B'
 
 # Function that returns auth
 def get_auth():
@@ -102,7 +105,7 @@ def addHotelInfo(userId, hotelName, street, city, zipcode, state, country):
     })
     return doc_ref.get().to_dict()
 
-def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest):
+def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest, date):
     # Add rid to user's bookedRooms
     doc_ref = db.collection("user").document(gid)
     x = doc_ref.get().to_dict()["bookedRooms"]
@@ -118,7 +121,8 @@ def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest):
         'totalPrice': totalPrice,
         'startDate': startDate,
         'endDate': endDate,
-        'numGuest': numGuest
+        'numGuest': numGuest,
+        'date': date
     })
     docs = db.collection("booking").where(filter=FieldFilter("gid", "==", gid)).where(filter=FieldFilter("rid", "==", rid)).stream()
     for doc in docs:
