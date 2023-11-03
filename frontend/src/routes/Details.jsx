@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Modal from "react-modal";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -8,7 +8,7 @@ import { ReactComponent as BedIcon } from "../icons/bed.svg";
 import { ReactComponent as SinkIcon } from "../icons/sink.svg";
 import { useQuery } from "react-query";
 import "react-calendar/dist/Calendar.css";
-import { SERVER_URL, getMyBooking } from "api";
+import { SERVER_URL, getListing, getMyBooking } from "api";
 import Amenity from "components/Amenity";
 
 const Container = styled.main`
@@ -225,7 +225,8 @@ const SectionTitle = styled.div`
 function Details() {
   const params = useParams();
   const navigate = useNavigate();
-  const { state: roomData } = useLocation();
+  const [roomData, setRoomData] = useState(null);
+  const { state: stateData } = useLocation();
 
   const rid = params.id;
   const userinfo = localStorage.userinfo
@@ -237,7 +238,6 @@ function Details() {
     getMyBooking
   );
 
-  // const { isLoading, data } = useQuery(["listing"], () => getListing(rid));
   const [numGuests, setNumGuests] = useState(2);
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -275,12 +275,21 @@ function Details() {
   };
 
   const isGuest = userinfo.accountType === "guest";
-  const isReserved = isGuest ? bookingData.find((b) => b.rid === rid) : null;
-  //bookingData.find((b) => b.rid === rid); //INTEGRATIONS! Add method to check if the user has reserved this listing
+  const isReserved =
+    isGuest && !bookingIsLoading && bookingData.find((b) => b.rid === rid);
+
+  const { isLoading, data: fetchData } = useQuery(["listing"], () =>
+    getListing(rid)
+  );
+
+  useEffect(() => {
+    if (stateData) setRoomData(stateData);
+    if (stateData == null && !isLoading) setRoomData(fetchData);
+  }, [fetchData, isLoading, stateData]);
 
   return (
     <Container>
-      {false ? (
+      {roomData === null ? (
         "Loading..."
       ) : (
         <>
@@ -291,7 +300,7 @@ function Details() {
               alignItems: "center",
             }}
           >
-            <div style={{ marginRight: "530px" }}>
+            <div>
               <HotelName>{roomData.hotelName}</HotelName>
             </div>
             <div>
