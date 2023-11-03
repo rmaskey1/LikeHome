@@ -245,6 +245,7 @@ const ErrorMessageArea = styled.div`
 function BookingForm() {
   const navigate = useNavigate();
   const location = useLocation();
+  const pointsUsed = 100; //temp variable for points used
   const isCancelRoute = window.location.pathname.includes("/cancel");
   const { roomData, numGuests } = location.state;
   const [isFetching, setIsFetching] = useState(false);
@@ -308,6 +309,8 @@ function BookingForm() {
         startDate: roomData.startDate,
         endDate: roomData.endDate,
         numGuest: numGuests,
+        totalPrice: total,
+        pointsUsed: pointsUsed,
       };
       setIsFetching(true);
       const response = await fetch(

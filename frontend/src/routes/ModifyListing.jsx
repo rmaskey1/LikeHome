@@ -118,7 +118,7 @@ function ModifyListing() {
   const rid = useParams().id;
   const roominfo = location.state;
 
-  //INTEGRATIONS!! somehow get the listings's existing data :D
+  //INTEGRATIONS!! get the listings's existing data :D
   const existingData = {
     price: roominfo.price,
     fromDate: new Date(roominfo.startDate).toLocaleDateString(),
