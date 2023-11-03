@@ -10,40 +10,42 @@ const Container = styled.main`
   height: 110vh;
   display: flex;
   justify-content: center;
+  margin-left: 200px;
 `;
 
 const Back = styled.div`
   font-size: 16px;
   font-weight: bold;
-  padding: 50px 25px;
+  margin: 50px 0;
   color: #293545;
+  cursor: pointer;
 `;
 
 const BookingRequest = styled.div`
   font-size: 26px;
   font-weight: bold;
-  padding: 20px 200px;
+  padding: 20px 0;
   color: #293545;
 `;
 
 const InfoTitle = styled.div`
   font-size: 20px;
   font-weight: bold;
-  padding: 10px 200px;
+  padding: 10px 0;
   color: #293545;
 `;
 
 const InfoText = styled.div`
   font-size: 16px;
   font-weight: normal;
-  padding: 10px 200px;
+  padding: 10px 0;
   color: #293545;
 `;
 
 const NoFee = styled.div`
   font-size: 16px;
   font-weight: normal;
-  padding: 10px 200px;
+  padding: 10px 0;
   color: #293545;
   margin-top: 30px;
 `;
@@ -51,7 +53,7 @@ const NoFee = styled.div`
 const Payment = styled.div`
   font-size: 20px;
   font-weight: bold;
-  padding: 50px 200px 10px;
+  padding: 50px 0 10px;
   color: #293545;
 `;
 
@@ -60,7 +62,6 @@ const ErrorText = styled.span`
   font-size: 14px;
   margin-top: 5px;
   display: flex;
-  margin-left: 200px;
 `;
 
 const ErrorText2 = styled.span`
@@ -75,41 +76,37 @@ const CheckInWarning = styled.span`
   font-size: 14px;
   margin-top: 5px;
   margin-bottom: 10px;
-  margin-left: 200px;
   display: flex;
 `;
 
 const FieldName = styled.div`
   font-size: 16px;
   font-weight: normal;
-  margin-left: 200px;
   margin-top: 20px;
   color: #293545;
 `;
 
 const Input1 = styled.input`
   margin-top: 15px;
-  margin-left: 200px;
   width: 500px;
   padding: 10px;
   border: 1px solid #b0b0b0;
   border-radius: 20px;
-  height: 50px;
+  height: 37px;
   color: #888888;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
 `;
 
 const Input2 = styled.input`
   margin-top: 15px;
-  margin-left: 200px;
   width: 250px;
   padding: 10px;
   border: 1px solid #b0b0b0;
   border-radius: 20px;
-  height: 50px;
+  height: 37px;
   color: #888888;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
 `;
 
@@ -120,9 +117,9 @@ const Input3 = styled.input`
   padding: 10px;
   border: 1px solid #b0b0b0;
   border-radius: 20px;
-  height: 50px;
+  height: 37px;
   color: #888888;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
 `;
 
@@ -136,15 +133,14 @@ const CVC = styled.div`
 
 const SubmitButton = styled.button`
   margin-top: 30px;
-  margin-top: 30px;
-  margin-left: 200px;
   width: 500px;
-  height: 60px;
+  height: 44px;
   padding: 15px;
+  margin-bottom: 100px;
   border-radius: 20px;
   background-color: #cf316a;
   color: #ffffff;
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -162,8 +158,6 @@ const Card = styled.div`
   border-radius: 10px;
   padding: 10px;
   color: #293545;
-  //height: 490px;
-  //height: 490px;
   width: 390px;
   display: block;
   margin-right: 200px;
@@ -184,7 +178,6 @@ const RightSide = styled.div`
 `;
 
 const Image = styled.div`
-  padding: 15px;
   padding: 15px;
   height: 250px;
 
@@ -220,7 +213,6 @@ const Amount = styled.div`
 const Total = styled.div`
   margin-top: 60px;
   margin-left: 20px;
-  margin-bottom: 20px;
   margin-bottom: 20px;
   font-size: 20px;
   font-weight: bold;
@@ -338,7 +330,13 @@ function BookingForm() {
   return (
     <Container>
       <LeftSide>
-        <div>
+        <div
+          style={{
+            borderBottom: "1px solid #888",
+            paddingBottom: "30px",
+            width: "500px ",
+          }}
+        >
           <Back onClick={() => navigate(-1)}>Back</Back>
           <BookingRequest>
             {isCancelRoute ? "Cancel Booking Request" : "Booking Request"}
@@ -363,6 +361,38 @@ function BookingForm() {
 
           <InfoTitle>Number of Guests:</InfoTitle>
           <InfoText>{numGuests}</InfoText>
+
+          <InfoTitle>Reward Points Earned:</InfoTitle>
+          <InfoText>10 points</InfoText>
+        </div>
+
+        <div
+          style={{
+            borderBottom: "1px solid #888",
+            padding: "22px 0 30px 0",
+            width: "500px ",
+          }}
+        >
+          <InfoTitle>Apply Reward Points</InfoTitle>
+          <InfoText>Points owned: 100 points</InfoText>
+          <br />
+          <FieldName>Apply points to reservation: </FieldName>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              marginTop: "5px",
+            }}
+          >
+            <Input1 type="number" style={{ color: "black", margin: 0 }} />
+            <SubmitButton
+              style={{ width: "91px", height: "37px", padding: 0, margin: 0 }}
+              type="submit"
+            >
+              Apply
+            </SubmitButton>
+          </div>
         </div>
 
         <div>
@@ -435,11 +465,11 @@ function BookingForm() {
               </div>
             </div>
 
-            <NoFee>
-              {isCancelRoute && getCancellationFee() === 0
-                ? "No cancellation fees are charged for your request."
-                : ""}
-            </NoFee>
+            {isCancelRoute && getCancellationFee() === 0 && (
+              <NoFee>
+                "No cancellation fees are charged for your request."
+              </NoFee>
+            )}
 
             <SubmitButton type="submit">
               {isCancelRoute ? (
@@ -473,10 +503,16 @@ function BookingForm() {
             </Amount>
           </CostAndAmount>
           {!isCancelRoute && (
-            <CostAndAmount>
-              <div>Tax (8%)</div>
-              <Amount>{dollarString.format(tax)}</Amount>
-            </CostAndAmount>
+            <>
+              <CostAndAmount>
+                <div>Tax (8%)</div>
+                <Amount>{dollarString.format(tax)}</Amount>
+              </CostAndAmount>
+              <CostAndAmount>
+                <div>Discount from points</div>
+                <Amount>-$10.00</Amount>
+              </CostAndAmount>
+            </>
           )}
           <Total>
             <div>Total (USD):</div>
