@@ -2,6 +2,7 @@ from guest import guest_modification_func
 from hotel import hotel_modification_func
 import firebase_admin
 import database
+from datetime import datetime
 # import pyrebase
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, abort, make_response, request, jsonify, render_template, redirect, url_for, session
@@ -209,6 +210,55 @@ def modify_bookings(rid):
         user_ref.update({"bookedRooms": firestore.ArrayRemove([rid])})
 
         return jsonify(message="Deletion Successfull")
+
+@app.route('/update_reward_points', methods=['POST'])
+def update_reward_points():
+    try:
+        uid = getUid()
+        # Query the 'booking' collection
+        booking_ref = db.collection('booking')
+        user_ref = db.collection('user').document(uid)
+        user_data = user_ref.get().to_dict()
+
+        if user_data is None:
+            return jsonify({'error': 'User not found'}), 404
+
+        reward_points = user_data.get('rewardPoints', 0)
+
+        # Iterate through the booking documents for the specified UID
+        for booking_doc in booking_ref.where('gid', '==', uid).stream():
+            booking_data = booking_doc.to_dict()
+
+            # Parse the endDate from the document (assuming it's in the format "Nov 2, 2023")
+            end_date = datetime.strptime(booking_data['endDate'], "%b %d, %Y")
+
+            # Get the current date
+            today = datetime.today()
+
+            # Check if the end date is before or on today's date
+            if end_date <= today:
+                total_price = booking_data.get('totalPrice', 0)
+
+                # Calculate reward points (50% of the total price)
+                reward_points += round(total_price * 0.5)
+
+                # Delete the booking document
+                booking_ref.document(booking_doc.id).delete()
+
+                # If the user's 'bookedRooms' array contains the RID, remove it
+                rid = booking_data.get('rid')
+                if rid in user_data.get('bookedRooms', []):
+                    booked_rooms = user_data['bookedRooms']
+                    booked_rooms.remove(rid)
+                    user_ref.update({'bookedRooms': booked_rooms})
+
+                # Update the user's reward points in the 'user' collection
+                user_ref.update({'rewardPoints': reward_points})
+
+        return jsonify({'message': 'Reward points updated successfully'}), 200
+
+    except Exception as e:
+        return jsonify({'error': 'An error occurred', 'message': str(e)}), 500
 
 
 if __name__ == '__main__':
