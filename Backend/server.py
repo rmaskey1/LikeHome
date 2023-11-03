@@ -210,7 +210,6 @@ def modify_bookings(rid):
 
         return jsonify(message="Deletion Successfull")
 
-
 if __name__ == '__main__':
     app.debug = True
     app.run()
