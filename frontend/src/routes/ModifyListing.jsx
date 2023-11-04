@@ -118,11 +118,21 @@ function ModifyListing() {
   const rid = useParams().id;
   const roominfo = location.state;
 
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const month = (d.getMonth() + 1).toString().padStart(2, "0"); // Ensure two-digit month
+    const day = d.getDate().toString().padStart(2, "0"); // Ensure two-digit day
+    const year = d.getFullYear();
+    return `${month}/${day}/${year}`;
+  };
+
   //INTEGRATIONS!! get the listings's existing data :D
   const existingData = {
     price: roominfo.price,
-    fromDate: new Date(roominfo.startDate).toLocaleDateString(),
-    toDate: new Date(roominfo.endDate).toLocaleDateString(),
+    fromDate: formatDate(roominfo.startDate), // Format the "fromDate"
+    toDate: formatDate(roominfo.endDate),
+    //fromDate: new Date(roominfo.startDate).toLocaleDateString(),
+    //toDate: new Date(roominfo.endDate).toLocaleDateString(),
     beds: roominfo.numberOfBeds,
     guests: roominfo.numberGuests,
     bathrooms: roominfo.numberOfBathrooms,
