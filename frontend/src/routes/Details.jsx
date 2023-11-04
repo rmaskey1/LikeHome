@@ -10,6 +10,7 @@ import { useQuery } from "react-query";
 import "react-calendar/dist/Calendar.css";
 import { SERVER_URL, getListing, getMyBooking } from "api";
 import Amenity from "components/Amenity";
+import DoubleBookingWarning from "components/DoubleBookingWarning";
 
 const Container = styled.main`
   display: flex;
@@ -227,6 +228,8 @@ function Details() {
   const navigate = useNavigate();
   const [roomData, setRoomData] = useState(null);
   const { state: stateData } = useLocation();
+  const [showDoubleBookingWarning, setShowDoubleBookingWarning] = useState(false);
+  const isDoubleBooking = true; //check if double booking here!
 
   const rid = params.id;
   const userinfo = localStorage.userinfo
@@ -286,6 +289,10 @@ function Details() {
     if (stateData) setRoomData(stateData);
     if (stateData == null && !isLoading) setRoomData(fetchData);
   }, [fetchData, isLoading, stateData]);
+
+  const handleConfirm = () => {
+    setShowDoubleBookingWarning(false);
+  }
 
   return (
     <Container>
@@ -462,12 +469,17 @@ function Details() {
                   </ReserveDateContainer>
                 </ReserveForm>
                 <Reservebtn
-                  onClick={() =>
-                    navigate("book", { state: { roomData, numGuests } })
-                  }
-                >
+                    onClick={() => {
+                      if (isDoubleBooking) {
+                        setShowDoubleBookingWarning(true);
+                      } else {
+                        navigate("book", { state: { roomData, numGuests } });
+                      }
+                    }}
+                  >
                   Reserve
                 </Reservebtn>
+                {isDoubleBooking && (< DoubleBookingWarning onConfirm={handleConfirm}/>)}
               </Reserve>
             )}
           </Board>
