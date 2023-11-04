@@ -259,9 +259,6 @@ def update_reward_points():
 
     except Exception as e:
         return jsonify({'error': 'An error occurred', 'message': str(e)}), 500
-
-
-        return jsonify(message= "Deletion Successfull")
     
 
 @app.route('/query', methods=['POST'])
