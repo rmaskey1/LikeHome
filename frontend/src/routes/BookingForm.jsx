@@ -395,6 +395,45 @@ function BookingForm() {
           </div>
         </div>
 
+        <div
+          style={{
+            borderBottom: "1px solid #888",
+            padding: "22px 0 30px 0",
+            width: "500px ",
+          }}
+        >
+          <InfoTitle>Reward Points Earned:</InfoTitle>
+          <InfoText>10 points</InfoText>
+        </div>
+        <div
+          style={{
+            borderBottom: "1px solid #888",
+            padding: "22px 0 30px 0",
+            width: "500px ",
+          }}
+        >
+          <InfoTitle>Apply Reward Points</InfoTitle>
+          <InfoText>Points owned: 100 points</InfoText>
+          <br />
+          <FieldName>Apply points to reservation: </FieldName>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              marginTop: "5px",
+            }}
+          >
+            <Input1 type="number" style={{ color: "black", margin: 0 }} />
+            <SubmitButton
+              style={{ width: "91px", height: "37px", padding: 0, margin: 0 }}
+              type="submit"
+            >
+              Apply
+            </SubmitButton>
+          </div>
+        </div>
+
         <div>
           <Payment>Payment</Payment>
 
