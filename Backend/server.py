@@ -259,7 +259,85 @@ def update_reward_points():
 
     except Exception as e:
         return jsonify({'error': 'An error occurred', 'message': str(e)}), 500
+    
 
+@app.route('/query', methods=['POST'])
+def queryByRmAttribute():
+    try:
+        if request.method == 'POST':
+            # Get JSON data from the frontend
+            data = request.get_json()
+
+            #amneties
+            amenities=data['amenities']
+
+
+            query = db.collection("room")
+            # Generate list of amenities to filter based on true value, make sure it is lowercase and has no space or dashes
+            filter = []
+            for dict in amenities:
+                key = list(dict.keys())[0]
+                if (dict[key]==True):
+                    filter.append(key.lower().replace(' ', '').replace('-', ''))
+
+
+            bathrooms = data['bathrooms']
+            bedType = data['bedType']
+            beds = data['beds']
+            guests = data['guests']
+            minPrice = data['minPrice']
+            maxPrice = data['maxPrice']
+
+            #this part checks if each attribute is null or not. Shouldn't factor into query if it's null
+            #bedType is str, not int
+
+            results = query.stream()
+            matching_rooms = []
+
+            #
+            for doc in results:
+                add = False
+                amenities = doc.to_dict()['Amenities']
+                if set(filter).issubset(set(amenities)):
+                    add = True
+                if bathrooms is not None:
+                    if doc.to_dict()['numberOfBathrooms'] != bathrooms:
+                        add = False
+
+                if bedType is not None:
+                    if bedType.lower() not in doc.to_dict()['bedType'].lower():
+                        add = False
+                
+                if beds is not None:
+                    if doc.to_dict()['numberOfBeds'] != beds:
+                        add = False
+                
+                if guests is not None:
+                    if doc.to_dict()['numberGuests'] != guests:
+                        add = False
+                
+                if minPrice is not None:
+                    if doc.to_dict()['price'] < minPrice:
+                        add = False
+
+                if maxPrice is not None:
+                    if doc.to_dict()['price'] > maxPrice:
+                        add = False
+
+                if add:
+                    listing = doc.to_dict()
+                    listing['rid'] = doc.id
+                    matching_rooms.append(listing)
+            print(matching_rooms)
+
+            return jsonify(matching_rooms)
+        
+        else:
+            return jsonify([])
+      
+    except Exception as e:
+        print("Error querying rooms:", e)
+        return jsonify([])
 
 if __name__ == '__main__':
     app.debug = True
