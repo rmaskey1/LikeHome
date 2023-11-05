@@ -1,5 +1,6 @@
 from guest import guest_modification_func
 from hotel import hotel_modification_func
+from payment import payment_func
 import firebase_admin
 import database
 from datetime import datetime
@@ -24,6 +25,8 @@ def home():
 guest_modification_func(app)
 
 hotel_modification_func(app)
+
+payment_func(app)
 
 # User Type Selection Function
 
@@ -171,7 +174,6 @@ def bookings():
 
 # No get function, must call put/delete methods from frontend to work
 # No payment fields yet
-
 
 @app.route('/bookings/<rid>', methods=['GET', 'PUT', 'DELETE'])
 def modify_bookings(rid):

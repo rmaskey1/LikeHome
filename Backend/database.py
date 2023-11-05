@@ -349,5 +349,8 @@ def getAccountType():
     accountType = userDoc['accountType']
     return accountType
 
+def getCardToken(card_number):
+    return db.collection("test_card_data").document(card_number).get().get("token")
+
 # Function to modify user's information
 #def changeGuestInfo(email, phone, password, first_name, ):
