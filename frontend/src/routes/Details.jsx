@@ -165,6 +165,15 @@ const DetailItem = styled.div`
     font-size: 24px;
     font-weight: 400;
   }
+
+  li {
+    margin-left: 50px;
+    list-style-type: disc;
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    max-width: 55%;
+  }
 `;
 
 const Dropdown = styled.div`
@@ -495,6 +504,49 @@ function Details() {
             {roomData.Amenities.map((item, i) => (
               <Amenity key={i} item={item} />
             ))}
+          </Detail>
+          <Divider />
+          <Detail>
+            <h1>Cancellation Policy</h1>
+            <DetailItem>
+              <ul>
+                <li>
+                  Cancellation is NOT allowed on the day of or after your
+                  check-in date.
+                </li>
+                <li>
+                  A cancellation fee 20% of your reservation's total price will
+                  be charged if reservation is canceled within 3 days of
+                  check-in date.
+                </li>
+                <li>
+                  FULL refund is possible only if you cancel at least 4 days
+                  prior to your check-in date (with the exception that the
+                  reservation is made within 3 days of check-in date)
+                </li>
+                <li>
+                  Cancellations will refund the reward points that were used on
+                  the reservation
+                </li>
+              </ul>
+            </DetailItem>
+            <DetailItem style={{ marginLeft: "20px" }}>
+              <span>For example:</span>
+            </DetailItem>
+            <DetailItem>
+              <ul>
+                <li style={{ marginBottom: "0", maxWidth: "80%" }}>
+                  Check-in date is Jan 29
+                </li>
+                <li style={{ marginBottom: "0", maxWidth: "80%" }}>
+                  Cancellation before Jan 26 is fully refundable
+                </li>
+                <li style={{ marginBottom: "0", maxWidth: "80%" }}>
+                  Cancellation between Jan 26 (inclusive) and 29 (exclusive)
+                  will have a fee
+                </li>
+              </ul>
+            </DetailItem>
           </Detail>
 
           <Modal
