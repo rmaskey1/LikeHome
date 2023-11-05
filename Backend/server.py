@@ -8,9 +8,10 @@ from datetime import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, abort, make_response, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
-from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType
+from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType, getCardToken
 from guest import is_valid_password, is_valid_phone_number
 from datetime import datetime
+import stripe
 
 
 app = Flask(__name__)
@@ -140,8 +141,9 @@ def login():
 
 # No payment fields yet
 
-
-# Expecting uid and rid passed in as variable
+# Payment integrated with adding booking
+stripe.api_key = "sk_test_51O7eg3BeDJOROtaCd2D3qBBa3G32SwNfI0c0Z9FxKbs8gTFKxOZmrKRlgZEehOweHAKQvnGvivNnB25eFIwtYguf00nnU3B80B"
+# Expecting rid passed in as variable
 @app.route('/bookings', methods=['GET', 'POST'])
 def bookings():
     if request.method == 'POST':
@@ -151,7 +153,25 @@ def bookings():
         # time = datetime.now().strftime("%H:%M:%S")
         if roomBooked(rid):
             abort(make_response(jsonify(message="Sorry, this room is already booked"), 409))
-        booking = addBooking(gid, rid, data['pointsUsed'], data['totalPrice'], data['startDate'], data['endDate'], data['numGuest'])
+        
+        try:
+            # Get credit card information from the form
+            cardToken = getCardToken(request.form['cardNumber'])
+            # exp_month = request.form['exp_month']
+            # exp_year = request.form['exp_year']
+            # cvc = request.form['cvc']
+            totalPrice = int(request.form['totalPrice']) * 100  # Convert amount to cents
+            
+            charge = stripe.Charge.create(
+                amount=totalPrice,
+                currency='usd',
+                source=cardToken,
+                description='Payment for your booking'
+            )
+        except Exception as e:
+            return jsonify({'error': str(e)})
+        
+        booking = addBooking(gid, rid, data['pointsUsed'], data['totalPrice'], data['startDate'], data['endDate'], data['numGuest'], charge.id)
         return jsonify(booking)
 
     # Get guest's mybookings
