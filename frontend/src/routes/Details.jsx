@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Modal from "react-modal";
 
@@ -10,8 +10,9 @@ import { ReactComponent as BedIcon } from "../icons/bed.svg";
 import { ReactComponent as SinkIcon } from "../icons/sink.svg";
 import { useQuery } from "react-query";
 import "react-calendar/dist/Calendar.css";
-import { SERVER_URL, getMyBooking } from "api";
+import { SERVER_URL, getListing, getMyBooking } from "api";
 import Amenity from "components/Amenity";
+import DoubleBookingWarning from "components/DoubleBookingWarning";
 
 const Container = styled.main`
   display: flex;
@@ -167,6 +168,15 @@ const DetailItem = styled.div`
     font-size: 24px;
     font-weight: 400;
   }
+
+  li {
+    margin-left: 50px;
+    list-style-type: disc;
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    max-width: 55%;
+  }
 `;
 
 const Dropdown = styled.div`
@@ -227,7 +237,10 @@ const SectionTitle = styled.div`
 function Details() {
   const params = useParams();
   const navigate = useNavigate();
-  const { state: roomData } = useLocation();
+  const [roomData, setRoomData] = useState(null);
+  const { state: stateData } = useLocation();
+  const [showDoubleBookingWarning, setShowDoubleBookingWarning] = useState(false);
+  const isDoubleBooking = true; //check if double booking here!
 
   const rid = params.id;
   const userinfo = localStorage.userinfo
@@ -239,7 +252,6 @@ function Details() {
     getMyBooking
   );
 
-  // const { isLoading, data } = useQuery(["listing"], () => getListing(rid));
   const [numGuests, setNumGuests] = useState(2);
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -278,12 +290,25 @@ function Details() {
 
   const isGuest = userinfo.accountType === "guest";
 
-  const isReserved = isGuest ? bookingData.find((b) => b.rid === rid) : null;
-  //bookingData.find((b) => b.rid === rid); //INTEGRATIONS! Add method to check if the user has reserved this listing
+  const isReserved =
+    isGuest && !bookingIsLoading && bookingData.find((b) => b.rid === rid);
+
+  const { isLoading, data: fetchData } = useQuery(["listing"], () =>
+    getListing(rid)
+  );
+
+  useEffect(() => {
+    if (stateData) setRoomData(stateData);
+    if (stateData == null && !isLoading) setRoomData(fetchData);
+  }, [fetchData, isLoading, stateData]);
+
+  const handleConfirm = () => {
+    setShowDoubleBookingWarning(false);
+  }
 
   return (
     <Container>
-      {false ? (
+      {roomData === null ? (
         "Loading..."
       ) : (
         <>
@@ -294,7 +319,7 @@ function Details() {
               alignItems: "center",
             }}
           >
-            <div style={{ marginRight: "530px" }}>
+            <div style={{ marginRight: "525px" }}>
               <HotelName>{roomData.hotelName}</HotelName>
             </div>
             <div>
@@ -410,12 +435,17 @@ function Details() {
                   </ReserveDateContainer>
                 </ReserveForm>
                 <Reservebtn
-                  onClick={() =>
-                    navigate("book", { state: { roomData, numGuests } })
-                  }
-                >
+                    onClick={() => {
+                      if (isDoubleBooking) {
+                        setShowDoubleBookingWarning(true);
+                      } else {
+                        navigate("book", { state: { roomData, numGuests } });
+                      }
+                    }}
+                  >
                   Reserve
                 </Reservebtn>
+                {isDoubleBooking && (< DoubleBookingWarning onConfirm={handleConfirm}/>)}
               </Reserve>
             )}
           </Board>
@@ -445,6 +475,49 @@ function Details() {
             {roomData.Amenities.map((item, i) => (
               <Amenity key={i} item={item} />
             ))}
+          </Detail>
+          <Divider />
+          <Detail>
+            <h1>Cancellation Policy</h1>
+            <DetailItem>
+              <ul>
+                <li>
+                  Cancellation is NOT allowed on the day of or after your
+                  check-in date.
+                </li>
+                <li>
+                  A cancellation fee 20% of your reservation's total price will
+                  be charged if reservation is canceled within 3 days of
+                  check-in date.
+                </li>
+                <li>
+                  FULL refund is possible only if you cancel at least 4 days
+                  prior to your check-in date (with the exception that the
+                  reservation is made within 3 days of check-in date)
+                </li>
+                <li>
+                  Cancellations will refund the reward points that were used on
+                  the reservation
+                </li>
+              </ul>
+            </DetailItem>
+            <DetailItem style={{ marginLeft: "20px" }}>
+              <span>For example:</span>
+            </DetailItem>
+            <DetailItem>
+              <ul>
+                <li style={{ marginBottom: "0", maxWidth: "80%" }}>
+                  Check-in date is Jan 29
+                </li>
+                <li style={{ marginBottom: "0", maxWidth: "80%" }}>
+                  Cancellation before Jan 26 is fully refundable
+                </li>
+                <li style={{ marginBottom: "0", maxWidth: "80%" }}>
+                  Cancellation between Jan 26 (inclusive) and 29 (exclusive)
+                  will have a fee
+                </li>
+              </ul>
+            </DetailItem>
           </Detail>
 
           <Modal

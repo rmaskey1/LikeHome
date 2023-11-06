@@ -162,7 +162,7 @@ function Profile() {
         <ProfileBox>
           <div>My Reward Points</div>
           <Label>Reward Points Owned:</Label>
-          <Content>{userinfo.points}</Content>
+          <Content>{userinfo.rewardPoints}</Content>
         </ProfileBox>
       )}
 
