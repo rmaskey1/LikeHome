@@ -242,6 +242,10 @@ function BookingForm() {
   const { roomData, numGuests } = location.state;
   const [isFetching, setIsFetching] = useState(false);
   const [serverError, setServerError] = useState({ status: 0, message: "" });
+  const [cardNumber, setCardNumber] = useState("");
+  const [expirationDate, setExpirationDate] = useState("");
+  const [cvc, setCVC] = useState("");
+
 
   const {
     handleSubmit,
@@ -303,6 +307,9 @@ function BookingForm() {
         numGuest: numGuests,
         totalPrice: total,
         pointsUsed: pointsUsed,
+        cardNumber: cardNumber,
+        expirationDate: expirationDate,
+        cvc: cvc,
       };
       setIsFetching(true);
       const response = await fetch(
@@ -344,8 +351,8 @@ function BookingForm() {
 
           {isCancelRoute && isWithin24Hours(currentDate, checkInDate) && (
             <CheckInWarning>
-              You have cancellations fees because you are canceling less than 24
-              hours of your check-in date.
+              You have cancellations fees because you are canceling within 3
+              days of your check-in date.
             </CheckInWarning>
           )}
 
@@ -446,6 +453,9 @@ function BookingForm() {
               })}
               type="number"
               style={{ color: "black" }}
+              name="cardNumber"
+              value={cardNumber}
+              onChange={(e) => setCardNumber(e.target.value)}
             />
             {errors.cardNumber && (
               <ErrorText className="error-text">
@@ -470,6 +480,9 @@ function BookingForm() {
                   })}
                   type="text"
                   style={{ color: "black" }}
+                  name="expirationDate"
+                  value={expirationDate}
+                  onChange={(e) => setExpirationDate(e.target.value)}
                 />
                 {errors.expirationDate && (
                   <ErrorText className="error-text">
@@ -495,6 +508,9 @@ function BookingForm() {
                   })}
                   type="number"
                   style={{ color: "black" }}
+                  name="cardNumber"
+                  value={cardNumber}
+                  onChange={(e) => setCVC(e.target.value)}
                 />
                 {errors.cvc && (
                   <ErrorText2 className="error-text">
