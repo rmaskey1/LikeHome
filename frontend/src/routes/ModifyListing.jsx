@@ -118,11 +118,21 @@ function ModifyListing() {
   const rid = useParams().id;
   const roominfo = location.state;
 
-  //INTEGRATIONS!! somehow get the listings's existing data :D
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const month = (d.getMonth() + 1).toString().padStart(2, "0"); // Ensure two-digit month
+    const day = d.getDate().toString().padStart(2, "0"); // Ensure two-digit day
+    const year = d.getFullYear();
+    return `${month}/${day}/${year}`;
+  };
+
+  //INTEGRATIONS!! get the listings's existing data :D
   const existingData = {
     price: roominfo.price,
-    fromDate: new Date(roominfo.startDate).toLocaleDateString(),
-    toDate: new Date(roominfo.endDate).toLocaleDateString(),
+    fromDate: formatDate(roominfo.startDate), // Format the "fromDate"
+    toDate: formatDate(roominfo.endDate),
+    //fromDate: new Date(roominfo.startDate).toLocaleDateString(),
+    //toDate: new Date(roominfo.endDate).toLocaleDateString(),
     beds: roominfo.numberOfBeds,
     guests: roominfo.numberGuests,
     bathrooms: roominfo.numberOfBathrooms,
@@ -399,6 +409,7 @@ function ModifyListing() {
           <CheckboxItem>
             <Label>
               <Controller
+
                 name="amenities[0].freeWifi"
                 control={control}
                 defaultValue={existingData.amenities[0].freeWifi}
@@ -407,6 +418,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[0].freeWifi}
+                    id="freeWifi-box"
                   />
                 )}
               />
@@ -414,7 +426,6 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
-                  id="pool-box"
                 name="amenities[1].pool"
                 control={control}
                 defaultValue={existingData.amenities[1].pool}
@@ -423,6 +434,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[1].pool}
+                    id="pool-box"
                   />
                 )}
               />
@@ -430,7 +442,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
-                  id="tv-box"
+
                 name="amenities[2].tv"
                 control={control}
                 defaultValue={existingData.amenities[2].tv}
@@ -439,6 +451,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[2].tv}
+                    id="tv-box"
                   />
                 )}
               />
@@ -446,7 +459,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
-                  id="washer-box"
+
                 name="amenities[3].freeWasherInUnit"
                 control={control}
                 defaultValue={existingData.amenities[3].freeWasherInUnit}
@@ -455,6 +468,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[3].freeWasherInUnit}
+                    id="washer-box"
                   />
                 )}
               />
@@ -462,7 +476,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
-                  id="dryer-box"
+
                 name="amenities[4].freeDryerInUnit"
                 control={control}
                 defaultValue={existingData.amenities[4].freeDryerInUnit}
@@ -471,6 +485,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[4].freeDryerInUnit}
+                    id="dryer-box"
                   />
                 )}
               />
@@ -478,7 +493,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
-                  id="parking-box"
+
                 name="amenities[5].freeParking"
                 control={control}
                 defaultValue={existingData.amenities[5].freeParking}
@@ -487,6 +502,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[5].freeParking}
+                    id="parking-box"
                   />
                 )}
               />
@@ -494,7 +510,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
-                  id="ac-box"
+
                 name="amenities[6].airConditioning"
                 control={control}
                 defaultValue={existingData.amenities[6].airConditioning}
@@ -503,6 +519,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[6].airConditioning}
+                    id="ac-box"
                   />
                 )}
               />
@@ -512,7 +529,7 @@ function ModifyListing() {
           <CheckboxItem>
             <Label>
               <Controller
-                  id="breakfast-box"
+
                 name="amenities[7].freeBreakfast"
                 control={control}
                 defaultValue={existingData.amenities[7].freeBreakfast}
@@ -521,6 +538,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[7].freeBreakfast}
+                    id="breakfast-box"
                   />
                 )}
               />
@@ -528,7 +546,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
-                  id="lunch-box"
+
                 name="amenities[8].freeLunch"
                 control={control}
                 defaultValue={existingData.amenities[8].freeLunch}
@@ -537,6 +555,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[8].freeLunch}
+                    id="lunch-box"
                   />
                 )}
               />
@@ -544,7 +563,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
-                  id="dinner-box"
+
                 name="amenities[9].freeDinner"
                 control={control}
                 defaultValue={existingData.amenities[9].freeDinner}
@@ -553,6 +572,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[9].freeDinner}
+                    id="dinner-box"
                   />
                 )}
               />
@@ -560,7 +580,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
-                  id="microwave-box"
+
                 name="amenities[10].microwave"
                 control={control}
                 defaultValue={existingData.amenities[10].microwave}
@@ -569,6 +589,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[10].microwave}
+                    id="microwave-box"
                   />
                 )}
               />
@@ -576,7 +597,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
-                  id="refrigerator-box"
+
                 name="amenities[11].refrigerator"
                 control={control}
                 defaultValue={existingData.amenities[11].refrigerator}
@@ -585,6 +606,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[11].refrigerator}
+                    id="refrigerator-box"
                   />
                 )}
               />
@@ -592,7 +614,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
-                  id="pet-box"
+
                 name="amenities[12].petFriendly"
                 control={control}
                 defaultValue={existingData.amenities[12].petFriendly}
@@ -601,6 +623,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[12].petFriendly}
+                    id="pet-box"
                   />
                 )}
               />
@@ -608,7 +631,7 @@ function ModifyListing() {
             </Label>
             <Label>
               <Controller
-                  id="spa-box"
+
                 name="amenities[13].spa"
                 control={control}
                 defaultValue={existingData.amenities[13].spa}
@@ -617,6 +640,7 @@ function ModifyListing() {
                     {...field}
                     type="checkbox"
                     defaultChecked={existingData.amenities[13].spa}
+                    id="spa-box"
                   />
                 )}
               />

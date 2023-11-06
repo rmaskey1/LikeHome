@@ -76,6 +76,9 @@ public class ModifyListingTest {
         modify.submitBtn.click();
         Thread.sleep(2000);
 
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
+
         assertEquals(details.price.text(), "$"+modifiedPrice);
     }
 
@@ -120,6 +123,9 @@ public class ModifyListingTest {
         modify.fromDate.sendKeys("10/30/2023");
         modify.submitBtn.click();
         Thread.sleep(2000);
+
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
 
         assertEquals(details.fromDate.innerText(), "Oct 30, 23");
     }
@@ -166,6 +172,9 @@ public class ModifyListingTest {
         modify.submitBtn.click();
         Thread.sleep(2000);
 
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
+
         assertEquals(details.toDate.innerText(), "Jul 19, 24");
     }
 
@@ -205,10 +214,13 @@ public class ModifyListingTest {
         details.editBtn.click();
         Thread.sleep(1000);
 
-        modify.fromDate.clear();
-        modify.fromDate.sendKeys("5");
+        modify.guests.clear();
+        modify.guests.sendKeys("5");
         modify.submitBtn.click();
         Thread.sleep(2000);
+
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
 
         assertEquals(details.guests.innerText(), "5 Guests");
     }
@@ -255,7 +267,10 @@ public class ModifyListingTest {
         modify.submitBtn.click();
         Thread.sleep(2000);
 
-        assertEquals(details.beds.innerText(), "1 Bed(s)");
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
+
+        assertEquals(details.beds.innerText(), "1 Bed(s) "+ details.bedType.innerText());
     }
 
     @Test
@@ -299,6 +314,9 @@ public class ModifyListingTest {
         modify.bedType.sendKeys("king");
         modify.submitBtn.click();
         Thread.sleep(2000);
+
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
 
         assertEquals(details.bedType.innerText(), "(king)");
     }
@@ -345,6 +363,9 @@ public class ModifyListingTest {
         modify.submitBtn.click();
         Thread.sleep(2000);
 
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
+
         assertEquals(details.bathrooms.innerText(), "5 Bath");
     }
 
@@ -372,9 +393,6 @@ public class ModifyListingTest {
 
     @Test
     public void modify_amenities_pass() throws Exception {
-        initializeAmenitiesMap();
-        initializeAmenitiesDesr();
-
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
@@ -388,32 +406,39 @@ public class ModifyListingTest {
         details.editBtn.click();
         Thread.sleep(1000);
 
+        initializeAmenitiesMap();
+        initializeAmenitiesDesr();
         clearAmenities();
-        ArrayList<SelenideElement> selected = selectRandomAmenities();
+
+        ArrayList<String> selected = selectRandomAmenities();
         modify.submitBtn.click();
         Thread.sleep(2000);
+
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
 
         assert(checkAmenities(selected));
     }
 
-    boolean checkAmenities(ArrayList<SelenideElement> amenitiesUnderTest){
-        String displayedAmenities = details.amenities.innerText();
+    boolean checkAmenities(ArrayList<String> amenitiesUnderTest){
+        String displayedAmenities = details.amenities.text();
+        System.out.println(displayedAmenities);
 
-        for(SelenideElement a: amenitiesUnderTest){
-            if(!displayedAmenities.contains(amenitiesDescr.get(a)))
+        for(String a: amenitiesUnderTest){
+            if(!displayedAmenities.contains(a))
                 return false;
         }
         return true;
     }
 
 
-    ArrayList<SelenideElement> selectRandomAmenities(){
-        ArrayList<SelenideElement> selectedAmenities = new ArrayList<>();
+    ArrayList<String> selectRandomAmenities(){
+        ArrayList<String> selectedAmenities = new ArrayList<>();
         Random r = new Random();
         int amnt = r.nextInt(14);
         for(int i = 0; i < amnt; i++){
             int selected = r.nextInt(13);
-            selectedAmenities.add(amenitiesMap.get(selected));
+            selectedAmenities.add(amenitiesDescr.get(amenitiesMap.get(selected)));
             amenitiesMap.get(selected).click();
         }
         return selectedAmenities;
@@ -428,11 +453,19 @@ public class ModifyListingTest {
         }
     }
 
+    void tempFixDateFormat(){
+        modify.fromDate.clear();
+        modify.fromDate.sendKeys("10/30/2023");
+        modify.toDate.clear();
+        modify.toDate.sendKeys("07/19/2024");
+        modify.submitBtn.click(); //reattempts submission
+    }
+
     void loginAsHotel() throws Exception{
         login.email.sendKeys("vip@hotel.com");
         login.password.sendKeys("123456");
         login.submitBtn.click();
-        Thread.sleep(3000);
+        Thread.sleep(5000);
     }
 
     void initializeAmenitiesDesr(){

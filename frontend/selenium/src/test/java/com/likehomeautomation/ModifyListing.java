@@ -12,7 +12,6 @@ public class ModifyListing {
     public SelenideElement bedType = $x("//*[@id='bedType-field']");
     public SelenideElement guests = $x("//*[@id='guests-field']");
     public SelenideElement bathrooms = $x("//*[@id='bathrooms-field']");
-    public SelenideElement imageUrl = $x("//*[@id='image-field']");
 
     // optional amenities
     public SelenideElement freeWifi = $x("//*[@id='freeWifi-box']");
