@@ -450,11 +450,14 @@ function Details() {
             </DetailItem>
           </Detail>
           <Divider />
-          <Detail id="amenities-detail">
+          <Detail >
             <h1>Amenities</h1>
-            {data.Amenities.map((item, i) => (
-              <Amenity key={i} item={item} />
-            ))}
+            <div id="amenities-detail">
+              {data.Amenities.map((item, i) => (
+                <Amenity key={i} item={item} />
+              ))}
+            </div>
+
           </Detail>
 
           <Modal
