@@ -1,6 +1,5 @@
 from guest import guest_modification_func
 from hotel import hotel_modification_func
-from payment import payment_func
 import firebase_admin
 import database
 from datetime import datetime
