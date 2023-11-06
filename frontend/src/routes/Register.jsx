@@ -184,10 +184,11 @@ function Register() {
                 {...register("firstname", {
                   required: "Please enter first name",
                 })}
+                id="firstname-input"
               />
             </InputContainer>
             {errors.firstname && (
-              <ErrorMessageArea>
+              <ErrorMessageArea id="firstname-error">
                 {errors.firstname.message.toString()}
               </ErrorMessageArea>
             )}
@@ -199,10 +200,11 @@ function Register() {
                 {...register("lastname", {
                   required: "Please enter last name",
                 })}
+                id="lastname-input"
               />
             </InputContainer>
             {errors.lastname && (
-              <ErrorMessageArea>
+              <ErrorMessageArea id="lastname-error">
                 {errors.lastname.message.toString()}
               </ErrorMessageArea>
             )}
@@ -218,13 +220,14 @@ function Register() {
                 message: "Please enter valid email",
               },
             })}
+            id="email-input-r"
           />
         </InputContainer>
         {errors.email && (
-          <ErrorMessageArea>{errors.email.message.toString()}</ErrorMessageArea>
+          <ErrorMessageArea id="email-error">{errors.email.message.toString()}</ErrorMessageArea>
         )}
         {serverError.status === 409 && (
-          <ErrorMessageArea>{serverError.message}</ErrorMessageArea>
+          <ErrorMessageArea id="email-error">{serverError.message}</ErrorMessageArea>
         )}
         <Label>Password</Label>
         <InputContainer>
@@ -238,10 +241,11 @@ function Register() {
               },
             })}
             type="password"
+            id="password-input-r"
           />
         </InputContainer>
         {errors.password && (
-          <ErrorMessageArea>
+          <ErrorMessageArea id="password-error">
             {errors.password.message.toString()}
           </ErrorMessageArea>
         )}
@@ -252,13 +256,14 @@ function Register() {
               required: "Please enter phone number",
               // pattern: { value: /^[0-9]/, message: "Please enter numbers" },
             })}
+            id="phone-input"
           />
         </InputContainer>
         {errors.phone && (
-          <ErrorMessageArea>{errors.phone.message.toString()}</ErrorMessageArea>
+          <ErrorMessageArea >{errors.phone.message.toString()}</ErrorMessageArea>
         )}
         {(serverError.status === 418 || serverError.status === 419) && (
-          <ErrorMessageArea>{serverError.message}</ErrorMessageArea>
+          <ErrorMessageArea id="phone-error">{serverError.message}</ErrorMessageArea>
         )}
 
         <Label>Who are you?</Label>
@@ -270,6 +275,7 @@ function Register() {
             {...register("role", { required: "Please select who you are" })}
             type="radio"
             value="guest"
+            id="guest-radio"
           />
           <span>Guest</span>
         </RadioContainer>
@@ -278,6 +284,7 @@ function Register() {
             {...register("role", { required: "Please select who you are" })}
             type="radio"
             value="hotel"
+            id="hotel-radio"
           />
           <span>Hotel</span>
         </RadioContainer>
@@ -289,7 +296,7 @@ function Register() {
           />
           <span>Admin</span>
         </RadioContainer>
-        <SubmitBtn type="submit">
+        <SubmitBtn type="submit" id="signup-button">
           {isFetching ? (
             <Ellipsis color="white" size={30} />
           ) : (

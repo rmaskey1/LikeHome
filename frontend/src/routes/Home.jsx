@@ -207,7 +207,7 @@ function Home() {
           )}
         </>
       )}
-      <Welcome>Welcome, {userinfo.firstName}!</Welcome>
+      <Welcome id="welcome-message">Welcome, {userinfo.firstName}!</Welcome>
       <Start>Start your journey here:</Start>
       {allListingsIsLoading ? null : (
         <SearchBar
