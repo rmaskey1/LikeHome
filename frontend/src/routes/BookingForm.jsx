@@ -261,6 +261,7 @@ function BookingForm() {
   const subtotal = roomData.price * nights;
   const tax = subtotal * 0.08;
   const total = subtotal + tax;
+  const rewardPointsEarned = total * 0.5;
 
   let dollarString = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -370,7 +371,7 @@ function BookingForm() {
           <InfoText>{numGuests}</InfoText>
 
           <InfoTitle>Reward Points Earned:</InfoTitle>
-          <InfoText>10 points</InfoText>
+          <InfoText>{rewardPointsEarned} points</InfoText>
         </div>
 
         <div
