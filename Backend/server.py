@@ -27,8 +27,6 @@ guest_modification_func(app)
 
 hotel_modification_func(app)
 
-payment_func(app)
-
 # User Type Selection Function
 
 
