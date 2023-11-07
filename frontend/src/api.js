@@ -19,3 +19,8 @@ export function getMyListings(uid) {
 export function getMyBooking() {
   return fetch(`${SERVER_URL}/bookings`).then((response) => response.json());
 }
+
+export function getUserInfo() {
+  fetch(`${SERVER_URL}/update_reward_points`, { method: "POST" });
+  return fetch(`${SERVER_URL}/user`).then((response) => response.json());
+}
