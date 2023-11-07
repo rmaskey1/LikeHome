@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import { SERVER_URL } from "api";
-import React, { useState } from "react";
+import { SERVER_URL, getUserInfo } from "api";
+import React, { useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Ellipsis } from "react-spinners-css";
+import { useQuery } from "react-query";
 
 const Container = styled.main`
   width: 100vw;
@@ -245,7 +246,13 @@ function BookingForm() {
   const [cardNumber, setCardNumber] = useState("");
   const [expirationDate, setExpirationDate] = useState("");
   const [cvc, setCVC] = useState("");
+  const applyInputRef = useRef(null);
+  const [appliedPoints, setAppliedPoints] = useState(0);
 
+  const { isLoading: isUserInfoLoading, data: userInfo } = useQuery(
+    ["userinfo"],
+    getUserInfo
+  );
 
   const {
     handleSubmit,
@@ -260,7 +267,7 @@ function BookingForm() {
   );
   const subtotal = roomData.price * nights;
   const tax = subtotal * 0.08;
-  const total = subtotal + tax;
+  const total = subtotal + tax - appliedPoints / 10;
   const rewardPointsEarned = Math.floor(total * 0.5);
 
   let dollarString = new Intl.NumberFormat("en-US", {
@@ -329,9 +336,36 @@ function BookingForm() {
       setServerError({ status: response.status, message: data.message });
 
       if (response.ok) {
-        navigate("/room/:id/book/success");
+        if (data.error) setServerError({ ...serverError, message: data.error });
+        else {
+          const formData = new FormData();
+          console.log(userInfo.rewardPoints, rewardPointsEarned);
+          formData.append(
+            "rewardPoints",
+            userInfo.rewardPoints + rewardPointsEarned
+          );
+          fetch(`${SERVER_URL}/reward`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: formData,
+          });
+          navigate("success");
+        }
       }
       setIsFetching(false);
+    }
+  };
+
+  const handleApplyRewardPoint = () => {
+    const value = applyInputRef.current.value;
+    if (!isUserInfoLoading) {
+      if (value > userInfo.rewardPoints) {
+        alert("You cannot apply reward points greater than that you own");
+      } else {
+        setAppliedPoints(value);
+      }
     }
   };
 
@@ -369,78 +403,60 @@ function BookingForm() {
 
           <InfoTitle>Number of Guests:</InfoTitle>
           <InfoText>{numGuests}</InfoText>
+        </div>
 
-          <InfoTitle>Reward Points Earned:</InfoTitle>
+        <div
+          style={{
+            borderBottom: "1px solid #888",
+            padding: "22px 0 30px 0",
+            width: "500px ",
+          }}
+        >
+          <InfoTitle>
+            Reward Points {isCancelRoute ? "Earned" : "to Earn"}:
+          </InfoTitle>
           <InfoText>{rewardPointsEarned} points</InfoText>
         </div>
-
-        <div
-          style={{
-            borderBottom: "1px solid #888",
-            padding: "22px 0 30px 0",
-            width: "500px ",
-          }}
-        >
-          <InfoTitle>Apply Reward Points</InfoTitle>
-          <InfoText>Points owned: 100 points</InfoText>
-          <br />
-          <FieldName>Apply points to reservation: </FieldName>
+        {!isCancelRoute && (
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              marginTop: "5px",
+              borderBottom: "1px solid #888",
+              padding: "22px 0 30px 0",
+              width: "500px ",
             }}
           >
-            <Input1 type="number" style={{ color: "black", margin: 0 }} />
-            <SubmitButton
-              style={{ width: "91px", height: "37px", padding: 0, margin: 0 }}
-              type="submit"
+            <InfoTitle>Apply Reward Points</InfoTitle>
+            <InfoText>
+              Points owned: {isUserInfoLoading ? "0" : userInfo.rewardPoints}{" "}
+              points
+            </InfoText>
+            <br />
+            <FieldName>Apply points to reservation: </FieldName>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginTop: "5px",
+              }}
             >
-              Apply
-            </SubmitButton>
+              <Input1
+                ref={applyInputRef}
+                type="number"
+                min={0}
+                defaultValue={0}
+                style={{ color: "black", margin: 0 }}
+              />
+              <SubmitButton
+                style={{ width: "91px", height: "37px", padding: 0, margin: 0 }}
+                type="submit"
+                onClick={handleApplyRewardPoint}
+              >
+                Apply
+              </SubmitButton>
+            </div>
           </div>
-        </div>
-
-        <div
-          style={{
-            borderBottom: "1px solid #888",
-            padding: "22px 0 30px 0",
-            width: "500px ",
-          }}
-        >
-          <InfoTitle>Reward Points Earned:</InfoTitle>
-          <InfoText>10 points</InfoText>
-        </div>
-        <div
-          style={{
-            borderBottom: "1px solid #888",
-            padding: "22px 0 30px 0",
-            width: "500px ",
-          }}
-        >
-          <InfoTitle>Apply Reward Points</InfoTitle>
-          <InfoText>Points owned: 100 points</InfoText>
-          <br />
-          <FieldName>Apply points to reservation: </FieldName>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              marginTop: "5px",
-            }}
-          >
-            <Input1 type="number" style={{ color: "black", margin: 0 }} />
-            <SubmitButton
-              style={{ width: "91px", height: "37px", padding: 0, margin: 0 }}
-              type="submit"
-            >
-              Apply
-            </SubmitButton>
-          </div>
-        </div>
+        )}
 
         <div>
           <Payment>Payment</Payment>
@@ -507,10 +523,8 @@ function BookingForm() {
                       },
                     },
                   })}
-                  type="number"
                   style={{ color: "black" }}
-                  name="cardNumber"
-                  value={cardNumber}
+                  name="cvc"
                   onChange={(e) => setCVC(e.target.value)}
                 />
                 {errors.cvc && (
@@ -527,6 +541,11 @@ function BookingForm() {
               </NoFee>
             )}
 
+            {serverError && (
+              <ErrorText2 className="error-text">
+                <span>{serverError.message}</span>
+              </ErrorText2>
+            )}
             <SubmitButton type="submit">
               {isCancelRoute ? (
                 "Cancel Booking"
@@ -566,7 +585,7 @@ function BookingForm() {
               </CostAndAmount>
               <CostAndAmount>
                 <div>Discount from points</div>
-                <Amount>-$10.00</Amount>
+                <Amount>-{dollarString.format(appliedPoints / 10)}</Amount>
               </CostAndAmount>
             </>
           )}
