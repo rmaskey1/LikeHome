@@ -240,9 +240,8 @@ def update_reward_points():
         user_data = user_ref.get().to_dict()
 
         if user_data is None:
-            abort(
-                make_response(
-                    jsonify({'error': 'User not found'}), 404))
+            abort(make_response(
+                jsonify({'error': 'User not found'}), 404))
 
         reward_points = user_data.get('rewardPoints', 0)
 
@@ -276,10 +275,8 @@ def update_reward_points():
                 query = past_booking_ref.where('gid', '==', gid).where('hid', '==', hid).limit(1).stream()
 
                 if not next(query, None):
-
                     # Add the bid, gid, and hid to the 'pastBooking' collection
                     past_booking_ref.document(bid).set({'gid': gid, 'hid': hid})
-
 
 
                 total_price = booking_data.get('totalPrice', 0)
