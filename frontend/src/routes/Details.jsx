@@ -445,7 +445,7 @@ function Details() {
                 <Reservebtn
                   onClick={() => {
                     if (isDoubleBooking) {
-                      setShowDoubleBookingWarning(true);
+                      setShowDoubleBookingWarning(false); //CONNIE HAD THIS AS TRUE, DISABLING FOR BACKEND
                     } else {
                       navigate("book", { state: { roomData, numGuests } });
                     }
