@@ -569,7 +569,7 @@ function BookingForm() {
             <div>
               {isCancelRoute
                 ? "Cancellation Fees"
-                : `${roomData.price} x {nights} nights`}
+                : `${roomData.price} x ${nights} nights`}
             </div>
             <Amount>
               {isCancelRoute

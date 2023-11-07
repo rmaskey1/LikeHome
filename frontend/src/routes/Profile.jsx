@@ -56,7 +56,7 @@ const EditBtn = styled.div`
 `;
 
 const DeleteBtn = styled.div`
-  position: absolute;
+  //position: absolute;
   display: grid;
   place-content: center;
   top: 6px;
@@ -143,7 +143,18 @@ function Profile() {
     !isLoading && (
       <Container>
         <ProfileBox>
-          <div>Profile</div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div style={{ marginRight: "400px" }}>Profile</div>
+            <DeleteBtn onClick={handleDeleteClick} id="delete-account-button">
+              Delete Account
+            </DeleteBtn>
+          </div>
           <Label>First Name</Label>
           <Content>{data.firstName}</Content>
           <Label>Last Name</Label>
@@ -164,9 +175,7 @@ function Profile() {
             <Content>{data.rewardPoints}</Content>
           </ProfileBox>
         )}
-        <DeleteBtn onClick={handleDeleteClick} id="delete-account-button">
-          Delete Account
-        </DeleteBtn>
+
         {showDeleteConfirmation && (
           <DeleteAccountWarning
             onConfirm={handleConfirmDelete}
