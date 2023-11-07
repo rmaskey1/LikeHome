@@ -70,9 +70,9 @@ const DeleteAccountWarning = ({ onCancel, onConfirm }) => {
             </StyledP>
           </div>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <Button onClick={onConfirm}>Yes</Button>
+            <Button onClick={onConfirm} id="confirm-button">Yes</Button>
             <div style={{ width: "30px" }}></div>
-            <Button onClick={onCancel}>No</Button>
+            <Button onClick={onCancel} id="cancel-button">No</Button>
           </div>
         </div>
       </Container>

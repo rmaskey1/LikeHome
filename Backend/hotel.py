@@ -134,8 +134,6 @@ def hotel_modification_func(app):
                 for dict in roomData['amenities']:
                     key = list(dict.keys())[0]
                     if dict[key] == True:
-                        # To make querying in backend easier, each amenity stored in the 
-                        # database will be lowercase and have no spaces or dashes
                         amenities.append(key.lower().replace(' ', '').replace('-', ''))
                 uid = request.args['uid']
                 hotel_ref = db.collection('user').document(uid)

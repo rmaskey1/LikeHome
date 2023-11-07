@@ -5,8 +5,8 @@ import { useForm, Controller } from "react-hook-form";
 
 const SearchForm = styled.form`
   display: flex;
-  align-items: center;
-  justify-content: center;
+  /* align-items: center; */
+  justify-content: space-between;
   /* text-align: center; */
   padding-top: 20px;
   padding-bottom: 20px;
@@ -44,6 +44,7 @@ const Button = styled.button`
   cursor: pointer;
   display: flex; */
   padding: 15px 30px;
+  margin-left: 5px;
   border-radius: 20px;
   background-color: #cf316a;
   color: #ffffff;

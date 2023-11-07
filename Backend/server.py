@@ -2,12 +2,15 @@ from guest import guest_modification_func
 from hotel import hotel_modification_func
 import firebase_admin
 import database
+from datetime import datetime
 # import pyrebase
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, abort, make_response, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
-from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType
+from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType, getCardToken
 from guest import is_valid_password, is_valid_phone_number
+from datetime import datetime
+import stripe
 
 
 app = Flask(__name__)
@@ -135,19 +138,37 @@ def login():
 
 # No payment fields yet
 
-
-# Expecting uid and rid passed in as variable
+# Payment integrated with adding booking
+stripe.api_key = "sk_test_51O7eg3BeDJOROtaCd2D3qBBa3G32SwNfI0c0Z9FxKbs8gTFKxOZmrKRlgZEehOweHAKQvnGvivNnB25eFIwtYguf00nnU3B80B"
+# Expecting rid passed in as variable
 @app.route('/bookings', methods=['GET', 'POST'])
 def bookings():
     if request.method == 'POST':
         rid = request.args['rid']
         gid = getUid()
         data = request.get_json()
+        # time = datetime.now().strftime("%H:%M:%S")
         if roomBooked(rid):
-            abort(make_response(
-                jsonify(message="Sorry, this room is already booked"), 409))
-        booking = addBooking(
-            gid, rid, data['startDate'], data['endDate'], data['numGuest'])
+            abort(make_response(jsonify(message="Sorry, this room is already booked"), 409))
+        
+        # try:
+        #     # Get credit card information from the form
+        #     cardToken = getCardToken(request.form['cardNumber'])
+        #     # exp_month = request.form['exp_month']
+        #     # exp_year = request.form['exp_year']
+        #     # cvc = request.form['cvc']
+        #     totalPrice = int(request.form['totalPrice']) * 100  # Convert amount to cents
+            
+        #     charge = stripe.Charge.create(
+        #         amount=totalPrice,
+        #         currency='usd',
+        #         source=cardToken,
+        #         description='Payment for your booking'
+        #     )
+        # except Exception as e:
+        #     return jsonify({'error': str(e)})
+        
+        booking = addBooking(gid, rid, data['pointsUsed'], data['totalPrice'], data['startDate'], data['endDate'], data['numGuest'], charge.id)
         return jsonify(booking)
 
     # Get guest's mybookings
@@ -170,7 +191,6 @@ def bookings():
 
 # No get function, must call put/delete methods from frontend to work
 # No payment fields yet
-
 
 @app.route('/bookings/<rid>', methods=['GET', 'PUT', 'DELETE'])
 def modify_bookings(rid):
@@ -210,14 +230,67 @@ def modify_bookings(rid):
 
         return jsonify(message="Deletion Successfull")
 
+@app.route('/update_reward_points', methods=['POST'])
+def update_reward_points():
+    try:
+        uid = getUid()
+        # Query the 'booking' collection
+        booking_ref = db.collection('booking')
+        user_ref = db.collection('user').document(uid)
+        user_data = user_ref.get().to_dict()
+
+        if user_data is None:
+            return jsonify({'error': 'User not found'}), 404
+
+        reward_points = user_data.get('rewardPoints', 0)
+
+        # Iterate through the booking documents for the specified UID
+        for booking_doc in booking_ref.where('gid', '==', uid).stream():
+            booking_data = booking_doc.to_dict()
+
+            # Parse the endDate from the document (assuming it's in the format "Nov 2, 2023")
+            end_date = datetime.strptime(booking_data['endDate'], "%b %d, %Y")
+
+            # Get the current date
+            today = datetime.today()
+
+            # Check if the end date is before or on today's date
+            if end_date <= today:
+                total_price = booking_data.get('totalPrice', 0)
+
+                # Calculate reward points (50% of the total price)
+                reward_points += round(total_price * 0.5)
+
+                # Delete the booking document
+                booking_ref.document(booking_doc.id).delete()
+
+                # If the user's 'bookedRooms' array contains the RID, remove it
+                rid = booking_data.get('rid')
+                if rid in user_data.get('bookedRooms', []):
+                    booked_rooms = user_data['bookedRooms']
+                    booked_rooms.remove(rid)
+                    user_ref.update({'bookedRooms': booked_rooms})
+
+                # Update the user's reward points in the 'user' collection
+                user_ref.update({'rewardPoints': reward_points})
+
+        return jsonify({'message': 'Reward points updated successfully'}), 200
+
+    except Exception as e:
+        return jsonify({'error': 'An error occurred', 'message': str(e)}), 500
+    
+
 @app.route('/query', methods=['POST'])
 def queryByRmAttribute():
     try:
         if request.method == 'POST':
             # Get JSON data from the frontend
             data = request.get_json()
+
             #amneties
             amenities=data['amenities']
+
+
             query = db.collection("room")
             # Generate list of amenities to filter based on true value, make sure it is lowercase and has no space or dashes
             filter = []
@@ -225,16 +298,21 @@ def queryByRmAttribute():
                 key = list(dict.keys())[0]
                 if (dict[key]==True):
                     filter.append(key.lower().replace(' ', '').replace('-', ''))
+
+
             bathrooms = data['bathrooms']
             bedType = data['bedType']
             beds = data['beds']
             guests = data['guests']
             minPrice = data['minPrice']
             maxPrice = data['maxPrice']
+
             #this part checks if each attribute is null or not. Shouldn't factor into query if it's null
             #bedType is str, not int
+
             results = query.stream()
             matching_rooms = []
+
             #
             for doc in results:
                 add = False
@@ -259,9 +337,11 @@ def queryByRmAttribute():
                 if minPrice is not None:
                     if doc.to_dict()['price'] < minPrice:
                         add = False
+
                 if maxPrice is not None:
                     if doc.to_dict()['price'] > maxPrice:
                         add = False
+
                 if add:
                     listing = doc.to_dict()
                     listing['rid'] = doc.id

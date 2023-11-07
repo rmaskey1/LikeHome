@@ -113,7 +113,7 @@ function FilterForm({ onClose, onFilter }) {
     getValues,
   } = useForm();
 
-  const bedTypesOptions = ["King", "Queen", "Full", "Twin"];
+  const bedTypesOptions = ["King", "Queen", "Double", "Single", "Twin"];
   const amenitiesOptions = [
     "Free Wifi",
     "Pool",

@@ -107,6 +107,7 @@ function Home() {
 
   const handleSearch = (formData) => {
     console.log("Searching");
+    console.log(allListings);
     // e.preventDefault();
     const searchedListings = allListings.filter((listing) => {
       const { location, guests, dateFrom, dateTo } = formData;
@@ -146,7 +147,7 @@ function Home() {
 
   /* Filter Function Section Start */
   const [showFilterForm, setShowFilterForm] = useState(false);
-  const [filteredListings, setFilteredListings] = useState([]);
+  // const [filteredListings, setFilteredListings] = useState([]);
 
   const handleFilterClick = () => {
     setShowFilterForm(true);
@@ -156,7 +157,14 @@ function Home() {
     setShowFilterForm(false);
   };
 
+  const [isFetching, setIsFetching] = useState(false);
+
+  // useEffect(() => {
+  //   setIsFetching(true);
+  // }, [searchedListings]);
+
   const handleFilter = async (formData) => {
+    setIsFetching(true);
     console.log("Filtering");
     console.log(formData);
     try {
@@ -169,18 +177,18 @@ function Home() {
       });
       const data = await response.json();
       if (response.ok) {
+        console.log(data);
         setSearchedListings(data);
         // Update filteredListings
       } else {
         // Handle errors
         console.log(response.status, data);
       }
+      setIsFetching(false);
     } catch (error) {
       console.error("Filter request failed:", error);
     }
   };
-
-  /* Filter Function Section Start */
 
   return (
     <Container>
@@ -199,7 +207,7 @@ function Home() {
           )}
         </>
       )}
-      <Welcome>Welcome, {userinfo.firstName}!</Welcome>
+      <Welcome id="welcome-message">Welcome, {userinfo.firstName}!</Welcome>
       <Start>Start your journey here:</Start>
       {allListingsIsLoading ? null : (
         <SearchBar
