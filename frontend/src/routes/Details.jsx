@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Modal from "react-modal";
 
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { ReactComponent as PersonIcon } from "../icons/person-fill.svg";
 import { ReactComponent as BedIcon } from "../icons/bed.svg";
@@ -239,7 +238,8 @@ function Details() {
   const navigate = useNavigate();
   const [roomData, setRoomData] = useState(null);
   const { state: stateData } = useLocation();
-  const [showDoubleBookingWarning, setShowDoubleBookingWarning] = useState(false);
+  const [showDoubleBookingWarning, setShowDoubleBookingWarning] =
+    useState(false);
   const isDoubleBooking = true; //check if double booking here!
 
   const rid = params.id;
@@ -290,8 +290,13 @@ function Details() {
 
   const isGuest = userinfo.accountType === "guest";
 
-  const isReserved =
-    isGuest && !bookingIsLoading && bookingData.find((b) => b.rid === rid);
+  const isReserved = //BANDAID SOLUTION!! please look into it more INTEGRATIONS!!
+    isGuest &&
+    !bookingIsLoading &&
+    Array.isArray(bookingData) &&
+    bookingData.find((b) => b.rid === rid);
+
+  //isGuest && !bookingIsLoading && bookingData.find((b) => b.rid === rid);
 
   const { isLoading, data: fetchData } = useQuery(["listing"], () =>
     getListing(rid)
@@ -304,7 +309,7 @@ function Details() {
 
   const handleConfirm = () => {
     setShowDoubleBookingWarning(false);
-  }
+  };
 
   return (
     <Container>
@@ -328,7 +333,10 @@ function Details() {
                   . . .
                   {isDropdownOpen && (
                     <DropdownContent>
-                      <DropdownItem id="edit-btn" onClick={handleEditListingClick}>
+                      <DropdownItem
+                        id="edit-btn"
+                        onClick={handleEditListingClick}
+                      >
                         Edit Listing
                       </DropdownItem>
                       <DropdownItem id="delete-btn" onClick={openDeleteModal}>
@@ -377,10 +385,11 @@ function Details() {
               //Render the default reserve container if not a guest or not reserved
               <Reserve>
                 <div>
-
-                  <span id="price-detail" style={{ fontSize: "30px", fontWeight: 600 }}>
+                  <span
+                    id="price-detail"
+                    style={{ fontSize: "30px", fontWeight: 600 }}
+                  >
                     ${roomData.price}
-
                   </span>{" "}
                   <span style={{ fontSize: "20px", fontWeight: 400 }}>
                     per night
@@ -400,7 +409,6 @@ function Details() {
                       <ReserveDate id="toDate-detail">
                         {dateFormatted(roomData.endDate)}
                       </ReserveDate>
-
                     </ReserveInputContainer>
                   </ReserveDateContainer>
                   <ReserveDateContainer>
@@ -435,17 +443,19 @@ function Details() {
                   </ReserveDateContainer>
                 </ReserveForm>
                 <Reservebtn
-                    onClick={() => {
-                      if (isDoubleBooking) {
-                        setShowDoubleBookingWarning(true);
-                      } else {
-                        navigate("book", { state: { roomData, numGuests } });
-                      }
-                    }}
-                  >
+                  onClick={() => {
+                    if (isDoubleBooking) {
+                      setShowDoubleBookingWarning(true);
+                    } else {
+                      navigate("book", { state: { roomData, numGuests } });
+                    }
+                  }}
+                >
                   Reserve
                 </Reservebtn>
-                {isDoubleBooking && (< DoubleBookingWarning onConfirm={handleConfirm}/>)}
+                {isDoubleBooking && (
+                  <DoubleBookingWarning onConfirm={handleConfirm} />
+                )}
               </Reserve>
             )}
           </Board>
@@ -460,13 +470,15 @@ function Details() {
             <DetailItem>
               <BedIcon />
               <span id="beds-detail">
-                {roomData.numberOfBeds} Beds / 2 <span id="bedType-detail">{roomData.bedType}</span>
+                {roomData.numberOfBeds} Beds / 2{" "}
+                <span id="bedType-detail">{roomData.bedType}</span>
               </span>
             </DetailItem>
             <DetailItem>
               <SinkIcon />
-              <span id="bathrooms-detail">{roomData.numberOfBathrooms} Bath</span>
-
+              <span id="bathrooms-detail">
+                {roomData.numberOfBathrooms} Bath
+              </span>
             </DetailItem>
           </Detail>
           <Divider />
@@ -561,7 +573,8 @@ function Details() {
               </div>
             </div>
           </Modal>
-        </>)}
+        </>
+      )}
 
       {/*<input type="hidden" id="modify-response-code" value={state.state}/>*/}
     </Container>
