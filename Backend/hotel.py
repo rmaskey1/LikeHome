@@ -134,7 +134,7 @@ def hotel_modification_func(app):
                 for dict in roomData['amenities']:
                     key = list(dict.keys())[0]
                     if dict[key] == True:
-                        amenities.append(key)
+                        amenities.append(key.lower().replace(' ', '').replace('-', ''))
                 uid = request.args['uid']
                 hotel_ref = db.collection('user').document(uid)
                 hotelDoc = hotel_ref.get().to_dict()

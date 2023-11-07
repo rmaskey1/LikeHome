@@ -33,7 +33,7 @@ const Container = styled.div`
 function Amenity({ item }) {
   return (
     <Container>
-      {item === "freeWifi" && (
+      {item === "freewifi" && (
         <>
           <WifiIcon />
           <span>Free Wifi</span>
@@ -51,43 +51,43 @@ function Amenity({ item }) {
           <span>TV</span>
         </>
       )}
-      {item === "freeWasherInUnit" && (
+      {item === "freewasherinunit" && (
         <>
           <LaundryIcon />
           <span>Free Washer - In Unit</span>
         </>
       )}
-      {item === "freeDryerInUnit" && (
+      {item === "freedryerinunit" && (
         <>
           <LaundryIcon />
           <span>Free Dryer - In Unit</span>
         </>
       )}
-      {item === "freeParking" && (
+      {item === "freeparking" && (
         <>
           <ParkingIcon />
           <span>Free Parking</span>
         </>
       )}
-      {item === "airConditioning" && (
+      {item === "airconditioning" && (
         <>
           <AirConIcon />
           <span>Air Conditioning</span>
         </>
       )}
-      {item === "freeBreakfast" && (
+      {item === "freebreakfast" && (
         <>
           <FoodIcon />
           <span>Free Breakfast</span>
         </>
       )}
-      {item === "freeLunch" && (
+      {item === "freelunch" && (
         <>
           <FoodIcon />
           <span>Free Lunch</span>
         </>
       )}
-      {item === "freeDinner" && (
+      {item === "freedinner" && (
         <>
           <FoodIcon />
           <span>Free Dinner</span>
@@ -105,7 +105,7 @@ function Amenity({ item }) {
           <span>Refrigerator</span>
         </>
       )}
-      {item === "petFriendly" && (
+      {item === "petfriendly" && (
         <>
           <PetIcon />
           <span>Pet Friendly</span>

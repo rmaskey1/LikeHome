@@ -146,17 +146,17 @@ function Profile() {
       <ProfileBox>
         <div>Profile</div>
         <Label>First Name</Label>
-        <Content>{userinfo.firstName}</Content>
+        <Content id="first-name-content">{userinfo.firstName}</Content>
         <Label>Last Name</Label>
-        <Content>{userinfo.lastName}</Content>
+        <Content id="last-name-content">{userinfo.lastName}</Content>
         <Label>Email</Label>
-        <Content>{userinfo.email}</Content>
+        <Content id="email-content">{userinfo.email}</Content>
         <Label>Password</Label>
         <Content>********</Content>
         <Label>Phone Number</Label>
-        <Content>{userinfo.phone}</Content>
+        <Content id="phone-number-content">{userinfo.phone}</Content>
       </ProfileBox>
-      <EditBtn onClick={handleEditProfileClick}>Edit Profile</EditBtn>
+      <EditBtn onClick={handleEditProfileClick} id="edit-profile-button">Edit Profile</EditBtn>
       {isGuestAccount && <Divider />}
       {isGuestAccount && (
         <ProfileBox>
@@ -166,7 +166,7 @@ function Profile() {
         </ProfileBox>
       )}
 
-      <DeleteBtn onClick={handleDeleteClick}>Delete Account</DeleteBtn>
+      <DeleteBtn onClick={handleDeleteClick} id="delete-account-button">Delete Account</DeleteBtn>
       {showDeleteConfirmation && (
         <DeleteAccountWarning
           onConfirm={handleConfirmDelete}

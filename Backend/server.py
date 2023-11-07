@@ -7,8 +7,10 @@ from datetime import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, abort, make_response, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
-from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType
+from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType, getCardToken
 from guest import is_valid_password, is_valid_phone_number
+from datetime import datetime
+import stripe
 
 
 app = Flask(__name__)
@@ -136,19 +138,37 @@ def login():
 
 # No payment fields yet
 
-
-# Expecting uid and rid passed in as variable
+# Payment integrated with adding booking
+stripe.api_key = "sk_test_51O7eg3BeDJOROtaCd2D3qBBa3G32SwNfI0c0Z9FxKbs8gTFKxOZmrKRlgZEehOweHAKQvnGvivNnB25eFIwtYguf00nnU3B80B"
+# Expecting rid passed in as variable
 @app.route('/bookings', methods=['GET', 'POST'])
 def bookings():
     if request.method == 'POST':
         rid = request.args['rid']
         gid = getUid()
         data = request.get_json()
+        # time = datetime.now().strftime("%H:%M:%S")
         if roomBooked(rid):
-            abort(make_response(
-                jsonify(message="Sorry, this room is already booked"), 409))
-        booking = addBooking(
-            gid, rid, data['startDate'], data['endDate'], data['numGuest'])
+            abort(make_response(jsonify(message="Sorry, this room is already booked"), 409))
+        
+        try:
+            # Get credit card information from the form
+            cardToken = getCardToken(request.form['cardNumber'])
+            # exp_month = request.form['exp_month']
+            # exp_year = request.form['exp_year']
+            # cvc = request.form['cvc']
+            totalPrice = int(request.form['totalPrice']) * 100  # Convert amount to cents
+            
+            charge = stripe.Charge.create(
+                amount=totalPrice,
+                currency='usd',
+                source=cardToken,
+                description='Payment for your booking'
+            )
+        except Exception as e:
+            return jsonify({'error': str(e)})
+        
+        booking = addBooking(gid, rid, data['pointsUsed'], data['totalPrice'], data['startDate'], data['endDate'], data['numGuest'], charge.id)
         return jsonify(booking)
 
     # Get guest's mybookings
@@ -171,7 +191,6 @@ def bookings():
 
 # No get function, must call put/delete methods from frontend to work
 # No payment fields yet
-
 
 @app.route('/bookings/<rid>', methods=['GET', 'PUT', 'DELETE'])
 def modify_bookings(rid):
@@ -273,7 +292,85 @@ def update_reward_points():
 
     except Exception as e:
         return jsonify({'error': 'An error occurred', 'message': str(e)}), 500
+    
 
+@app.route('/query', methods=['POST'])
+def queryByRmAttribute():
+    try:
+        if request.method == 'POST':
+            # Get JSON data from the frontend
+            data = request.get_json()
+
+            #amneties
+            amenities=data['amenities']
+
+
+            query = db.collection("room")
+            # Generate list of amenities to filter based on true value, make sure it is lowercase and has no space or dashes
+            filter = []
+            for dict in amenities:
+                key = list(dict.keys())[0]
+                if (dict[key]==True):
+                    filter.append(key.lower().replace(' ', '').replace('-', ''))
+
+
+            bathrooms = data['bathrooms']
+            bedType = data['bedType']
+            beds = data['beds']
+            guests = data['guests']
+            minPrice = data['minPrice']
+            maxPrice = data['maxPrice']
+
+            #this part checks if each attribute is null or not. Shouldn't factor into query if it's null
+            #bedType is str, not int
+
+            results = query.stream()
+            matching_rooms = []
+
+            #
+            for doc in results:
+                add = False
+                amenities = doc.to_dict()['Amenities']
+                if set(filter).issubset(set(amenities)):
+                    add = True
+                if bathrooms is not None:
+                    if doc.to_dict()['numberOfBathrooms'] != bathrooms:
+                        add = False
+
+                if bedType is not None:
+                    if bedType.lower() not in doc.to_dict()['bedType'].lower():
+                        add = False
+                
+                if beds is not None:
+                    if doc.to_dict()['numberOfBeds'] != beds:
+                        add = False
+                
+                if guests is not None:
+                    if doc.to_dict()['numberGuests'] != guests:
+                        add = False
+                
+                if minPrice is not None:
+                    if doc.to_dict()['price'] < minPrice:
+                        add = False
+
+                if maxPrice is not None:
+                    if doc.to_dict()['price'] > maxPrice:
+                        add = False
+
+                if add:
+                    listing = doc.to_dict()
+                    listing['rid'] = doc.id
+                    matching_rooms.append(listing)
+            print(matching_rooms)
+
+            return jsonify(matching_rooms)
+        
+        else:
+            return jsonify([])
+      
+    except Exception as e:
+        print("Error querying rooms:", e)
+        return jsonify([])
 
 if __name__ == '__main__':
     app.debug = True
