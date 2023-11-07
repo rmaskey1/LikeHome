@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Modal from "react-modal";
-
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { ReactComponent as PersonIcon } from "../icons/person-fill.svg";
 import { ReactComponent as BedIcon } from "../icons/bed.svg";
@@ -167,15 +166,6 @@ const DetailItem = styled.div`
     font-size: 24px;
     font-weight: 400;
   }
-
-  li {
-    margin-left: 50px;
-    list-style-type: disc;
-    font-size: 24px;
-    font-weight: 400;
-    margin-bottom: 20px;
-    max-width: 55%;
-  }
 `;
 
 const Dropdown = styled.div`
@@ -288,7 +278,6 @@ function Details() {
   };
 
   const isGuest = userinfo.accountType === "guest";
-
   const isReserved =
     isGuest && !bookingIsLoading && bookingData.find((b) => b.rid === rid);
 
@@ -323,14 +312,14 @@ function Details() {
             </div>
             <div>
               {userinfo.accountType === "hotel" && (
-                <Dropdown id="dropdown-btn" onClick={toggleDropdown}>
+                <Dropdown onClick={toggleDropdown}>
                   . . .
                   {isDropdownOpen && (
                     <DropdownContent>
-                      <DropdownItem id="edit-btn" onClick={handleEditListingClick}>
+                      <DropdownItem onClick={handleEditListingClick}>
                         Edit Listing
                       </DropdownItem>
-                      <DropdownItem id="delete-btn" onClick={openDeleteModal}>
+                      <DropdownItem onClick={openDeleteModal}>
                         Delete Listing
                       </DropdownItem>
                     </DropdownContent>
@@ -376,30 +365,76 @@ function Details() {
               //Render the default reserve container if not a guest or not reserved
               <Reserve>
                 <div>
-
-                  <span id="price-detail" style={{ fontSize: "30px", fontWeight: 600 }}>
+                  <span style={{ fontSize: "30px", fontWeight: 600 }}>
                     ${roomData.price}
-
                   </span>{" "}
                   <span style={{ fontSize: "20px", fontWeight: 400 }}>
                     per night
                   </span>
                 </div>
+                {/* <ReserveDateContainer>
+                <ReserveDate
+                  style={{
+                    border: showCheckIn
+                      ? "1px solid black"
+                      : "1px solid transparent",
+                  }}
+                >
+                  {showCheckIn && (
+                    <CalendarContainer style={{ top: "49px", right: "-1px" }}>
+                      <Calendar
+                        hover
+                        // @ts-ignore
+                        onChange={checkInOnChange}
+                        onClickDay={toggleShowCheckIn}
+                        value={checkInValue}
+                        locale="en-GB"
+                      />
+                    </CalendarContainer>
+                  )}
+                  <span>CHECK-IN</span>
+                  <DateSelector onClick={toggleShowCheckIn}>
+                    {checkInValue.toLocaleDateString()}
+                  </DateSelector>
+                </ReserveDate>
+                <ReserveDate
+                  style={{
+                    border: showCheckOut
+                      ? "1px solid black"
+                      : "1px solid transparent",
+                  }}
+                >
+                  {showCheckOut && (
+                    <CalendarContainer style={{ top: "49px", left: "-1px" }}>
+                      <Calendar
+                        // @ts-ignore
+                        onChange={checkOnOnChange}
+                        onClickDay={toggleShowCheckOut}
+                        value={checkOnValue}
+                        locale="en-GB"
+                      />
+                    </CalendarContainer>
+                  )}
+                  <span>CHECK-OUT</span>
+                  <DateSelector onClick={toggleShowCheckOut}>
+                    {checkOnValue.toLocaleDateString()}
+                  </DateSelector>
+                </ReserveDate>
+              </ReserveDateContainer> */}
+
                 <ReserveForm>
                   <ReserveDateContainer>
                     <ReserveInputContainer>
                       <ReserveInputLabel>Check-in Date</ReserveInputLabel>
-
-                      <ReserveDate id="fromDate-detail">
+                      <ReserveDate>
                         {dateFormatted(roomData.startDate)}
                       </ReserveDate>
                     </ReserveInputContainer>
                     <ReserveInputContainer>
                       <ReserveInputLabel>Check-out Date</ReserveInputLabel>
-                      <ReserveDate id="toDate-detail">
+                      <ReserveDate>
                         {dateFormatted(roomData.endDate)}
                       </ReserveDate>
-
                     </ReserveInputContainer>
                   </ReserveDateContainer>
                   <ReserveDateContainer>
@@ -434,17 +469,17 @@ function Details() {
                   </ReserveDateContainer>
                 </ReserveForm>
                 <Reservebtn
-                  onClick={() => {
-                    if (isDoubleBooking) {
-                      setShowDoubleBookingWarning(true);
-                    } else {
-                      navigate("book", { state: { roomData, numGuests } });
-                    }
-                  }}
-                >
+                    onClick={() => {
+                      if (isDoubleBooking) {
+                        setShowDoubleBookingWarning(true);
+                      } else {
+                        navigate("book", { state: { roomData, numGuests } });
+                      }
+                    }}
+                  >
                   Reserve
                 </Reservebtn>
-                {isDoubleBooking && (< DoubleBookingWarning onConfirm={handleConfirm} />)}
+                {isDoubleBooking && (< DoubleBookingWarning onConfirm={handleConfirm}/>)}
               </Reserve>
             )}
           </Board>
@@ -453,70 +488,25 @@ function Details() {
             <h1>Room Details</h1>
             <DetailItem>
               <PersonIcon />
-
-              <span id="guests-detail">{roomData.numberGuests} Guests</span>
+              <span>{roomData.numberGuests} Guests</span>
             </DetailItem>
             <DetailItem>
               <BedIcon />
-              <span id="beds-detail">
-                {roomData.numberOfBeds} Beds / 2 <span id="bedType-detail">{roomData.bedType}</span>
+              <span>
+                {roomData.numberOfBeds} Beds / 2 {roomData.bedType}
               </span>
             </DetailItem>
             <DetailItem>
               <SinkIcon />
-              <span id="bathrooms-detail">{roomData.numberOfBathrooms} Bath</span>
-
+              <span>{roomData.numberOfBathrooms} Bath</span>
             </DetailItem>
           </Detail>
           <Divider />
-          <Detail id="amenities-detail">
+          <Detail>
             <h1>Amenities</h1>
             {roomData.Amenities.map((item, i) => (
               <Amenity key={i} item={item} />
             ))}
-          </Detail>
-          <Divider />
-          <Detail>
-            <h1>Cancellation Policy</h1>
-            <DetailItem>
-              <ul>
-                <li>
-                  Cancellation is NOT allowed on the day of or after your
-                  check-in date.
-                </li>
-                <li>
-                  A cancellation fee 20% of your reservation's total price will
-                  be charged if reservation is canceled within 3 days of
-                  check-in date.
-                </li>
-                <li>
-                  FULL refund is possible only if you cancel at least 4 days
-                  prior to your check-in date (with the exception that the
-                  reservation is made within 3 days of check-in date)
-                </li>
-                <li>
-                  Cancellations will refund the reward points that were used on
-                  the reservation
-                </li>
-              </ul>
-            </DetailItem>
-            <DetailItem style={{ marginLeft: "20px" }}>
-              <span>For example:</span>
-            </DetailItem>
-            <DetailItem>
-              <ul>
-                <li style={{ marginBottom: "0", maxWidth: "80%" }}>
-                  Check-in date is Jan 29
-                </li>
-                <li style={{ marginBottom: "0", maxWidth: "80%" }}>
-                  Cancellation before Jan 26 is fully refundable
-                </li>
-                <li style={{ marginBottom: "0", maxWidth: "80%" }}>
-                  Cancellation between Jan 26 (inclusive) and 29 (exclusive)
-                  will have a fee
-                </li>
-              </ul>
-            </DetailItem>
           </Detail>
 
           <Modal
@@ -560,9 +550,8 @@ function Details() {
               </div>
             </div>
           </Modal>
-        </>)}
-
-      {/*<input type="hidden" id="modify-response-code" value={state.state}/>*/}
+        </>
+      )}
     </Container>
   );
 }

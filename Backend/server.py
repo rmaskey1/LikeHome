@@ -151,22 +151,22 @@ def bookings():
         if roomBooked(rid):
             abort(make_response(jsonify(message="Sorry, this room is already booked"), 409))
         
-        # try:
-        #     # Get credit card information from the form
-        #     cardToken = getCardToken(request.form['cardNumber'])
-        #     # exp_month = request.form['exp_month']
-        #     # exp_year = request.form['exp_year']
-        #     # cvc = request.form['cvc']
-        #     totalPrice = int(request.form['totalPrice']) * 100  # Convert amount to cents
+        try:
+            # Get credit card information from the form
+            cardToken = getCardToken(request.form['cardNumber'])
+            # exp_month = request.form['exp_month']
+            # exp_year = request.form['exp_year']
+            # cvc = request.form['cvc']
+            totalPrice = int(request.form['totalPrice']) * 100  # Convert amount to cents
             
-        #     charge = stripe.Charge.create(
-        #         amount=totalPrice,
-        #         currency='usd',
-        #         source=cardToken,
-        #         description='Payment for your booking'
-        #     )
-        # except Exception as e:
-        #     return jsonify({'error': str(e)})
+            charge = stripe.Charge.create(
+                amount=totalPrice,
+                currency='usd',
+                source=cardToken,
+                description='Payment for your booking'
+            )
+        except Exception as e:
+            return jsonify({'error': str(e)})
         
         booking = addBooking(gid, rid, data['pointsUsed'], data['totalPrice'], data['startDate'], data['endDate'], data['numGuest'], charge.id)
         return jsonify(booking)
@@ -322,6 +322,7 @@ def queryByRmAttribute():
                 if bathrooms is not None:
                     if doc.to_dict()['numberOfBathrooms'] != bathrooms:
                         add = False
+
                 if bedType is not None:
                     if bedType.lower() not in doc.to_dict()['bedType'].lower():
                         add = False
@@ -347,6 +348,7 @@ def queryByRmAttribute():
                     listing['rid'] = doc.id
                     matching_rooms.append(listing)
             print(matching_rooms)
+
             return jsonify(matching_rooms)
         
         else:
