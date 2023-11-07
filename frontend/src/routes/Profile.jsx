@@ -7,9 +7,12 @@ import { isLoginAtom } from "../atom";
 import { useSetRecoilState } from "recoil";
 
 const Container = styled.div`
-  position: relative;
+  position: center;
+  margin-top: 36px;
+  justify-content: center;
   display: grid;
-  place-content: center;
+  //place-content: center;
+  //align-items: center;
   width: 100vw;
   height: 100vh;
 `;
@@ -55,7 +58,7 @@ const DeleteBtn = styled.div`
   position: absolute;
   display: grid;
   place-content: center;
-  top: 150px;
+  top: 6px;
   width: 205px;
   height: 36px;
   right: 20vw;
@@ -72,6 +75,13 @@ const DeleteBtn = styled.div`
   }
 `;
 
+const Divider = styled.div`
+  width: 744px;
+  height: 1px;
+  background-color: #888888;
+  margin: 30px 0;
+`;
+
 function Profile() {
   const navigate = useNavigate();
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -81,6 +91,8 @@ function Profile() {
   const userinfo = localStorage.userinfo
     ? JSON.parse(localStorage.userinfo)
     : {};
+
+  const isGuestAccount = userinfo.accountType === "guest"; //check if it's a guest account
 
   const handleDeleteClick = () => {
     setShowDeleteConfirmation(true);
@@ -134,18 +146,27 @@ function Profile() {
       <ProfileBox>
         <div>Profile</div>
         <Label>First Name</Label>
-        <Content>{userinfo.firstName}</Content>
+        <Content id="first-name-content">{userinfo.firstName}</Content>
         <Label>Last Name</Label>
-        <Content>{userinfo.lastName}</Content>
+        <Content id="last-name-content">{userinfo.lastName}</Content>
         <Label>Email</Label>
-        <Content>{userinfo.email}</Content>
+        <Content id="email-content">{userinfo.email}</Content>
         <Label>Password</Label>
         <Content>********</Content>
         <Label>Phone Number</Label>
-        <Content>{userinfo.phone}</Content>
+        <Content id="phone-number-content">{userinfo.phone}</Content>
       </ProfileBox>
-      <EditBtn onClick={handleEditProfileClick}>Edit Profile</EditBtn>
-      <DeleteBtn onClick={handleDeleteClick}>Delete Account</DeleteBtn>
+      <EditBtn onClick={handleEditProfileClick} id="edit-profile-button">Edit Profile</EditBtn>
+      {isGuestAccount && <Divider />}
+      {isGuestAccount && (
+        <ProfileBox>
+          <div>My Reward Points</div>
+          <Label>Reward Points Owned:</Label>
+          <Content>{userinfo.rewardPoints}</Content>
+        </ProfileBox>
+      )}
+
+      <DeleteBtn onClick={handleDeleteClick} id="delete-account-button">Delete Account</DeleteBtn>
       {showDeleteConfirmation && (
         <DeleteAccountWarning
           onConfirm={handleConfirmDelete}

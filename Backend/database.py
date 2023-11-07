@@ -6,6 +6,7 @@ import datetime
 from flask import Flask, request, jsonify, make_response, abort
 from datetime import timedelta
 from google.cloud.firestore_v1.base_query import FieldFilter
+import stripe
 # -----------IMPORTANT-------------
 # 1. On your terminal execute this command "pip install firebase-admin"
 # 2. Also install Flask: "pip install flask"
@@ -28,6 +29,8 @@ config = {
 }
 firebase = pyrebase.initialize_app(config)
 pyrebase_auth = firebase.auth()
+
+stripe.api_key = 'sk_test_51O7eg3BeDJOROtaCd2D3qBBa3G32SwNfI0c0Z9FxKbs8gTFKxOZmrKRlgZEehOweHAKQvnGvivNnB25eFIwtYguf00nnU3B80B'
 
 # Function that returns auth
 def get_auth():
@@ -102,7 +105,7 @@ def addHotelInfo(userId, hotelName, street, city, zipcode, state, country):
     })
     return doc_ref.get().to_dict()
 
-def addBooking(gid, rid, startDate, endDate, numGuest):
+def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest, chargeID):
     # Add rid to user's bookedRooms
     doc_ref = db.collection("user").document(gid)
     x = doc_ref.get().to_dict()["bookedRooms"]
@@ -114,9 +117,12 @@ def addBooking(gid, rid, startDate, endDate, numGuest):
     doc_ref = db.collection("booking").add({
         'gid': gid,
         'rid': rid,
+        'pointsUsed': pointsUsed,
+        'totalPrice': totalPrice,
         'startDate': startDate,
         'endDate': endDate,
-        'numGuest': numGuest
+        'numGuest': numGuest,
+        'chargeID': chargeID
     })
     docs = db.collection("booking").where(filter=FieldFilter("gid", "==", gid)).where(filter=FieldFilter("rid", "==", rid)).stream()
     for doc in docs:
@@ -344,29 +350,8 @@ def getAccountType():
     accountType = userDoc['accountType']
     return accountType
 
-def queryByRmAttribute():
-    try:
-        dateFrom=request.args['dateForm']
-        dateTo=request.args['dateTo']
-        guests=request.args['guests']
-        location=request.args['location']
-        
-        date_query = db.collection("room").where('dateFrom', '<=', dateTo).where('dateTo', '>=', dateFrom)
-        guests_query = db.collection("room").where('guests', "==", guests).get()
-        location_query = db.collection("room").where('location', "==", location).get()
-        
-        results = query.stream()
-        
-        matching_rooms=[]
-        
-        for room in results:
-            matching_rooms.append(room.to_dict())
-        return matching_rooms
-    except Exception as e:
-        
-        print("Error querying rooms:", e)
-        return []
-
+def getCardToken(card_number):
+    return db.collection("test_card_data").document(card_number).get().get("token")
 
 
 # Function to modify user's information
