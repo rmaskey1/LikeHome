@@ -240,7 +240,7 @@ function Details() {
   const { state: stateData } = useLocation();
   const [showDoubleBookingWarning, setShowDoubleBookingWarning] =
     useState(false);
-  const isDoubleBooking = true; //check if double booking here!
+  const isDoubleBooking = false; //check if double booking here!
 
   const rid = params.id;
   const userinfo = localStorage.userinfo
@@ -445,7 +445,7 @@ function Details() {
                 <Reservebtn
                   onClick={() => {
                     if (isDoubleBooking) {
-                      setShowDoubleBookingWarning(false); //CONNIE HAD THIS AS TRUE, DISABLING FOR BACKEND
+                      setShowDoubleBookingWarning(true);
                     } else {
                       navigate("book", { state: { roomData, numGuests } });
                     }
