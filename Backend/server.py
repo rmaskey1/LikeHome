@@ -230,10 +230,10 @@ def modify_bookings(rid):
 
         return jsonify(message="Deletion Successfull")
 
-@app.route('/update_reward_points/<uid>', methods=['GET'])
-def update_reward_points(uid):
+@app.route('/update_reward_points/', methods=['POST'])
+def update_reward_points():
     try:
-        #uid = getUid()
+        uid = getUid()
         # Query the 'booking' collection
         booking_ref = db.collection('booking')
         user_ref = db.collection('user').document(uid)
