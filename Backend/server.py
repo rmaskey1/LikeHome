@@ -237,6 +237,20 @@ def update_reward_points():
 
             # Check if the end date is before or on today's date
             if end_date <= today:
+                
+                bid = booking_doc.id  # Get the booking ID
+                gid = booking_data.get('gid', '')
+                rid = booking_data.get('rid', '')
+
+               # Check if a document with the same gid and rid already exists in 'pastBooking'
+                past_booking_ref = db.collection('pastBooking')
+                query = past_booking_ref.where('gid', '==', gid).where('rid', '==', rid).limit(1).stream()
+
+                if not next(query, None):
+                    # If not found, add the bid, gid, and rid to the 'pastBooking' collection
+                    past_booking_ref.document(bid).set({'gid': gid, 'rid': rid})
+
+
                 total_price = booking_data.get('totalPrice', 0)
 
                 # Calculate reward points (50% of the total price)
