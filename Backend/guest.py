@@ -75,19 +75,42 @@ def guest_modification_func(app):
             try:
                 user_ref = db.collection('user').document(uid)
                 doc = user_ref.get()
-
-                if 'bookedRooms' in doc.to_dict():
+                user_data = doc.to_dict()
+                account_type = user_data['accountType']
+                if account_type == 'guest':
                     booked_rooms = doc.to_dict()['bookedRooms']
                     if (len(booked_rooms) > 0):
                         abort(make_response(
                             jsonify(message="Cannot delete; User has a booked room"), 400))
                     else:
                         auth.delete_user(uid)
-                else:
-                    auth.delete_user(uid)
+                        user_ref.delete()
+                elif account_type == 'hotel':
+                    if 'listedRooms' in user_data:
+                        listed_rooms = doc.to_dict()['listedRooms']
+
+                        # Check if any room associated with the hotel has bookings
+
+                        room_ids = user_data.get('listedRooms', [])  
+
+                        #for each room, search guest user collection for a matching booked room by rid. (Guests use the bookedRooms array, so query by those) 
+
+                        users_collection=db.collection('user')
+
+                        for rid in room_ids:
+                            print("RID:",rid)
+                            query = users_collection.where('bookedRooms', 'array_contains', rid)
+                            users=query.stream()
+                            matching_users = [user.to_dict() for user in users]
+                            if len(matching_users)==0:
+                                abort(make_response(jsonify(message="Cannot delete; Hotel user has rooms with bookings"), 400))
+                            else:
+                                auth.delete_user(uid)
+                                user_ref.delete()
+
                 # delete them from the db in addition to deleting from auth
-                if user_ref.get().exists:
-                    user_ref.delete()
+                # if user_ref.get().exists:
+                #     user_ref.delete()
 
                 return jsonify({'message': f'Guest {uid} has been deleted'})
 
