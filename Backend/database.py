@@ -353,5 +353,24 @@ def getAccountType():
 def getCardToken(card_number):
     return db.collection("test_card_data").document(card_number).get().get("token")
 
+
+def get_hid_from_user_or_hotel_api(rid):
+    # Check user collection for hotel accounts
+    user_ref = db.collection('user')
+    query = user_ref.where('accountType', '==', 'hotel').where('listedRooms', 'array_contains', rid).limit(1).stream()
+    
+    for user_doc in query:
+        return user_doc.id
+
+    # Check hotelApi collection for hotel names
+    hotel_api_ref = db.collection('hotelApi')
+    query = hotel_api_ref.where('roomIds', 'array_contains', rid).limit(1).stream()
+
+    for hotel_doc in query:
+        return hotel_doc.id
+
+    # If not found in 'hotelApi', return an error message
+    return 'unknown'
+
 # Function to modify user's information
 #def changeGuestInfo(email, phone, password, first_name, ):
