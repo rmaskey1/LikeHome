@@ -14,7 +14,7 @@ def guest_modification_func(app):
 
         # Get user's uid from args
         method = request.method
-        uid = request.args['uid']
+        uid = getUid()
         print("UID: " + uid)
 
         if method == 'GET':
@@ -120,6 +120,14 @@ def guest_modification_func(app):
             # except auth.AuthError as e:
             #     abort(make_response(jsonify(message=f"Error deleting user: {str(e)}"), 500))
 
+    @app.route('/reward', methods=['PUT'])
+    def reward_points_modification():
+        uid = getUid()
+        data = request.get_json()
+        user_ref = db.collection('user').document(uid)
+        user_ref.update({'rewardPoints': data['rewardPoints']})
+        user_data = user_ref.get().to_dict()
+        return jsonify(user_data)
 
 # Function to verify phone
 def is_valid_phone_number(phone_number):

@@ -153,11 +153,11 @@ def bookings():
         
         try:
             # Get credit card information from the form
-            cardToken = getCardToken(request.form['cardNumber'])
+            cardToken = getCardToken(data['cardNumber'])
             # exp_month = request.form['exp_month']
             # exp_year = request.form['exp_year']
             # cvc = request.form['cvc']
-            totalPrice = int(request.form['totalPrice']) * 100  # Convert amount to cents
+            totalPrice = int(data['totalPrice']) * 100  # Convert amount to cents
             
             charge = stripe.Charge.create(
                 amount=totalPrice,

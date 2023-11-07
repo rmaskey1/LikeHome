@@ -240,7 +240,7 @@ function Details() {
   const { state: stateData } = useLocation();
   const [showDoubleBookingWarning, setShowDoubleBookingWarning] =
     useState(false);
-  const isDoubleBooking = false; //check if double booking here!
+  const [isDoubleBooking, setIsDoubleBooking] = useState(false); //check if double booking here!
 
   const rid = params.id;
   const userinfo = localStorage.userinfo
@@ -310,6 +310,36 @@ function Details() {
   const handleConfirm = () => {
     setShowDoubleBookingWarning(false);
   };
+
+  const getDaysArray = (start, end) => {
+    for (
+      var arr = [], dt = new Date(start);
+      dt <= new Date(end);
+      dt.setDate(dt.getDate() + 1)
+    ) {
+      arr.push(new Date(dt));
+    }
+    return arr;
+  };
+
+  useEffect(() => {
+    let bookedDates = [];
+
+    bookingData &&
+      bookingData.forEach((b) => {
+        bookedDates = [...bookedDates, ...getDaysArray(b.startDate, b.endDate)];
+      });
+
+    roomData &&
+      getDaysArray(roomData.startDate, roomData.endDate).forEach((date) => {
+        for (let i = 0; i < bookedDates.length; i++) {
+          if (bookedDates[i].getTime() === date.getTime()) {
+            setIsDoubleBooking(true);
+            break;
+          }
+        }
+      });
+  }, [bookingData, roomData]);
 
   return (
     <Container>
@@ -453,7 +483,7 @@ function Details() {
                 >
                   Reserve
                 </Reservebtn>
-                {isDoubleBooking && (
+                {showDoubleBookingWarning && (
                   <DoubleBookingWarning onConfirm={handleConfirm} />
                 )}
               </Reserve>
