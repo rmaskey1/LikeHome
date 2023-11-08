@@ -158,14 +158,11 @@ def bookings():
             # cvc = request.form['cvc']
             totalPrice = int(data['totalPrice']) * 100  # Convert amount to cents
             pointsUsed = int(data['pointsUsed'])  # Points used in the booking
-            
+            print("THIS IS POINTS USED", pointsUsed)
             # Check if the user has enough rewardPoints to cover the pointsUsed
             user_ref = db.collection('user').document(gid)
             user_data = user_ref.get().to_dict()
             rewardPoints = user_data.get('rewardPoints', 0)
-            
-            if pointsUsed > rewardPoints:
-                return jsonify({'error': 'Not enough reward points to cover the booking'}), 400
 
             # Deduct pointsUsed from rewardPoints
             new_rewardPoints = rewardPoints - pointsUsed
