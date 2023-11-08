@@ -108,12 +108,12 @@ def addHotelInfo(userId, hotelName, street, city, zipcode, state, country):
 
 def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest, date):
     # Add rid to user's bookedRooms
-    doc_ref = db.collection("user").document(gid)
-    x = doc_ref.get().to_dict()["bookedRooms"]
-    x.append(rid)
-    doc_ref.update({
-        'bookedRooms' : x
-    })
+    # doc_ref = db.collection("user").document(gid)
+    # x = doc_ref.get().to_dict()["bookedRooms"]
+    # x.append(rid)
+    # doc_ref.update({
+    #     'bookedRooms' : x
+    # })
 
     doc_ref = db.collection("booking").add({
         'gid': gid,
