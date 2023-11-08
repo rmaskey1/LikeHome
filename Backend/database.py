@@ -32,6 +32,7 @@ pyrebase_auth = firebase.auth()
 
 stripe.api_key = 'sk_test_51O7eg3BeDJOROtaCd2D3qBBa3G32SwNfI0c0Z9FxKbs8gTFKxOZmrKRlgZEehOweHAKQvnGvivNnB25eFIwtYguf00nnU3B80B'
 
+
 # Function that returns auth
 def get_auth():
     return pyrebase_auth
@@ -105,7 +106,7 @@ def addHotelInfo(userId, hotelName, street, city, zipcode, state, country):
     })
     return doc_ref.get().to_dict()
 
-def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest, chargeID):
+def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest, date):
     # Add rid to user's bookedRooms
     doc_ref = db.collection("user").document(gid)
     x = doc_ref.get().to_dict()["bookedRooms"]
@@ -122,7 +123,7 @@ def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest, c
         'startDate': startDate,
         'endDate': endDate,
         'numGuest': numGuest,
-        'chargeID': chargeID
+        'date': date
     })
     docs = db.collection("booking").where(filter=FieldFilter("gid", "==", gid)).where(filter=FieldFilter("rid", "==", rid)).stream()
     for doc in docs:
@@ -349,9 +350,6 @@ def getAccountType():
     print(userDoc)
     accountType = userDoc['accountType']
     return accountType
-
-def getCardToken(card_number):
-    return db.collection("test_card_data").document(card_number).get().get("token")
 
 # Function to modify user's information
 #def changeGuestInfo(email, phone, password, first_name, ):
