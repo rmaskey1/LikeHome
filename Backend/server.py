@@ -157,6 +157,16 @@ def bookings():
             # exp_year = request.form['exp_year']
             # cvc = request.form['cvc']
             totalPrice = int(data['totalPrice']) * 100  # Convert amount to cents
+            pointsUsed = int(data['pointsUsed'])  # Points used in the booking
+            
+            # Check if the user has enough rewardPoints to cover the pointsUsed
+            user_ref = db.collection('user').document(gid)
+            user_data = user_ref.get().to_dict()
+            rewardPoints = user_data.get('rewardPoints', 0)
+
+            # Deduct pointsUsed from rewardPoints
+            new_rewardPoints = rewardPoints - pointsUsed
+            user_ref.update({'rewardPoints': new_rewardPoints})
             
             charge = stripe.Charge.create(
                 amount=totalPrice,
