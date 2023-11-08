@@ -453,6 +453,7 @@ function ModifyListing() {
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="freeWifi-box"
                       type="checkbox"
                       defaultChecked={existingData.amenities[0].freewifi}
                     />
@@ -462,13 +463,13 @@ function ModifyListing() {
               </Label>
               <Label>
                 <Controller
-                  id="pool-box"
                   name="amenities[1].pool"
                   control={control}
                   defaultValue={existingData.amenities[1].pool}
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="pool-box"
                       type="checkbox"
                       defaultChecked={existingData.amenities[1].pool}
                     />
@@ -478,13 +479,13 @@ function ModifyListing() {
               </Label>
               <Label>
                 <Controller
-                  id="tv-box"
                   name="amenities[2].tv"
                   control={control}
                   defaultValue={existingData.amenities[2].tv}
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="tv-box"
                       type="checkbox"
                       defaultChecked={existingData.amenities[2].tv}
                     />
@@ -494,13 +495,13 @@ function ModifyListing() {
               </Label>
               <Label>
                 <Controller
-                  id="washer-box"
                   name="amenities[3].freewasherinunit"
                   control={control}
                   defaultValue={existingData.amenities[3].freewasherinunit}
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="washer-box"
                       type="checkbox"
                       defaultChecked={
                         existingData.amenities[3].freewasherinunit
@@ -512,13 +513,13 @@ function ModifyListing() {
               </Label>
               <Label>
                 <Controller
-                  id="dryer-box"
                   name="amenities[4].freedryerinunit"
                   control={control}
                   defaultValue={existingData.amenities[4].freedryerinunit}
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="dryer-box"
                       type="checkbox"
                       defaultChecked={existingData.amenities[4].freedryerinunit}
                     />
@@ -528,13 +529,13 @@ function ModifyListing() {
               </Label>
               <Label>
                 <Controller
-                  id="parking-box"
                   name="amenities[5].freeparking"
                   control={control}
                   defaultValue={existingData.amenities[5].freeparking}
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="parking-box"
                       type="checkbox"
                       defaultChecked={existingData.amenities[5].freeparking}
                     />
@@ -544,13 +545,13 @@ function ModifyListing() {
               </Label>
               <Label>
                 <Controller
-                  id="ac-box"
                   name="amenities[6].airconditioning"
                   control={control}
                   defaultValue={existingData.amenities[6].airconditioning}
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="ac-box"
                       type="checkbox"
                       defaultChecked={existingData.amenities[6].airconditioning}
                     />
@@ -562,13 +563,13 @@ function ModifyListing() {
             <CheckboxItem>
               <Label>
                 <Controller
-                  id="breakfast-box"
                   name="amenities[7].freebreakfast"
                   control={control}
                   defaultValue={existingData.amenities[7].freebreakfast}
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="breakfast-box"
                       type="checkbox"
                       defaultChecked={existingData.amenities[7].freebreakfast}
                     />
@@ -578,13 +579,13 @@ function ModifyListing() {
               </Label>
               <Label>
                 <Controller
-                  id="lunch-box"
                   name="amenities[8].freelunch"
                   control={control}
                   defaultValue={existingData.amenities[8].freelunch}
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="lunch-box"
                       type="checkbox"
                       defaultChecked={existingData.amenities[8].freelunch}
                     />
@@ -594,13 +595,13 @@ function ModifyListing() {
               </Label>
               <Label>
                 <Controller
-                  id="dinner-box"
                   name="amenities[9].freedinner"
                   control={control}
                   defaultValue={existingData.amenities[9].freedinner}
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="dinner-box"
                       type="checkbox"
                       defaultChecked={existingData.amenities[9].freedinner}
                     />
@@ -610,13 +611,13 @@ function ModifyListing() {
               </Label>
               <Label>
                 <Controller
-                  id="microwave-box"
                   name="amenities[10].microwave"
                   control={control}
                   defaultValue={existingData.amenities[10].microwave}
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="microwave-box"
                       type="checkbox"
                       defaultChecked={existingData.amenities[10].microwave}
                     />
@@ -626,13 +627,13 @@ function ModifyListing() {
               </Label>
               <Label>
                 <Controller
-                  id="refrigerator-box"
                   name="amenities[11].refrigerator"
                   control={control}
                   defaultValue={existingData.amenities[11].refrigerator}
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="refrigerator-box"
                       type="checkbox"
                       defaultChecked={existingData.amenities[11].refrigerator}
                     />
@@ -642,13 +643,13 @@ function ModifyListing() {
               </Label>
               <Label>
                 <Controller
-                  id="pet-box"
                   name="amenities[12].petfriendly"
                   control={control}
                   defaultValue={existingData.amenities[12].petfriendly}
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="pet-box"
                       type="checkbox"
                       defaultChecked={existingData.amenities[12].petfriendly}
                     />
@@ -658,13 +659,13 @@ function ModifyListing() {
               </Label>
               <Label>
                 <Controller
-                  id="spa-box"
                   name="amenities[13].spa"
                   control={control}
                   defaultValue={existingData.amenities[13].spa}
                   render={({ field }) => (
                     <Checkbox
                       {...field}
+                      id="spa-box"
                       type="checkbox"
                       defaultChecked={existingData.amenities[13].spa}
                     />
