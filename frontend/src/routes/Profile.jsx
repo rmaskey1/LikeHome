@@ -55,6 +55,12 @@ const EditBtn = styled.div`
   }
 `;
 
+const EditBtnContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  //margin-top: 10px;
+`;
+
 const DeleteBtn = styled.div`
   //position: absolute;
   display: grid;
@@ -91,7 +97,7 @@ function Profile() {
 
   const { isLoading, data } = useQuery(["userinfo"], getUserInfo);
 
-  const isGuestAccount = true; // '!isLoading && data.accountType === "guest"; //check if it's a guest account
+  const isGuestAccount = !isLoading && data.accountType === "guest"; //check if it's a guest account
 
   const handleDeleteClick = () => {
     setShowDeleteConfirmation(true);
@@ -166,7 +172,9 @@ function Profile() {
           <Label>Phone Number</Label>
           <Content>{data.phone}</Content>
         </ProfileBox>
-        <EditBtn onClick={handleEditProfileClick}>Edit Profile</EditBtn>
+        <EditBtnContainer>
+          <EditBtn onClick={handleEditProfileClick}>Edit Profile</EditBtn>
+        </EditBtnContainer>
         {isGuestAccount && <Divider />}
         {isGuestAccount && (
           <ProfileBox>
