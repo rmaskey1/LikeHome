@@ -98,7 +98,7 @@ function PreviewCard({ previewCard }) {
           style={{ cursor: "pointer" }}
         />
       </ImgContainer>
-      <StyledCardDetails onClick={handleCardClick}>
+      <StyledCardDetails className="previewCard-select" onClick={handleCardClick}>
         <div
           style={{
             display: "flex",
