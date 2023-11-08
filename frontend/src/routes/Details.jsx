@@ -235,12 +235,10 @@ const SectionTitle = styled.div`
 function Details() {
   const params = useParams();
   const navigate = useNavigate();
-  // const state = useLocation();
-
   const [roomData, setRoomData] = useState(null);
   const { state: stateData } = useLocation();
   const [showDoubleBookingWarning, setShowDoubleBookingWarning] = useState(false);
-  const isDoubleBooking = true; //check if double booking here!
+  const isDoubleBooking = false; //check if double booking here!
 
 
   const rid = params.id;
@@ -464,6 +462,7 @@ function Details() {
             </DetailItem>
           </Detail>
           <Divider />
+
           <Detail >
             <h1>Amenities</h1>
             <div id="amenities-detail">
@@ -471,7 +470,6 @@ function Details() {
                 <Amenity key={i} item={item} />
               ))}
             </div>
-
           </Detail>
           <Divider />
           <Detail>

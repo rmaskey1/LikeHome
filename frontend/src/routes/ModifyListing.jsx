@@ -178,10 +178,10 @@ function ModifyListing() {
     );
 
     const data = await response.json();
-    console.log(response.status, data);
+    console.log("[ModifyListing Submitted]: " + response.status, data);
 
     if (response.ok) {
-      navigate(location.pathname.replace("/modify", ""), {state: response.status});
+      navigate(location.pathname.replace("/modify", ""));
     }
   };
 
