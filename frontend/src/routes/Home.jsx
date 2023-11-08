@@ -1,4 +1,4 @@
-import {Link, useLocation} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PreviewCardsListing from "../components/PreviewCardsListing";
@@ -92,8 +92,7 @@ function Home() {
     }
   );
 
-
-    const state = useLocation();
+  const state = useLocation();
   // const [displayListings, setDisplayListings] = useState(allListings);
 
   /* Search Function Section Start */
@@ -197,7 +196,7 @@ function Home() {
           <Mylisting>
             My listings:
             <Link to="/room/add">
-              <Addbutton id="add-btn" >Add +</Addbutton>
+              <Addbutton id="add-btn">Add +</Addbutton>
             </Link>
           </Mylisting>
           {myListingsIsLoading ? (
@@ -207,7 +206,7 @@ function Home() {
           )}
         </>
       )}
-      <Welcome>Welcome, {userinfo.firstName}!</Welcome>
+      <Welcome id="welcome-message">Welcome, {userinfo.firstName}!</Welcome>
       <Start>Start your journey here:</Start>
       {allListingsIsLoading ? null : (
         <SearchBar
@@ -248,7 +247,7 @@ function Home() {
         />
       )}
 
-        <input type="hidden" id="home-response-code" value={state.state}/>
+      {/* <input type="hidden" id="home-response-code" value={state.state}/> */}
     </Container>
   );
 }

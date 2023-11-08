@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import DeleteAccountWarning from "components/DeleteAccountWarning";
 import { useNavigate } from "react-router-dom";
-import { SERVER_URL } from "../api";
+import { SERVER_URL, getUserInfo } from "../api";
 import { isLoginAtom } from "../atom";
 import { useSetRecoilState } from "recoil";
+import { useQuery } from "react-query";
 
 const Container = styled.div`
   position: center;
@@ -54,8 +55,14 @@ const EditBtn = styled.div`
   }
 `;
 
+const EditBtnContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  //margin-top: 10px;
+`;
+
 const DeleteBtn = styled.div`
-  position: absolute;
+  //position: absolute;
   display: grid;
   place-content: center;
   top: 6px;
@@ -88,11 +95,9 @@ function Profile() {
   const [serverError, setServerError] = useState({ status: 0, message: "" });
   const setIsLogin = useSetRecoilState(isLoginAtom);
 
-  const userinfo = localStorage.userinfo
-    ? JSON.parse(localStorage.userinfo)
-    : {};
+  const { isLoading, data } = useQuery(["userinfo"], getUserInfo);
 
-  const isGuestAccount = userinfo.accountType === "guest"; //check if it's a guest account
+  const isGuestAccount = !isLoading && data.accountType === "guest"; //check if it's a guest account
 
   const handleDeleteClick = () => {
     setShowDeleteConfirmation(true);
@@ -109,12 +114,11 @@ function Profile() {
     //     console.log("Access token or user ID not found. Please log in.");
     //     return;
     //   }
-    const response = await fetch(`${SERVER_URL}/user?uid=${localStorage.uid}`, {
+    const response = await fetch(`${SERVER_URL}/user`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      // body: JSON.stringify(),
     });
 
     const userResult = await response.json();
@@ -142,38 +146,52 @@ function Profile() {
   };
 
   return (
-    <Container>
-      <ProfileBox>
-        <div>Profile</div>
-        <Label>First Name</Label>
-        <Content>{userinfo.firstName}</Content>
-        <Label>Last Name</Label>
-        <Content>{userinfo.lastName}</Content>
-        <Label>Email</Label>
-        <Content>{userinfo.email}</Content>
-        <Label>Password</Label>
-        <Content>********</Content>
-        <Label>Phone Number</Label>
-        <Content>{userinfo.phone}</Content>
-      </ProfileBox>
-      <EditBtn onClick={handleEditProfileClick}>Edit Profile</EditBtn>
-      {isGuestAccount && <Divider />}
-      {isGuestAccount && (
+    !isLoading && (
+      <Container>
         <ProfileBox>
-          <div>My Reward Points</div>
-          <Label>Reward Points Owned:</Label>
-          <Content>{userinfo.rewardPoints}</Content>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div style={{ marginRight: "400px" }}>Profile</div>
+            <DeleteBtn onClick={handleDeleteClick} id="delete-account-button">
+              Delete Account
+            </DeleteBtn>
+          </div>
+          <Label>First Name</Label>
+          <Content>{data.firstName}</Content>
+          <Label>Last Name</Label>
+          <Content>{data.lastName}</Content>
+          <Label>Email</Label>
+          <Content>{data.email}</Content>
+          <Label>Password</Label>
+          <Content>********</Content>
+          <Label>Phone Number</Label>
+          <Content>{data.phone}</Content>
         </ProfileBox>
-      )}
+        <EditBtnContainer>
+          <EditBtn onClick={handleEditProfileClick}>Edit Profile</EditBtn>
+        </EditBtnContainer>
+        {isGuestAccount && <Divider />}
+        {isGuestAccount && (
+          <ProfileBox>
+            <div>My Reward Points</div>
+            <Label>Reward Points Owned:</Label>
+            <Content>{data.rewardPoints}</Content>
+          </ProfileBox>
+        )}
 
-      <DeleteBtn onClick={handleDeleteClick}>Delete Account</DeleteBtn>
-      {showDeleteConfirmation && (
-        <DeleteAccountWarning
-          onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
-        />
-      )}
-    </Container>
+        {showDeleteConfirmation && (
+          <DeleteAccountWarning
+            onConfirm={handleConfirmDelete}
+            onCancel={handleCancelDelete}
+          />
+        )}
+      </Container>
+    )
   );
 }
 

@@ -80,8 +80,8 @@ const LeftBox = styled.div`
 const Button = styled.button`
   background-color: transparent;
   cursor: pointer;
-  font-size: 19px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: bold;
 `;
 
 const ErrorText = styled.div`
@@ -155,7 +155,9 @@ function AccountMod() {
   return (
     <>
       <LeftBox>
-        <Button onClick={() => navigate(-1)}>Back</Button>
+        <Button onClick={() => navigate(-1)} id="back-btn">
+          Back
+        </Button>
       </LeftBox>
       <Container>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -177,6 +179,7 @@ function AccountMod() {
                 })}
                 type="text"
                 defaultValue={userinfo.hotelName}
+                id="hotel-name-input"
               />
               {errors.hotelName && (
                 <ErrorText className="error-text">
@@ -197,6 +200,7 @@ function AccountMod() {
                 })}
                 type="text"
                 defaultValue={userinfo.street}
+                id="street-name-input"
               />
               {errors.street && (
                 <ErrorText className="error-text">
@@ -214,6 +218,7 @@ function AccountMod() {
                     })}
                     type="text"
                     defaultValue={userinfo.city}
+                    id="city-input"
                   />
                   {errors.city && (
                     <ErrorText className="error-text">
@@ -230,6 +235,7 @@ function AccountMod() {
                     })}
                     type="number"
                     defaultValue={userinfo.zipcode}
+                    id="zip-input"
                   />
                   {errors.zipcode && (
                     <ErrorText className="error-text">
@@ -256,6 +262,7 @@ function AccountMod() {
                     })}
                     type="text"
                     defaultValue={userinfo.state}
+                    id="state-input"
                   />
                   {errors.state && (
                     <ErrorText className="error-text">
@@ -279,6 +286,7 @@ function AccountMod() {
                     })}
                     type="text"
                     defaultValue={userinfo.country}
+                    id="country-input"
                   />
                   {errors.country && (
                     <ErrorText className="error-text">
@@ -307,6 +315,7 @@ function AccountMod() {
             style={{ color: "black" }}
             //onBlur={(e) => validateEmail(e.target.value)}
             defaultValue={userinfo.email}
+            id="email-input"
           />
           {errors.email && (
             <ErrorText>{errors.email.message.toString()}</ErrorText>
@@ -334,6 +343,7 @@ function AccountMod() {
                 })}
                 type="text"
                 defaultValue={userinfo.firstName}
+                id="fname-input"
               />
               {errors.firstName && (
                 <ErrorText>{errors.firstName.message.toString()}</ErrorText>
@@ -355,6 +365,7 @@ function AccountMod() {
                 })}
                 type="text"
                 defaultValue={userinfo.lastName}
+                id="lname-input"
               />
               {errors.lastName && (
                 <ErrorText>{errors.lastName.message.toString()}</ErrorText>
@@ -363,7 +374,7 @@ function AccountMod() {
           </div>
 
           <SubTitle>Password</SubTitle>
-          <Input {...register("password", {})} type="password" />
+          <Input {...register("password", {})} type="password" id="passw" />
 
           <SubTitle>Phone Number</SubTitle>
           <Input
@@ -373,6 +384,7 @@ function AccountMod() {
             })}
             type="text"
             defaultValue={userinfo.phone}
+            id="phone-input"
           />
           {errors.phoneNumber && (
             <ErrorText>{errors.phoneNumber.message.toString()}</ErrorText>
@@ -384,7 +396,7 @@ function AccountMod() {
           )}
 
           <CenteredButtonContainer>
-            <SubmitButton type="submit">
+            <SubmitButton type="submit" id="update-btn">
               {isFetching ? <Ellipsis color="white" size={30} /> : "Update"}
             </SubmitButton>
           </CenteredButtonContainer>
