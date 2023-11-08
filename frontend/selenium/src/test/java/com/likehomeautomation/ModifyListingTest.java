@@ -87,7 +87,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElements(By.className("previewCard-select")).g et(0);
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
