@@ -11,13 +11,25 @@ const Container = styled.main`
   height: 110vh;
   display: flex;
   justify-content: center;
-  margin-left: 200px;
+  margin-top: 36px;
+  //position: center;
+  //margin-left: 5%;
+`;
+
+const LeftBox = styled.div`
+  margin-top: 40px;
+  margin-left: 50px;
+  display: flex;
+  justify-content: flex-start; /* Align items to the left */
+  align-items: center; /* Center vertically */
+  //margin-bottom: 20px; /* Add some spacing from the form */
 `;
 
 const Back = styled.div`
   font-size: 16px;
   font-weight: bold;
-  margin: 50px 0;
+  //margin: 50px 0;
+  //margin-bottom: 20px;
   color: #293545;
   cursor: pointer;
 `;
@@ -49,6 +61,12 @@ const NoFee = styled.div`
   padding: 10px 0;
   color: #293545;
   margin-top: 30px;
+`;
+
+const NoFeeContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  //margin-top: 10px;
 `;
 
 const Payment = styled.div`
@@ -276,20 +294,39 @@ function BookingForm() {
     minimumFractionDigits: 2,
   });
 
-  //you can play with the date to see different cancellation fee msgs!! <3
-  const checkInDate = new Date("2023-10-29"); //INTEGRATIONS!! replace with actual check-in date
-  const currentDate = new Date(); //today's date
+  const checkInDateParts = roomData.startDate.split(", ");
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const dateParts = checkInDateParts[0].split(" ");
+  const month = monthNames.indexOf(dateParts[0]);
+  const day = parseInt(dateParts[1]);
+  const year = parseInt(checkInDateParts[1]);
 
-  const isWithin24Hours = (date1, date2) => {
+  const checkInDate = new Date(year, month, day);
+  const currentDate = new Date(); //2024, 10, 11 Mmonths are 0-indexed (10 represents November).
+
+  const threeDaysPrior = (date1, date2) => {
     const hoursDifference = Math.abs(date1 - date2) / 36e5;
-    return hoursDifference <= 24;
+    return hoursDifference <= 72;
   };
 
   const getCancellationFee = () => {
-    if (isCancelRoute && isWithin24Hours(currentDate, checkInDate)) {
-      return 50; //cancellation fee applies!! INTEGRATIONS please put fee here
+    if (isCancelRoute && threeDaysPrior(currentDate, checkInDate)) {
+      return Math.round(total * 0.2); // Cancellation fee applies within 3 days
     } else {
-      return 0; //no cancellation fee
+      return 0; // No cancellation fee
     }
   };
 
@@ -370,54 +407,44 @@ function BookingForm() {
   };
 
   return (
-    <Container>
-      <LeftSide>
-        <div
-          style={{
-            borderBottom: "1px solid #888",
-            paddingBottom: "30px",
-            width: "500px ",
-          }}
-        >
-          <Back onClick={() => navigate(-1)}>Back</Back>
-          <BookingRequest>
-            {isCancelRoute ? "Cancel Booking Request" : "Booking Request"}
-          </BookingRequest>
+    <>
+      <LeftBox>
+        <Back onClick={() => navigate(-1)}>Back</Back>
+      </LeftBox>
+      <Container>
+        <LeftSide>
+          <div
+            style={{
+              borderBottom: "1px solid #888",
+              paddingBottom: "30px",
+              width: "500px ",
+            }}
+          >
+            <BookingRequest>
+              {isCancelRoute ? "Cancel Booking Request" : "Booking Request"}
+            </BookingRequest>
 
-          {isCancelRoute && isWithin24Hours(currentDate, checkInDate) && (
-            <CheckInWarning>
-              You have cancellations fees because you are canceling within 3
-              days of your check-in date.
-            </CheckInWarning>
-          )}
+            {isCancelRoute && threeDaysPrior(currentDate, checkInDate) && (
+              <CheckInWarning>
+                You have cancellations fees because you are canceling within 3
+                days of your check-in date.
+              </CheckInWarning>
+            )}
 
-          <InfoTitle>Location:</InfoTitle>
-          <InfoText>
-            {roomData.street_name}, {roomData.city}, {roomData.state}
-          </InfoText>
+            <InfoTitle>Location:</InfoTitle>
+            <InfoText>
+              {roomData.street_name}, {roomData.city}, {roomData.state}
+            </InfoText>
 
-          <InfoTitle>Dates:</InfoTitle>
-          <InfoText>
-            {roomData.startDate} - {roomData.endDate}
-          </InfoText>
+            <InfoTitle>Dates:</InfoTitle>
+            <InfoText>
+              {roomData.startDate} - {roomData.endDate}
+            </InfoText>
 
-          <InfoTitle>Number of Guests:</InfoTitle>
-          <InfoText>{numGuests}</InfoText>
-        </div>
+            <InfoTitle>Number of Guests:</InfoTitle>
+            <InfoText>{numGuests}</InfoText>
+          </div>
 
-        <div
-          style={{
-            borderBottom: "1px solid #888",
-            padding: "22px 0 30px 0",
-            width: "500px ",
-          }}
-        >
-          <InfoTitle>
-            Reward Points {isCancelRoute ? "Earned" : "to Earn"}:
-          </InfoTitle>
-          <InfoText>{rewardPointsEarned} points</InfoText>
-        </div>
-        {!isCancelRoute && (
           <div
             style={{
               borderBottom: "1px solid #888",
@@ -425,181 +452,202 @@ function BookingForm() {
               width: "500px ",
             }}
           >
-            <InfoTitle>Apply Reward Points</InfoTitle>
-            <InfoText>
-              Points owned: {isUserInfoLoading ? "0" : userInfo.rewardPoints}{" "}
-              points
-            </InfoText>
-            <br />
-            <FieldName>Apply points to reservation: </FieldName>
+            <InfoTitle>
+              Reward Points {isCancelRoute ? "Earned" : "to Earn"}:
+            </InfoTitle>
+            <InfoText>{rewardPointsEarned} points</InfoText>
+          </div>
+          {!isCancelRoute && (
             <div
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                marginTop: "5px",
+                borderBottom: "1px solid #888",
+                padding: "22px 0 30px 0",
+                width: "500px ",
               }}
             >
-              <Input1
-                ref={applyInputRef}
-                type="number"
-                min={0}
-                defaultValue={0}
-                style={{ color: "black", margin: 0 }}
-              />
-              <SubmitButton
-                style={{ width: "91px", height: "37px", padding: 0, margin: 0 }}
-                type="submit"
-                onClick={handleApplyRewardPoint}
+              <InfoTitle>Apply Reward Points</InfoTitle>
+              <InfoText>
+                Points owned: {isUserInfoLoading ? "0" : userInfo.rewardPoints}{" "}
+                points
+              </InfoText>
+              <br />
+              <FieldName>Apply points to reservation: </FieldName>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  marginTop: "5px",
+                }}
               >
-                Apply
-              </SubmitButton>
-            </div>
-          </div>
-        )}
-
-        <div>
-          <Payment>Payment</Payment>
-
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <FieldName>Card Number</FieldName>
-            <Input1
-              {...register("cardNumber", {
-                required: "Card Number is required",
-                valueAsNumber: true,
-              })}
-              type="number"
-              style={{ color: "black" }}
-              name="cardNumber"
-              value={cardNumber}
-              onChange={(e) => setCardNumber(e.target.value)}
-            />
-            {errors.cardNumber && (
-              <ErrorText className="error-text">
-                <span>{errors.cardNumber.message.toString()}</span>
-              </ErrorText>
-            )}
-
-            <div style={{ display: "flex" }}>
-              <div style={{ flex: 1, marginRight: "10px" }}>
-                <FieldName>Expiration Date</FieldName>
-                <Input2
-                  {...register("expirationDate", {
-                    required: "Expiration date is required",
-                    validate: {
-                      validName: (value) => {
-                        // Check if the date is in the "mm/yy" format
-                        if (!/^\d{2}\/\d{2}$/.test(value)) {
-                          return "Invalid date format (mm/yy)";
-                        }
-                      },
-                    },
-                  })}
-                  type="text"
-                  style={{ color: "black" }}
-                  name="expirationDate"
-                  value={expirationDate}
-                  onChange={(e) => setExpirationDate(e.target.value)}
+                <Input1
+                  ref={applyInputRef}
+                  type="number"
+                  min={0}
+                  defaultValue={0}
+                  style={{ color: "black", margin: 0 }}
                 />
-                {errors.expirationDate && (
-                  <ErrorText className="error-text">
-                    <span>{errors.expirationDate.message.toString()}</span>
-                  </ErrorText>
-                )}
-              </div>
-
-              <div style={{ flex: 1 }}>
-                <CVC>CVC</CVC>
-                <Input3
-                  {...register("cvc", {
-                    valueAsNumber: true,
-                    required: "CVC is required",
-                    validate: {
-                      validName: (value) => {
-                        // Check if CVC has between 3 and 4 digits
-                        if (!/^\d{3,4}$/.test(value)) {
-                          return "Input must be between 3 and 4 digits.";
-                        }
-                      },
-                    },
-                  })}
-                  style={{ color: "black" }}
-                  name="cvc"
-                  onChange={(e) => setCVC(e.target.value)}
-                />
-                {errors.cvc && (
-                  <ErrorText2 className="error-text">
-                    <span>{errors.cvc.message.toString()}</span>
-                  </ErrorText2>
-                )}
+                <SubmitButton
+                  style={{
+                    width: "91px",
+                    height: "37px",
+                    padding: 0,
+                    margin: 0,
+                  }}
+                  type="submit"
+                  onClick={handleApplyRewardPoint}
+                >
+                  Apply
+                </SubmitButton>
               </div>
             </div>
-
-            {isCancelRoute && getCancellationFee() === 0 && (
-              <NoFee>
-                "No cancellation fees are charged for your request."
-              </NoFee>
-            )}
-
-            {serverError && (
-              <ErrorText2 className="error-text">
-                <span>{serverError.message}</span>
-              </ErrorText2>
-            )}
-            <SubmitButton type="submit">
-              {isCancelRoute ? (
-                "Cancel Booking"
-              ) : isFetching ? (
-                <Ellipsis color="white" size={30} />
-              ) : (
-                "Pay & Reserve"
-              )}
-            </SubmitButton>
-          </form>
-        </div>
-      </LeftSide>
-
-      <RightSide>
-        <Card>
-          <Image>
-            <img src={roomData.imageUrl} alt="hotel-room" />
-          </Image>
-          <Pricing>{isCancelRoute ? "Amount Due:" : "Pricing:"}</Pricing>
-          <CostAndAmount>
-            <div>
-              {isCancelRoute
-                ? "Cancellation Fees"
-                : `${roomData.price} x ${nights} nights`}
-            </div>
-            <Amount>
-              {isCancelRoute
-                ? `$${getCancellationFee()}`
-                : dollarString.format(subtotal)}
-            </Amount>
-          </CostAndAmount>
-          {!isCancelRoute && (
-            <>
-              <CostAndAmount>
-                <div>Tax (8%)</div>
-                <Amount>{dollarString.format(tax)}</Amount>
-              </CostAndAmount>
-              <CostAndAmount>
-                <div>Discount from points</div>
-                <Amount>-{dollarString.format(appliedPoints / 10)}</Amount>
-              </CostAndAmount>
-            </>
           )}
-          <Total>
-            <div>Total (USD):</div>
-            <TotalCost>
-              {isCancelRoute
-                ? `$${getCancellationFee()}`
-                : dollarString.format(total)}
-            </TotalCost>
-          </Total>
-        </Card>
-      </RightSide>
-    </Container>
+
+          <div>
+            <Payment>Payment</Payment>
+
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <FieldName>Card Number</FieldName>
+              <Input1
+                {...register("cardNumber", {
+                  required: "Card Number is required",
+                  valueAsNumber: true,
+                })}
+                type="number"
+                style={{ color: "black" }}
+                name="cardNumber"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value)}
+              />
+              {errors.cardNumber && (
+                <ErrorText className="error-text">
+                  <span>{errors.cardNumber.message.toString()}</span>
+                </ErrorText>
+              )}
+
+              <div style={{ display: "flex" }}>
+                <div style={{ flex: 1, marginRight: "10px" }}>
+                  <FieldName>Expiration Date</FieldName>
+                  <Input2
+                    {...register("expirationDate", {
+                      required: "Expiration date is required",
+                      validate: {
+                        validName: (value) => {
+                          // Check if the date is in the "mm/yy" format
+                          if (!/^\d{2}\/\d{2}$/.test(value)) {
+                            return "Invalid date format (mm/yy)";
+                          }
+                        },
+                      },
+                    })}
+                    type="text"
+                    style={{ color: "black" }}
+                    name="expirationDate"
+                    value={expirationDate}
+                    onChange={(e) => setExpirationDate(e.target.value)}
+                  />
+                  {errors.expirationDate && (
+                    <ErrorText className="error-text">
+                      <span>{errors.expirationDate.message.toString()}</span>
+                    </ErrorText>
+                  )}
+                </div>
+
+                <div style={{ flex: 1 }}>
+                  <CVC>CVC</CVC>
+                  <Input3
+                    {...register("cvc", {
+                      valueAsNumber: true,
+                      required: "CVC is required",
+                      validate: {
+                        validName: (value) => {
+                          // Check if CVC has between 3 and 4 digits
+                          if (!/^\d{3,4}$/.test(value)) {
+                            return "Input must be between 3 and 4 digits.";
+                          }
+                        },
+                      },
+                    })}
+                    style={{ color: "black" }}
+                    name="cvc"
+                    onChange={(e) => setCVC(e.target.value)}
+                  />
+                  {errors.cvc && (
+                    <ErrorText2 className="error-text">
+                      <span>{errors.cvc.message.toString()}</span>
+                    </ErrorText2>
+                  )}
+                </div>
+              </div>
+
+              {isCancelRoute && getCancellationFee() === 0 && (
+                <NoFeeContainer>
+                  <NoFee>
+                    No cancellation fees are charged for your request.
+                  </NoFee>
+                </NoFeeContainer>
+              )}
+
+              {serverError && (
+                <ErrorText2 className="error-text">
+                  <span>{serverError.message}</span>
+                </ErrorText2>
+              )}
+              <SubmitButton type="submit">
+                {isCancelRoute ? (
+                  "Cancel Booking"
+                ) : isFetching ? (
+                  <Ellipsis color="white" size={30} />
+                ) : (
+                  "Pay & Reserve"
+                )}
+              </SubmitButton>
+            </form>
+          </div>
+        </LeftSide>
+
+        <RightSide>
+          <Card>
+            <Image>
+              <img src={roomData.imageUrl} alt="hotel-room" />
+            </Image>
+            <Pricing>{isCancelRoute ? "Amount Due:" : "Pricing:"}</Pricing>
+            <CostAndAmount>
+              <div>
+                {isCancelRoute
+                  ? "Cancellation Fees"
+                  : `${roomData.price} x ${nights} nights`}
+              </div>
+              <Amount>
+                {isCancelRoute
+                  ? `$${getCancellationFee()}`
+                  : dollarString.format(subtotal)}
+              </Amount>
+            </CostAndAmount>
+            {!isCancelRoute && (
+              <>
+                <CostAndAmount>
+                  <div>Tax (8%)</div>
+                  <Amount>{dollarString.format(tax)}</Amount>
+                </CostAndAmount>
+                <CostAndAmount>
+                  <div>Discount from points</div>
+                  <Amount>-{dollarString.format(appliedPoints / 10)}</Amount>
+                </CostAndAmount>
+              </>
+            )}
+            <Total>
+              <div>Total (USD):</div>
+              <TotalCost>
+                {isCancelRoute
+                  ? `$${getCancellationFee()}`
+                  : dollarString.format(total)}
+              </TotalCost>
+            </Total>
+          </Card>
+        </RightSide>
+      </Container>
+    </>
   );
 }
 

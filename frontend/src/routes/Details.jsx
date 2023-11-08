@@ -325,10 +325,12 @@ function Details() {
   useEffect(() => {
     let bookedDates = [];
 
-    bookingData &&
+    if (Array.isArray(bookingData)) {
+      //wrapped this in an array bc it was giving "bookingData.forEach is not a function" errors
       bookingData.forEach((b) => {
         bookedDates = [...bookedDates, ...getDaysArray(b.startDate, b.endDate)];
       });
+    }
 
     roomData &&
       getDaysArray(roomData.startDate, roomData.endDate).forEach((date) => {

@@ -74,6 +74,22 @@ const CenteredButtonContainer = styled.div`
   margin-top: 40px;
 `;
 
+const LeftBox = styled.div`
+  margin-top: 40px;
+  margin-left: 50px;
+  display: flex;
+  justify-content: flex-start; //align items to the left
+  align-items: center; //center vertically
+  margin-bottom: 20px; //add spacing form form
+`;
+
+const Button = styled.button`
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+`;
+
 function ModifyBooking() {
   const {
     handleSubmit,
@@ -134,135 +150,147 @@ function ModifyBooking() {
   };
 
   return (
-    <Container>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <ListingTitle>Modify Booking:</ListingTitle>
-        <br />
-        <SectionTitle>Dates: </SectionTitle>
-        <div style={{ display: "flex" }}>
-          <div style={{ flex: 1, marginRight: "10px" }}>
-            <SubTitle>From:</SubTitle>
-            <div style={{ display: "flex" }}>
-              <div style={{ flex: 1, marginRight: "10px" }}>
-                <Input
-                  {...register("fromDate", {
-                    required: "Date is required",
-                    validate: {
-                      validDate: (value) => {
-                        if (!value) return "Date is required";
+    <>
+      <LeftBox>
+        <Button onClick={() => navigate(-1)} id="back-btn">
+          Back
+        </Button>
+      </LeftBox>
+      <Container>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ListingTitle>Modify Booking:</ListingTitle>
+          <br />
+          <SectionTitle>Dates: </SectionTitle>
+          <div style={{ display: "flex" }}>
+            <div style={{ flex: 1, marginRight: "10px" }}>
+              <SubTitle>From:</SubTitle>
+              <div style={{ display: "flex" }}>
+                <div style={{ flex: 1, marginRight: "10px" }}>
+                  <Input
+                    {...register("fromDate", {
+                      required: "Date is required",
+                      validate: {
+                        validDate: (value) => {
+                          if (!value) return "Date is required";
 
-                        //check if the date is in the "mm/dd/yyyy" format
-                        if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
-                          return "Invalid date format (mm/dd/yyyy)";
-                        }
-                        if (!isDateValid(value)) return "Invalid date";
-                        // Check if it's in the future
-                        //if (new Date(value) <= new Date())
-                        //  return "Date must be in the future";
-                        return true;
+                          //check if the date is in the "mm/dd/yyyy" format
+                          if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+                            return "Invalid date format (mm/dd/yyyy)";
+                          }
+                          if (!isDateValid(value)) return "Invalid date";
+                          // Check if it's in the future
+                          //if (new Date(value) <= new Date())
+                          //  return "Date must be in the future";
+                          return true;
+                        },
                       },
-                    },
-                  })}
-                  type="text"
-                  placeholder="mm/dd/yyyy"
-                  style={{ color: "black" }}
-                  defaultValue={new Date(roomData.startDate).toLocaleDateString(
-                    "en-US",
-                    { year: "numeric", month: "2-digit", day: "2-digit" }
+                    })}
+                    type="text"
+                    placeholder="mm/dd/yyyy"
+                    style={{ color: "black" }}
+                    defaultValue={new Date(
+                      roomData.startDate
+                    ).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })}
+                    readOnly
+                  />
+                  {errors.fromDate && (
+                    <ErrorMessage className="error-text">
+                      <span>{errors.fromDate.message.toString()}</span>
+                    </ErrorMessage>
                   )}
-                  readOnly
-                />
-                {errors.fromDate && (
-                  <ErrorMessage className="error-text">
-                    <span>{errors.fromDate.message.toString()}</span>
-                  </ErrorMessage>
-                )}
+                </div>
+              </div>
+            </div>
+            <div style={{ flex: 1 }}>
+              <SubTitle>To:</SubTitle>
+              <div style={{ display: "flex" }}>
+                <div style={{ flex: 1, marginRight: "10px" }}>
+                  <Input
+                    {...register("toDate", {
+                      required: "Date is required",
+                      validate: {
+                        validDate: (value) => {
+                          if (!value) return "Date is required";
+
+                          //check if the date is in the "mm/dd/yyyy" format
+                          if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+                            return "Invalid date format (mm/dd/yyyy)";
+                          }
+                          // Check if it's a valid date
+                          if (!isDateValid(value)) return "Invalid date";
+                          // Check if it's in the future
+                          if (new Date(value) <= new Date())
+                            return "Date must be in the future";
+                          // Check if it's after fromDate
+                          if (
+                            new Date(value) <= new Date(getValues("fromDate"))
+                          )
+                            return "Date must be after From Date";
+                          return true;
+                        },
+                      },
+                    })}
+                    type="text"
+                    placeholder="mm/dd/yyyy"
+                    style={{ color: "black" }}
+                    defaultValue={new Date(roomData.endDate).toLocaleDateString(
+                      "en-US",
+                      { year: "numeric", month: "2-digit", day: "2-digit" }
+                    )}
+                    readOnly
+                  />
+                  {errors.toDate && (
+                    <ErrorMessage className="error-text">
+                      <span>{errors.toDate.message.toString()}</span>
+                    </ErrorMessage>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-          <div style={{ flex: 1 }}>
-            <SubTitle>To:</SubTitle>
-            <div style={{ display: "flex" }}>
-              <div style={{ flex: 1, marginRight: "10px" }}>
-                <Input
-                  {...register("toDate", {
-                    required: "Date is required",
-                    validate: {
-                      validDate: (value) => {
-                        if (!value) return "Date is required";
 
-                        //check if the date is in the "mm/dd/yyyy" format
-                        if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
-                          return "Invalid date format (mm/dd/yyyy)";
-                        }
-                        // Check if it's a valid date
-                        if (!isDateValid(value)) return "Invalid date";
-                        // Check if it's in the future
-                        if (new Date(value) <= new Date())
-                          return "Date must be in the future";
-                        // Check if it's after fromDate
-                        if (new Date(value) <= new Date(getValues("fromDate")))
-                          return "Date must be after From Date";
-                        return true;
-                      },
-                    },
-                  })}
-                  type="text"
-                  placeholder="mm/dd/yyyy"
-                  style={{ color: "black" }}
-                  defaultValue={new Date(roomData.endDate).toLocaleDateString(
-                    "en-US",
-                    { year: "numeric", month: "2-digit", day: "2-digit" }
-                  )}
-                  readOnly
-                />
-                {errors.toDate && (
-                  <ErrorMessage className="error-text">
-                    <span>{errors.toDate.message.toString()}</span>
-                  </ErrorMessage>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+          <br />
 
-        <br />
-
-        <SectionTitle>Number of Guests:</SectionTitle>
-        <Input
-          {...register("guests", {
-            valueAsNumber: true,
-            min: {
-              value: 1,
-              message: "Number of Guests must be greater than 0",
-            },
-            required: "Number of Guests is required",
-          })}
-          type="number"
-          style={{ color: "black" }}
-          defaultValue={numGuests}
-        />
-        {errors.guests && (
-          <ErrorMessage className="error-text">
-            <span>{errors.guests.message.toString()}</span>
-          </ErrorMessage>
-        )}
-
-        <br />
-        <br />
-
-        <CenteredButtonContainer>
-          {errors.datesAvailable && (
+          <SectionTitle>Number of Guests:</SectionTitle>
+          <Input
+            {...register("guests", {
+              valueAsNumber: true,
+              min: {
+                value: 1,
+                message: "Number of Guests must be greater than 0",
+              },
+              required: "Number of Guests is required",
+            })}
+            type="number"
+            style={{ color: "black" }}
+            defaultValue={numGuests}
+          />
+          {errors.guests && (
             <ErrorMessage className="error-text">
-              <span>{errors.datesAvailable.message.toString()}</span>
+              <span>{errors.guests.message.toString()}</span>
             </ErrorMessage>
           )}
-          <SubmitButton type="submit">
-            {isFetching ? <Ellipsis color="white" size={30} /> : "Update"}
-          </SubmitButton>
-        </CenteredButtonContainer>
-      </form>
-    </Container>
+
+          <br />
+          <br />
+
+          <CenteredButtonContainer>
+            {errors.datesAvailable && (
+              <ErrorMessage className="error-text">
+                <span>{errors.datesAvailable.message.toString()}</span>
+              </ErrorMessage>
+            )}
+            <SubmitButton type="submit">
+              {isFetching ? <Ellipsis color="white" size={30} /> : "Update"}
+            </SubmitButton>
+          </CenteredButtonContainer>
+        </form>
+      </Container>
+    </>
   );
 }
 
