@@ -157,7 +157,7 @@ def bookings():
             # exp_month = request.form['exp_month']
             # exp_year = request.form['exp_year']
             # cvc = request.form['cvc']
-            totalPrice = int(data['totalPrice']) * 100  # Convert amount to cents
+            totalPrice = int(data['totalPrice'] * 100)  # Convert amount to cents
             pointsUsed = int(data['pointsUsed'])  # Points used in the booking
             rewardPointsEarned = int(data['rewardPointsEarned'])  # Points earned from booking
             # Check if the user has enough rewardPoints to cover the pointsUsed
