@@ -21,6 +21,5 @@ export function getMyBooking() {
 }
 
 export function getUserInfo() {
-  fetch(`${SERVER_URL}/update_reward_points`, { method: "POST" });
   return fetch(`${SERVER_URL}/user`).then((response) => response.json());
 }

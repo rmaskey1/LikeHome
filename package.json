@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "chromedriver": "^118.0.1",
+    "date-fns": "^2.30.0",
     "geckodriver": "^4.2.1",
     "react": "^18.2.0",
     "react-hook-form": "^7.47.0",

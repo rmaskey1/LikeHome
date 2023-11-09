@@ -5,6 +5,7 @@ import React, { useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Ellipsis } from "react-spinners-css";
 import { useQuery } from "react-query";
+import { format, parse } from "date-fns";
 
 const Container = styled.main`
   width: 100vw;
@@ -256,16 +257,15 @@ const ErrorMessageArea = styled.div`
 function BookingForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const pointsUsed = 100; //temp variable for points used
   const isCancelRoute = window.location.pathname.includes("/cancel");
   const { roomData, numGuests } = location.state;
   const [isFetching, setIsFetching] = useState(false);
   const [serverError, setServerError] = useState({ status: 0, message: "" });
-  const [cardNumber, setCardNumber] = useState("");
-  const [expirationDate, setExpirationDate] = useState("");
-  const [cvc, setCVC] = useState("");
+  const [cardNumber, setCardNumber] = useState("4242424242424242");
+  const [expirationDate, setExpirationDate] = useState("12/34");
+  const [cvc, setCVC] = useState("121");
   const applyInputRef = useRef(null);
-  const [appliedPoints, setAppliedPoints] = useState(0);
+  const [pointsUsed, setPointsUsed] = useState(0);
 
   const { isLoading: isUserInfoLoading, data: userInfo } = useQuery(
     ["userinfo"],
@@ -281,12 +281,13 @@ function BookingForm() {
   const nights = Math.floor(
     (new Date(roomData.endDate).getTime() -
       new Date(roomData.startDate).getTime()) /
-    (24 * 3600 * 1000)
+      (24 * 3600 * 1000)
   );
   const subtotal = roomData.price * nights;
   const tax = subtotal * 0.08;
-  const total = subtotal + tax - appliedPoints / 10;
+  const total = subtotal + tax - pointsUsed / 10;
   const rewardPointsEarned = Math.floor(total * 0.5);
+  console.log(rewardPointsEarned);
 
   let dollarString = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -315,12 +316,17 @@ function BookingForm() {
   const year = parseInt(checkInDateParts[1]);
 
   const checkInDate = new Date(year, month, day);
-  const currentDate = new Date(); //2024, 10, 11 Mmonths are 0-indexed (10 represents November).
+  const currentDate = new Date(); //2023, 10, 11 Mmonths are 0-indexed (10 represents November).
 
-  const threeDaysPrior = (date1, date2) => {
-    const hoursDifference = Math.abs(date1 - date2) / 36e5;
+  console.log("checkindate", checkInDate);
+  console.log("currentdate", currentDate);
+
+  const threeDaysPrior = (currentDate, checkInDate) => {
+    const hoursDifference = Math.abs(currentDate - checkInDate) / 36e5;
     return hoursDifference <= 72;
   };
+
+  console.log("3 days", threeDaysPrior(currentDate, checkInDate));
 
   const getCancellationFee = () => {
     if (isCancelRoute && threeDaysPrior(currentDate, checkInDate)) {
@@ -332,9 +338,20 @@ function BookingForm() {
 
   const onSubmit = async (formData) => {
     if (isCancelRoute) {
-      setIsFetching(true);
+      //calculating cancellation fee
+      const cancellationFee = getCancellationFee();
+
+      //request body with the cancellation fee
+      const body = {
+        cancellationFee: cancellationFee,
+      };
+
       const response = await fetch(`${SERVER_URL}/bookings/${roomData.rid}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body), //including cancellation fee in the request body
       });
       const data = await response.json();
       console.log(response.status, data);
@@ -351,10 +368,11 @@ function BookingForm() {
         endDate: roomData.endDate,
         numGuest: numGuests,
         totalPrice: total,
-        pointsUsed: pointsUsed,
+        pointsUsed,
         cardNumber: cardNumber,
         expirationDate: expirationDate,
         cvc: cvc,
+        rewardPointsEarned,
       };
       setIsFetching(true);
       const response = await fetch(
@@ -374,22 +392,7 @@ function BookingForm() {
 
       if (response.ok) {
         if (data.error) setServerError({ ...serverError, message: data.error });
-        else {
-          const formData = new FormData();
-          console.log(userInfo.rewardPoints, rewardPointsEarned);
-          formData.append(
-            "rewardPoints",
-            userInfo.rewardPoints + rewardPointsEarned
-          );
-          fetch(`${SERVER_URL}/reward`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: formData,
-          });
-          navigate("success");
-        }
+        else navigate("success");
       }
       setIsFetching(false);
     }
@@ -401,7 +404,7 @@ function BookingForm() {
       if (value > userInfo.rewardPoints) {
         alert("You cannot apply reward points greater than that you own");
       } else {
-        setAppliedPoints(value);
+        setPointsUsed(value);
       }
     }
   };
@@ -503,107 +506,128 @@ function BookingForm() {
             </div>
           )}
 
-          <div>
-            <Payment>Payment</Payment>
+          {!isCancelRoute && (
+            <div>
+              <Payment>Payment</Payment>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <FieldName>Card Number</FieldName>
+                <Input1
+                  {...register("cardNumber", {
+                    required: "Card Number is required",
+                    valueAsNumber: true,
+                  })}
+                  style={{ color: "black" }}
+                  name="cardNumber"
+                  value={cardNumber}
+                  onChange={(e) => setCardNumber(e.target.value)}
+                />
+                {errors.cardNumber && (
+                  <ErrorText className="error-text">
+                    <span>{errors.cardNumber.message.toString()}</span>
+                  </ErrorText>
+                )}
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <FieldName>Card Number</FieldName>
-              <Input1
-                {...register("cardNumber", {
-                  required: "Card Number is required",
-                  valueAsNumber: true,
-                })}
-                type="number"
-                style={{ color: "black" }}
-                name="cardNumber"
-                value={cardNumber}
-                onChange={(e) => setCardNumber(e.target.value)}
-              />
-              {errors.cardNumber && (
-                <ErrorText className="error-text">
-                  <span>{errors.cardNumber.message.toString()}</span>
-                </ErrorText>
-              )}
-
-              <div style={{ display: "flex" }}>
-                <div style={{ flex: 1, marginRight: "10px" }}>
-                  <FieldName>Expiration Date</FieldName>
-                  <Input2
-                    {...register("expirationDate", {
-                      required: "Expiration date is required",
-                      validate: {
-                        validName: (value) => {
-                          // Check if the date is in the "mm/yy" format
-                          if (!/^\d{2}\/\d{2}$/.test(value)) {
-                            return "Invalid date format (mm/yy)";
-                          }
+                <div style={{ display: "flex" }}>
+                  <div style={{ flex: 1, marginRight: "10px" }}>
+                    <FieldName>Expiration Date</FieldName>
+                    <Input2
+                      {...register("expirationDate", {
+                        required: "Expiration date is required",
+                        validate: {
+                          validName: (value) => {
+                            // Check if the date is in the "mm/yy" format
+                            if (!/^\d{2}\/\d{2}$/.test(value)) {
+                              return "Invalid date format (mm/yy)";
+                            }
+                          },
                         },
-                      },
-                    })}
-                    type="text"
-                    style={{ color: "black" }}
-                    name="expirationDate"
-                    value={expirationDate}
-                    onChange={(e) => setExpirationDate(e.target.value)}
-                  />
-                  {errors.expirationDate && (
-                    <ErrorText className="error-text">
-                      <span>{errors.expirationDate.message.toString()}</span>
-                    </ErrorText>
-                  )}
+                      })}
+                      type="text"
+                      style={{ color: "black" }}
+                      name="expirationDate"
+                      value={expirationDate}
+                      onChange={(e) => setExpirationDate(e.target.value)}
+                    />
+                    {errors.expirationDate && (
+                      <ErrorText className="error-text">
+                        <span>{errors.expirationDate.message.toString()}</span>
+                      </ErrorText>
+                    )}
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <CVC>CVC</CVC>
+                    <Input3
+                      {...register("cvc", {
+                        valueAsNumber: true,
+                        required: "CVC is required",
+                        validate: {
+                          validName: (value) => {
+                            // Check if CVC has between 3 and 4 digits
+                            if (!/^\d{3,4}$/.test(value)) {
+                              return "Input must be between 3 and 4 digits.";
+                            }
+                          },
+                        },
+                      })}
+                      style={{ color: "black" }}
+                      name="cvc"
+                      value={cvc}
+                      onChange={(e) => setCVC(e.target.value)}
+                    />
+                    {errors.cvc && (
+                      <ErrorText2 className="error-text">
+                        <span>{errors.cvc.message.toString()}</span>
+                      </ErrorText2>
+                    )}
+                  </div>
                 </div>
 
-                <div style={{ flex: 1 }}>
-                  <CVC>CVC</CVC>
-                  <Input3
-                    {...register("cvc", {
-                      valueAsNumber: true,
-                      required: "CVC is required",
-                      validate: {
-                        validName: (value) => {
-                          // Check if CVC has between 3 and 4 digits
-                          if (!/^\d{3,4}$/.test(value)) {
-                            return "Input must be between 3 and 4 digits.";
-                          }
-                        },
-                      },
-                    })}
-                    style={{ color: "black" }}
-                    name="cvc"
-                    onChange={(e) => setCVC(e.target.value)}
-                  />
-                  {errors.cvc && (
-                    <ErrorText2 className="error-text">
-                      <span>{errors.cvc.message.toString()}</span>
-                    </ErrorText2>
+                {serverError && (
+                  <ErrorText2 className="error-text">
+                    <span>{serverError.message}</span>
+                  </ErrorText2>
+                )}
+                <SubmitButton type="submit">
+                  {isCancelRoute ? (
+                    "Cancel Booking"
+                  ) : isFetching ? (
+                    <Ellipsis color="white" size={30} />
+                  ) : (
+                    "Pay & Reserve"
                   )}
-                </div>
-              </div>
-
-              {isCancelRoute && getCancellationFee() === 0 && (
+                </SubmitButton>
+              </form>
+            </div>
+          )}
+          {isCancelRoute && (
+            <div
+              style={{
+                padding: "22px 0 30px 0",
+                width: "500px ",
+              }}
+            >
+              <InfoTitle>Cancellation Within 3 Days Refund Policy:</InfoTitle>
+              {threeDaysPrior(currentDate, checkInDate) ? (
+                <>
+                  <InfoText>
+                    Only a partial refund will be provided due to cancellation
+                    within 3 days. The refund is calculated by the formula:
+                    total reservation price - cancellation fee.
+                  </InfoText>
+                </>
+              ) : (
                 <NoFeeContainer>
                   <NoFee>
                     No cancellation fees are charged for your request.
                   </NoFee>
                 </NoFeeContainer>
               )}
-
-              {serverError && (
-                <ErrorText2 className="error-text">
-                  <span>{serverError.message}</span>
-                </ErrorText2>
-              )}
-              <SubmitButton type="submit">
-                {isCancelRoute ? (
-                  "Cancel Booking"
-                ) : isFetching ? (
-                  <Ellipsis color="white" size={30} />
-                ) : (
-                  "Pay & Reserve"
-                )}
-              </SubmitButton>
-            </form>
-          </div>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <SubmitButton type="submit"> Cancel Booking</SubmitButton>
+              </form>
+            </div>
+          )}
         </LeftSide>
 
         <RightSide>
@@ -632,7 +656,7 @@ function BookingForm() {
                 </CostAndAmount>
                 <CostAndAmount>
                   <div>Discount from points</div>
-                  <Amount>-{dollarString.format(appliedPoints / 10)}</Amount>
+                  <Amount>-{dollarString.format(pointsUsed / 10)}</Amount>
                 </CostAndAmount>
               </>
             )}
