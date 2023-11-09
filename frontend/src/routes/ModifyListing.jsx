@@ -13,6 +13,22 @@ const Container = styled.main`
   padding: 20px;
 `;
 
+const LeftBox = styled.div`
+  margin-top: 40px;
+  margin-left: 50px;
+  display: flex;
+  justify-content: flex-start; /* Align items to the left */
+  align-items: center; /* Center vertically */
+  margin-bottom: 20px; /* Add some spacing from the form */
+`;
+
+const Button = styled.button`
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+`;
+
 const ListingTitle = styled.div`
   font-size: 28px;
   font-weight: 700;
@@ -139,19 +155,19 @@ function ModifyListing() {
     bedType: roominfo.bedType,
     image: roominfo.imageUrl,
     amenities: [
-      { freeWifi: roominfo.Amenities.includes("freeWifi") },
+      { freewifi: roominfo.Amenities.includes("freewifi") },
       { pool: roominfo.Amenities.includes("pool") },
       { tv: roominfo.Amenities.includes("tv") },
-      { freeWasherInUnit: roominfo.Amenities.includes("freeWasherInUnit") },
-      { freeDryerInUnit: roominfo.Amenities.includes("freeDryerInUnit") },
-      { freeParking: roominfo.Amenities.includes("freeParking") },
-      { airConditioning: roominfo.Amenities.includes("airConditioning") },
-      { freeBreakfast: roominfo.Amenities.includes("freeBreakfast") },
-      { freeLunch: roominfo.Amenities.includes("freeLunch") },
-      { freeDinner: roominfo.Amenities.includes("freeDinner") },
+      { freewasherinunit: roominfo.Amenities.includes("freewasherinunit") },
+      { freedryerinunit: roominfo.Amenities.includes("freedryerinunit") },
+      { freeparking: roominfo.Amenities.includes("freeparking") },
+      { airconditioning: roominfo.Amenities.includes("airconditioning") },
+      { freebreakfast: roominfo.Amenities.includes("freebreakfast") },
+      { freelunch: roominfo.Amenities.includes("freelunch") },
+      { freedinner: roominfo.Amenities.includes("freedinner") },
       { microwave: roominfo.Amenities.includes("microwave") },
       { refrigerator: roominfo.Amenities.includes("refrigerator") },
-      { petFriendly: roominfo.Amenities.includes("petFriendly") },
+      { petfriendly: roominfo.Amenities.includes("petfriendly") },
       { spa: roominfo.Amenities.includes("spa") },
     ],
   };
@@ -181,464 +197,492 @@ function ModifyListing() {
     console.log(response.status, data);
 
     if (response.ok) {
-      navigate(location.pathname.replace("/modify", ""), {state: response.status});
+      navigate(location.pathname.replace("/modify", ""), {
+        state: response.status,
+      });
     }
   };
 
   return (
-    <Container>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <ListingTitle>Modify listing</ListingTitle>
-        <SectionTitle>Basic Information</SectionTitle>
-        <SubTitle>Price:</SubTitle>
-        <Input
-          {...register("price", {
-            valueAsNumber: true,
-            min: { value: 0, message: "Price must be non-negative" },
-            required: "Price is required",
-          })}
-          type="number"
-          style={{ color: "black" }}
-          defaultValue={existingData.price}
-          id="price-field"
-        />
-        {errors.price && (
-          <ErrorMessage className="error-text">
-            <span id="price-error">{errors.price.message.toString()}</span>
-          </ErrorMessage>
-        )}
-        <br />
-        <br />
-        <SectionTitle>Available Dates</SectionTitle>
-        <div style={{ display: "flex" }}>
-          <div style={{ flex: 1, marginRight: "10px" }}>
-            <SubTitle>From:</SubTitle>
-            <div style={{ display: "flex" }}>
-              <div style={{ flex: 1, marginRight: "10px" }}>
-                <Input
-                  {...register("fromDate", {
-                    required: "Date is required",
-                    validate: {
-                      validDate: (value) => {
-                        if (!value) return "Date is required";
+    <>
+      <LeftBox>
+        <Button onClick={() => navigate(-1)} id="back-btn">
+          Back
+        </Button>
+      </LeftBox>
+      <Container>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ListingTitle>Modify listing</ListingTitle>
+          <SectionTitle>Basic Information</SectionTitle>
+          <SubTitle>Price:</SubTitle>
+          <Input
+            {...register("price", {
+              valueAsNumber: true,
+              min: { value: 0, message: "Price must be non-negative" },
+              required: "Price is required",
+            })}
+            type="number"
+            style={{ color: "black" }}
+            defaultValue={existingData.price}
+            id="price-field"
+          />
+          {errors.price && (
+            <ErrorMessage className="error-text">
+              <span id="price-error">{errors.price.message.toString()}</span>
+            </ErrorMessage>
+          )}
+          <br />
+          <br />
+          <SectionTitle>Available Dates</SectionTitle>
+          <div style={{ display: "flex" }}>
+            <div style={{ flex: 1, marginRight: "10px" }}>
+              <SubTitle>From:</SubTitle>
+              <div style={{ display: "flex" }}>
+                <div style={{ flex: 1, marginRight: "10px" }}>
+                  <Input
+                    {...register("fromDate", {
+                      required: "Date is required",
+                      validate: {
+                        validDate: (value) => {
+                          if (!value) return "Date is required";
 
-                        //check if the date is in the "mm/dd/yyyy" format
-                        if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
-                          return "Invalid date format (mm/dd/yyyy)";
-                        }
-                        if (!isDateValid(value)) return "Invalid date";
-                        // Check if it's in the future
-                        //if (new Date(value) <= new Date())
-                        //  return "Date must be in the future";
-                        return true;
+                          //check if the date is in the "mm/dd/yyyy" format
+                          if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+                            return "Invalid date format (mm/dd/yyyy)";
+                          }
+                          if (!isDateValid(value)) return "Invalid date";
+                          // Check if it's in the future
+                          //if (new Date(value) <= new Date())
+                          //  return "Date must be in the future";
+                          return true;
+                        },
                       },
-                    },
-                  })}
-                  type="text"
-                  placeholder="mm/dd/yyyy"
-                  style={{ color: "black" }}
-                  defaultValue={existingData.fromDate}
-                  id="fromDate-field"
-                />
-                {errors.fromDate && (
-                  <ErrorMessage className="error-text">
-                    <span id="fromDate-error">{errors.fromDate.message.toString()}</span>
-                  </ErrorMessage>
-                )}
+                    })}
+                    type="text"
+                    placeholder="mm/dd/yyyy"
+                    style={{ color: "black" }}
+                    defaultValue={existingData.fromDate}
+                    id="fromDate-field"
+                  />
+                  {errors.fromDate && (
+                    <ErrorMessage className="error-text">
+                      <span id="fromDate-error">
+                        {errors.fromDate.message.toString()}
+                      </span>
+                    </ErrorMessage>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div style={{ flex: 1 }}>
+              <SubTitle>To:</SubTitle>
+              <div style={{ display: "flex" }}>
+                <div style={{ flex: 1, marginRight: "10px" }}>
+                  <Input
+                    {...register("toDate", {
+                      required: "Date is required",
+                      validate: {
+                        validDate: (value) => {
+                          if (!value) return "Date is required";
+
+                          //check if the date is in the "mm/dd/yyyy" format
+                          if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+                            return "Invalid date format (mm/dd/yyyy)";
+                          }
+                          // Check if it's a valid date
+                          if (!isDateValid(value)) return "Invalid date";
+                          // Check if it's in the future
+                          if (new Date(value) <= new Date())
+                            return "Date must be in the future";
+                          // Check if it's after fromDate
+                          if (
+                            new Date(value) <= new Date(getValues("fromDate"))
+                          )
+                            return "Date must be after From Date";
+                          return true;
+                        },
+                      },
+                    })}
+                    type="text"
+                    placeholder="mm/dd/yyyy"
+                    style={{ color: "black" }}
+                    defaultValue={existingData.toDate}
+                    id="toDate-field"
+                  />
+                  {errors.toDate && (
+                    <ErrorMessage className="error-text">
+                      <span id="toDate-error">
+                        {errors.toDate.message.toString()}
+                      </span>
+                    </ErrorMessage>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-          <div style={{ flex: 1 }}>
-            <SubTitle>To:</SubTitle>
-            <div style={{ display: "flex" }}>
-              <div style={{ flex: 1, marginRight: "10px" }}>
-                <Input
-                  {...register("toDate", {
-                    required: "Date is required",
-                    validate: {
-                      validDate: (value) => {
-                        if (!value) return "Date is required";
-
-                        //check if the date is in the "mm/dd/yyyy" format
-                        if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
-                          return "Invalid date format (mm/dd/yyyy)";
-                        }
-                        // Check if it's a valid date
-                        if (!isDateValid(value)) return "Invalid date";
-                        // Check if it's in the future
-                        if (new Date(value) <= new Date())
-                          return "Date must be in the future";
-                        // Check if it's after fromDate
-                        if (new Date(value) <= new Date(getValues("fromDate")))
-                          return "Date must be after From Date";
-                        return true;
-                      },
-                    },
-                  })}
-                  type="text"
-                  placeholder="mm/dd/yyyy"
-                  style={{ color: "black" }}
-                  defaultValue={existingData.toDate}
-                  id="toDate-field"
-                />
-                {errors.toDate && (
-                  <ErrorMessage className="error-text">
-                    <span id="toDate-error">{errors.toDate.message.toString()}</span>
-                  </ErrorMessage>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        <br />
-        <SectionTitle>Room Details</SectionTitle>
-        <div style={{ display: "flex" }}>
-          <div style={{ flex: 1, marginRight: "10px" }}>
-            <SubTitle>Number of Beds:</SubTitle>
-            <Input
-              {...register("beds", {
-                valueAsNumber: true,
-                min: {
-                  value: 0,
-                  message: "Number of Beds must be non-negative",
-                },
-                required: "Number of Beds is required",
-              })}
-              type="number"
-              style={{ color: "black" }}
-              defaultValue={existingData.beds}
-              id="beds-field"
-            />
-            {errors.beds && (
-              <ErrorMessage className="error-text">
-                <span id="beds-error">{errors.beds.message.toString()}</span>
-              </ErrorMessage>
-            )}
-          </div>
-          <div style={{ flex: 1 }}>
-            <SubTitle>Bed Type:</SubTitle>
-            <Input
-              {...register("bedType", {
-                required: "Bed Type is required",
-                validate: {
-                  validName: (value) => {
-                    if (!isLetter(value)) {
-                      return "Only letters are allowed";
-                    }
-                    return true;
+          <br />
+          <SectionTitle>Room Details</SectionTitle>
+          <div style={{ display: "flex" }}>
+            <div style={{ flex: 1, marginRight: "10px" }}>
+              <SubTitle>Number of Beds:</SubTitle>
+              <Input
+                {...register("beds", {
+                  valueAsNumber: true,
+                  min: {
+                    value: 0,
+                    message: "Number of Beds must be non-negative",
                   },
-                },
-              })}
-              type="text"
-              style={{ color: "black" }}
-              defaultValue={existingData.bedType}
-              id="bedType-field"
-            />
-            {errors.bedType && (
-              <ErrorMessage className="error-text">
-                <span id="bedType-error">{errors.bedType.message.toString()}</span>
-              </ErrorMessage>
-            )}
+                  required: "Number of Beds is required",
+                })}
+                type="number"
+                style={{ color: "black" }}
+                defaultValue={existingData.beds}
+                id="beds-field"
+              />
+              {errors.beds && (
+                <ErrorMessage className="error-text">
+                  <span id="beds-error">{errors.beds.message.toString()}</span>
+                </ErrorMessage>
+              )}
+            </div>
+            <div style={{ flex: 1 }}>
+              <SubTitle>Bed Type:</SubTitle>
+              <Input
+                {...register("bedType", {
+                  required: "Bed Type is required",
+                  validate: {
+                    validName: (value) => {
+                      if (!isLetter(value)) {
+                        return "Only letters are allowed";
+                      }
+                      return true;
+                    },
+                  },
+                })}
+                type="text"
+                style={{ color: "black" }}
+                defaultValue={existingData.bedType}
+                id="bedType-field"
+              />
+              {errors.bedType && (
+                <ErrorMessage className="error-text">
+                  <span id="bedType-error">
+                    {errors.bedType.message.toString()}
+                  </span>
+                </ErrorMessage>
+              )}
+            </div>
           </div>
-        </div>
-        <div style={{ display: "flex" }}>
-          <div style={{ flex: 1, marginRight: "10px" }}>
-            <SubTitle>Number of Guests:</SubTitle>
-            <Input
-              {...register("guests", {
-                valueAsNumber: true,
-                min: {
-                  value: 1,
-                  message: "Number of Guests must be greater than 0",
-                },
-                required: "Number of Guests is required",
-              })}
-              type="number"
-              style={{ color: "black" }}
-              defaultValue={existingData.guests}
-              id="guests-field"
-            />
-            {errors.guests && (
-              <ErrorMessage className="error-text">
-                <span id="guests-error">{errors.guests.message.toString()}</span>
-              </ErrorMessage>
-            )}
+          <div style={{ display: "flex" }}>
+            <div style={{ flex: 1, marginRight: "10px" }}>
+              <SubTitle>Number of Guests:</SubTitle>
+              <Input
+                {...register("guests", {
+                  valueAsNumber: true,
+                  min: {
+                    value: 1,
+                    message: "Number of Guests must be greater than 0",
+                  },
+                  required: "Number of Guests is required",
+                })}
+                type="number"
+                style={{ color: "black" }}
+                defaultValue={existingData.guests}
+                id="guests-field"
+              />
+              {errors.guests && (
+                <ErrorMessage className="error-text">
+                  <span id="guests-error">
+                    {errors.guests.message.toString()}
+                  </span>
+                </ErrorMessage>
+              )}
+            </div>
+            <div style={{ flex: 1 }}>
+              <SubTitle>Number of Bathrooms:</SubTitle>
+              <Input
+                {...register("bathrooms", {
+                  valueAsNumber: true,
+                  min: {
+                    value: 0,
+                    message: "Number of Bathrooms must be non-negative",
+                  },
+                  required: "Number of Bathrooms is required",
+                })}
+                type="number"
+                style={{ color: "black" }}
+                defaultValue={existingData.bathrooms}
+                id="bathrooms-field"
+              />
+              {errors.bathrooms && (
+                <ErrorMessage className="error-text">
+                  <span id="bathrooms-error">
+                    {errors.bathrooms.message.toString()}
+                  </span>
+                </ErrorMessage>
+              )}
+            </div>
           </div>
-          <div style={{ flex: 1 }}>
-            <SubTitle>Number of Bathrooms:</SubTitle>
-            <Input
-              {...register("bathrooms", {
-                valueAsNumber: true,
-                min: {
-                  value: 0,
-                  message: "Number of Bathrooms must be non-negative",
-                },
-                required: "Number of Bathrooms is required",
-              })}
-              type="number"
-              style={{ color: "black" }}
-              defaultValue={existingData.bathrooms}
-              id="bathrooms-field"
-            />
-            {errors.bathrooms && (
-              <ErrorMessage className="error-text">
-                <span id="bathrooms-error">{errors.bathrooms.message.toString()}</span>
-              </ErrorMessage>
-            )}
-          </div>
-        </div>
 
-        <SubTitle>URL of Image:</SubTitle>
-        <Input
-          {...register("image", {
-            required: "Image URL is required",
-          })}
-          type="url"
-          style={{ color: "black" }}
-          defaultValue={existingData.image}
-          id="imageUrl-field"
-        />
-        {errors.image && (
-          <ErrorMessage id="image-error">{errors.image.message.toString()}</ErrorMessage>
-        )}
+          <SubTitle>URL of Image:</SubTitle>
+          <Input
+            {...register("image", {
+              required: "Image URL is required",
+            })}
+            type="url"
+            style={{ color: "black" }}
+            defaultValue={existingData.image}
+            id="imageUrl-field"
+          />
+          {errors.image && (
+            <ErrorMessage id="image-error">
+              {errors.image.message.toString()}
+            </ErrorMessage>
+          )}
 
-        <br />
-        <br />
-        <SectionTitle>Amenities Offered</SectionTitle>
-        <CheckboxGroup>
-          <CheckboxItem>
-            <Label>
-              <Controller
-                name="amenities[0].freeWifi"
-                control={control}
-                defaultValue={existingData.amenities[0].freeWifi}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[0].freeWifi}
-                  />
-                )}
-              />
-              Free Wifi
-            </Label>
-            <Label>
-              <Controller
-                  id="pool-box"
-                name="amenities[1].pool"
-                control={control}
-                defaultValue={existingData.amenities[1].pool}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[1].pool}
-                  />
-                )}
-              />
-              Pool
-            </Label>
-            <Label>
-              <Controller
-                  id="tv-box"
-                name="amenities[2].tv"
-                control={control}
-                defaultValue={existingData.amenities[2].tv}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[2].tv}
-                  />
-                )}
-              />
-              TV
-            </Label>
-            <Label>
-              <Controller
-                  id="washer-box"
-                name="amenities[3].freeWasherInUnit"
-                control={control}
-                defaultValue={existingData.amenities[3].freeWasherInUnit}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[3].freeWasherInUnit}
-                  />
-                )}
-              />
-              Free washer - In unit
-            </Label>
-            <Label>
-              <Controller
-                  id="dryer-box"
-                name="amenities[4].freeDryerInUnit"
-                control={control}
-                defaultValue={existingData.amenities[4].freeDryerInUnit}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[4].freeDryerInUnit}
-                  />
-                )}
-              />
-              Free dryer - In unit
-            </Label>
-            <Label>
-              <Controller
-                  id="parking-box"
-                name="amenities[5].freeParking"
-                control={control}
-                defaultValue={existingData.amenities[5].freeParking}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[5].freeParking}
-                  />
-                )}
-              />
-              Free parking
-            </Label>
-            <Label>
-              <Controller
-                  id="ac-box"
-                name="amenities[6].airConditioning"
-                control={control}
-                defaultValue={existingData.amenities[6].airConditioning}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[6].airConditioning}
-                  />
-                )}
-              />
-              Air conditioning
-            </Label>
-          </CheckboxItem>
-          <CheckboxItem>
-            <Label>
-              <Controller
-                  id="breakfast-box"
-                name="amenities[7].freeBreakfast"
-                control={control}
-                defaultValue={existingData.amenities[7].freeBreakfast}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[7].freeBreakfast}
-                  />
-                )}
-              />
-              Free Breakfast
-            </Label>
-            <Label>
-              <Controller
-                  id="lunch-box"
-                name="amenities[8].freeLunch"
-                control={control}
-                defaultValue={existingData.amenities[8].freeLunch}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[8].freeLunch}
-                  />
-                )}
-              />
-              Free Lunch
-            </Label>
-            <Label>
-              <Controller
-                  id="dinner-box"
-                name="amenities[9].freeDinner"
-                control={control}
-                defaultValue={existingData.amenities[9].freeDinner}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[9].freeDinner}
-                  />
-                )}
-              />
-              Free Dinner
-            </Label>
-            <Label>
-              <Controller
-                  id="microwave-box"
-                name="amenities[10].microwave"
-                control={control}
-                defaultValue={existingData.amenities[10].microwave}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[10].microwave}
-                  />
-                )}
-              />
-              Microwave
-            </Label>
-            <Label>
-              <Controller
-                  id="refrigerator-box"
-                name="amenities[11].refrigerator"
-                control={control}
-                defaultValue={existingData.amenities[11].refrigerator}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[11].refrigerator}
-                  />
-                )}
-              />
-              Refrigerator
-            </Label>
-            <Label>
-              <Controller
-                  id="pet-box"
-                name="amenities[12].petFriendly"
-                control={control}
-                defaultValue={existingData.amenities[12].petFriendly}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[12].petFriendly}
-                  />
-                )}
-              />
-              Pet Friendly
-            </Label>
-            <Label>
-              <Controller
-                  id="spa-box"
-                name="amenities[13].spa"
-                control={control}
-                defaultValue={existingData.amenities[13].spa}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    type="checkbox"
-                    defaultChecked={existingData.amenities[13].spa}
-                  />
-                )}
-              />
-              Spa
-            </Label>
-          </CheckboxItem>
-        </CheckboxGroup>
-        <CenteredButtonContainer>
-          <SubmitButton id="submit-btn" type="submit">Save</SubmitButton>
-        </CenteredButtonContainer>
-      </form>
-    </Container>
+          <br />
+          <br />
+          <SectionTitle>Amenities Offered</SectionTitle>
+          <CheckboxGroup>
+            <CheckboxItem>
+              <Label>
+                <Controller
+                  name="amenities[0].freewifi"
+                  control={control}
+                  defaultValue={existingData.amenities[0].freewifi}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="freeWifi-box"
+                      type="checkbox"
+                      defaultChecked={existingData.amenities[0].freewifi}
+                    />
+                  )}
+                />
+                Free Wifi
+              </Label>
+              <Label>
+                <Controller
+                  name="amenities[1].pool"
+                  control={control}
+                  defaultValue={existingData.amenities[1].pool}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="pool-box"
+                      type="checkbox"
+                      defaultChecked={existingData.amenities[1].pool}
+                    />
+                  )}
+                />
+                Pool
+              </Label>
+              <Label>
+                <Controller
+                  name="amenities[2].tv"
+                  control={control}
+                  defaultValue={existingData.amenities[2].tv}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="tv-box"
+                      type="checkbox"
+                      defaultChecked={existingData.amenities[2].tv}
+                    />
+                  )}
+                />
+                TV
+              </Label>
+              <Label>
+                <Controller
+                  name="amenities[3].freewasherinunit"
+                  control={control}
+                  defaultValue={existingData.amenities[3].freewasherinunit}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="washer-box"
+                      type="checkbox"
+                      defaultChecked={
+                        existingData.amenities[3].freewasherinunit
+                      }
+                    />
+                  )}
+                />
+                Free washer - In unit
+              </Label>
+              <Label>
+                <Controller
+                  name="amenities[4].freedryerinunit"
+                  control={control}
+                  defaultValue={existingData.amenities[4].freedryerinunit}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="dryer-box"
+                      type="checkbox"
+                      defaultChecked={existingData.amenities[4].freedryerinunit}
+                    />
+                  )}
+                />
+                Free dryer - In unit
+              </Label>
+              <Label>
+                <Controller
+                  name="amenities[5].freeparking"
+                  control={control}
+                  defaultValue={existingData.amenities[5].freeparking}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="parking-box"
+                      type="checkbox"
+                      defaultChecked={existingData.amenities[5].freeparking}
+                    />
+                  )}
+                />
+                Free parking
+              </Label>
+              <Label>
+                <Controller
+                  name="amenities[6].airconditioning"
+                  control={control}
+                  defaultValue={existingData.amenities[6].airconditioning}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="ac-box"
+                      type="checkbox"
+                      defaultChecked={existingData.amenities[6].airconditioning}
+                    />
+                  )}
+                />
+                Air conditioning
+              </Label>
+            </CheckboxItem>
+            <CheckboxItem>
+              <Label>
+                <Controller
+                  name="amenities[7].freebreakfast"
+                  control={control}
+                  defaultValue={existingData.amenities[7].freebreakfast}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="breakfast-box"
+                      type="checkbox"
+                      defaultChecked={existingData.amenities[7].freebreakfast}
+                    />
+                  )}
+                />
+                Free Breakfast
+              </Label>
+              <Label>
+                <Controller
+                  name="amenities[8].freelunch"
+                  control={control}
+                  defaultValue={existingData.amenities[8].freelunch}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="lunch-box"
+                      type="checkbox"
+                      defaultChecked={existingData.amenities[8].freelunch}
+                    />
+                  )}
+                />
+                Free Lunch
+              </Label>
+              <Label>
+                <Controller
+                  name="amenities[9].freedinner"
+                  control={control}
+                  defaultValue={existingData.amenities[9].freedinner}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="dinner-box"
+                      type="checkbox"
+                      defaultChecked={existingData.amenities[9].freedinner}
+                    />
+                  )}
+                />
+                Free Dinner
+              </Label>
+              <Label>
+                <Controller
+                  name="amenities[10].microwave"
+                  control={control}
+                  defaultValue={existingData.amenities[10].microwave}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="microwave-box"
+                      type="checkbox"
+                      defaultChecked={existingData.amenities[10].microwave}
+                    />
+                  )}
+                />
+                Microwave
+              </Label>
+              <Label>
+                <Controller
+                  name="amenities[11].refrigerator"
+                  control={control}
+                  defaultValue={existingData.amenities[11].refrigerator}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="refrigerator-box"
+                      type="checkbox"
+                      defaultChecked={existingData.amenities[11].refrigerator}
+                    />
+                  )}
+                />
+                Refrigerator
+              </Label>
+              <Label>
+                <Controller
+                  name="amenities[12].petfriendly"
+                  control={control}
+                  defaultValue={existingData.amenities[12].petfriendly}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="pet-box"
+                      type="checkbox"
+                      defaultChecked={existingData.amenities[12].petfriendly}
+                    />
+                  )}
+                />
+                Pet Friendly
+              </Label>
+              <Label>
+                <Controller
+                  name="amenities[13].spa"
+                  control={control}
+                  defaultValue={existingData.amenities[13].spa}
+                  render={({ field }) => (
+                    <Checkbox
+                      {...field}
+                      id="spa-box"
+                      type="checkbox"
+                      defaultChecked={existingData.amenities[13].spa}
+                    />
+                  )}
+                />
+                Spa
+              </Label>
+            </CheckboxItem>
+          </CheckboxGroup>
+          <CenteredButtonContainer>
+            <SubmitButton id="submit-btn" type="submit">
+              Save
+            </SubmitButton>
+          </CenteredButtonContainer>
+        </form>
+      </Container>
+    </>
   );
 }
 

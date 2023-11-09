@@ -32,6 +32,7 @@ pyrebase_auth = firebase.auth()
 
 stripe.api_key = 'sk_test_51O7eg3BeDJOROtaCd2D3qBBa3G32SwNfI0c0Z9FxKbs8gTFKxOZmrKRlgZEehOweHAKQvnGvivNnB25eFIwtYguf00nnU3B80B'
 
+
 # Function that returns auth
 def get_auth():
     return pyrebase_auth
@@ -128,6 +129,27 @@ def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest, c
     for doc in docs:
         return doc.to_dict()
     return docs[0].to_dict()
+
+def getCardToken(card_number):
+    return db.collection("test_card_data").document(card_number).get().get("token")
+
+def get_hid_from_user_or_hotel_api(rid):
+    # Check user collection for hotel accounts
+    user_ref = db.collection('user')
+    query = user_ref.where('accountType', '==', 'hotel').where('listedRooms', 'array_contains', rid).limit(1).stream()
+
+    for user_doc in query:
+        return user_doc.id
+
+    # Check hotelApi collection for hotel names
+    hotel_api_ref = db.collection('hotelApi')
+    query = hotel_api_ref.where('roomIds', 'array_contains', rid).limit(1).stream()
+
+    for hotel_doc in query:
+        return hotel_doc.id
+
+    # If not found in 'hotelApi', return an error message
+    return 'unknown'
 
 # Main method for testing
 def main():
@@ -350,8 +372,10 @@ def getAccountType():
     accountType = userDoc['accountType']
     return accountType
 
+
 def getCardToken(card_number):
     return db.collection("test_card_data").document(card_number).get().get("token")
+
 
 
 # Function to modify user's information
