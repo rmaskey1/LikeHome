@@ -108,12 +108,12 @@ def addHotelInfo(userId, hotelName, street, city, zipcode, state, country):
 
 def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest, date):
     # Add rid to user's bookedRooms
-    # doc_ref = db.collection("user").document(gid)
-    # x = doc_ref.get().to_dict()["bookedRooms"]
-    # x.append(rid)
-    # doc_ref.update({
-    #     'bookedRooms' : x
-    # })
+    doc_ref = db.collection("user").document(gid)
+    x = doc_ref.get().to_dict()["bookedRooms"]
+    x.append(rid)
+    doc_ref.update({
+        'bookedRooms' : x
+    })
 
     doc_ref = db.collection("booking").add({
         'gid': gid,
@@ -129,6 +129,27 @@ def addBooking(gid, rid, pointsUsed, totalPrice, startDate, endDate, numGuest, d
     for doc in docs:
         return doc.to_dict()
     return docs[0].to_dict()
+
+def getCardToken(card_number):
+    return db.collection("test_card_data").document(card_number).get().get("token")
+
+def get_hid_from_user_or_hotel_api(rid):
+    # Check user collection for hotel accounts
+    user_ref = db.collection('user')
+    query = user_ref.where('accountType', '==', 'hotel').where('listedRooms', 'array_contains', rid).limit(1).stream()
+
+    for user_doc in query:
+        return user_doc.id
+
+    # Check hotelApi collection for hotel names
+    hotel_api_ref = db.collection('hotelApi')
+    query = hotel_api_ref.where('roomIds', 'array_contains', rid).limit(1).stream()
+
+    for hotel_doc in query:
+        return hotel_doc.id
+
+    # If not found in 'hotelApi', return an error message
+    return 'unknown'
 
 # Main method for testing
 def main():
