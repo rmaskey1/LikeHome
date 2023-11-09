@@ -183,7 +183,6 @@ function Profile() {
             <Content>{data.rewardPoints}</Content>
           </ProfileBox>
         )}
-
         {showDeleteConfirmation && (
           <DeleteAccountWarning
             onConfirm={handleConfirmDelete}
