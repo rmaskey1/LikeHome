@@ -1,9 +1,10 @@
-import { SERVER_URL } from "api";
+import { SERVER_URL, getUserInfo } from "api";
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams, Link, useLocation } from "react-router-dom";
 import { Ellipsis } from "react-spinners-css";
 import styled from "styled-components";
+import { useQuery } from "react-query";
 
 const Container = styled.main`
   display: center;
@@ -97,14 +98,23 @@ function ModifyBooking() {
     setError,
     formState: { errors },
     getValues,
+    setValue,
   } = useForm();
   const location = useLocation();
   const navigate = useNavigate();
   //const rid = useParams().id;
   //const roominfo = location.state;
   const [isFetching, setIsFetching] = useState(false);
-
   const { roomData, numGuests } = location.state;
+  const rid = useParams().id;
+  const { isLoading: isUserInfoLoading, data: userInfo } = useQuery(
+    ["userinfo"],
+    getUserInfo
+  );
+
+  const roomStart = roomData.startDate;
+  const roomEnd = roomData.endDate;
+  const maxRoomGuests = roomData.numberGuests;
 
   const isDateValid = (date) => {
     const parsedDate = Date.parse(date); // Try to parse the date string
@@ -113,10 +123,21 @@ function ModifyBooking() {
 
   //INTEGRATIONS!! replace with availability check logic??
   const checkAvailability = (formFromDate, formToDate) => {
-    return true; //made it false so I can check if it works LOL
+    return false; //made it false so I can check if it works LOL
   };
 
   const onSubmit = async (formData) => {
+    const { guests } = formData;
+
+    //check if the number of guests exceeds the maximum allowed
+    if (guests > maxRoomGuests) {
+      setError("guests", {
+        type: "manual",
+        message: "The number exceeds the maximum amount of guests allowed.",
+      });
+      return;
+    }
+
     setIsFetching(true);
     console.log(formData);
     const response = await fetch(`${SERVER_URL}/bookings/${roomData.rid}`, {
@@ -127,10 +148,7 @@ function ModifyBooking() {
       body: JSON.stringify(formData),
     });
 
-    const datesAvailable = checkAvailability(
-      formData.fromDate,
-      formData.toDate
-    );
+    const datesAvailable = checkAvailability(formData.toDate);
 
     if (!datesAvailable) {
       setError("datesAvailable", {
@@ -160,97 +178,45 @@ function ModifyBooking() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <ListingTitle>Modify Booking:</ListingTitle>
           <br />
-          <SectionTitle>Dates: </SectionTitle>
+          <SectionTitle>Check-out Date: </SectionTitle>
           <div style={{ display: "flex" }}>
-            <div style={{ flex: 1, marginRight: "10px" }}>
-              <SubTitle>From:</SubTitle>
-              <div style={{ display: "flex" }}>
-                <div style={{ flex: 1, marginRight: "10px" }}>
-                  <Input
-                    {...register("fromDate", {
-                      required: "Date is required",
-                      validate: {
-                        validDate: (value) => {
-                          if (!value) return "Date is required";
+            <Input
+              {...register("toDate", {
+                required: "Date is required",
+                validate: {
+                  validDate: (value) => {
+                    if (!value) return "Date is required";
 
-                          //check if the date is in the "mm/dd/yyyy" format
-                          if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
-                            return "Invalid date format (mm/dd/yyyy)";
-                          }
-                          if (!isDateValid(value)) return "Invalid date";
-                          // Check if it's in the future
-                          //if (new Date(value) <= new Date())
-                          //  return "Date must be in the future";
-                          return true;
-                        },
-                      },
-                    })}
-                    type="text"
-                    placeholder="mm/dd/yyyy"
-                    style={{ color: "black" }}
-                    defaultValue={new Date(
-                      roomData.startDate
-                    ).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                    })}
-                    readOnly
-                  />
-                  {errors.fromDate && (
-                    <ErrorMessage className="error-text">
-                      <span>{errors.fromDate.message.toString()}</span>
-                    </ErrorMessage>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div style={{ flex: 1 }}>
-              <SubTitle>To:</SubTitle>
-              <div style={{ display: "flex" }}>
-                <div style={{ flex: 1, marginRight: "10px" }}>
-                  <Input
-                    {...register("toDate", {
-                      required: "Date is required",
-                      validate: {
-                        validDate: (value) => {
-                          if (!value) return "Date is required";
-
-                          //check if the date is in the "mm/dd/yyyy" format
-                          if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
-                            return "Invalid date format (mm/dd/yyyy)";
-                          }
-                          // Check if it's a valid date
-                          if (!isDateValid(value)) return "Invalid date";
-                          // Check if it's in the future
-                          if (new Date(value) <= new Date())
-                            return "Date must be in the future";
-                          // Check if it's after fromDate
-                          if (
-                            new Date(value) <= new Date(getValues("fromDate"))
-                          )
-                            return "Date must be after From Date";
-                          return true;
-                        },
-                      },
-                    })}
-                    type="text"
-                    placeholder="mm/dd/yyyy"
-                    style={{ color: "black" }}
-                    defaultValue={new Date(roomData.endDate).toLocaleDateString(
-                      "en-US",
-                      { year: "numeric", month: "2-digit", day: "2-digit" }
-                    )}
-                    readOnly
-                  />
-                  {errors.toDate && (
-                    <ErrorMessage className="error-text">
-                      <span>{errors.toDate.message.toString()}</span>
-                    </ErrorMessage>
-                  )}
-                </div>
-              </div>
-            </div>
+                    //check if the date is in the "mm/dd/yyyy" format
+                    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+                      return "Invalid date format (mm/dd/yyyy)";
+                    }
+                    // Check if it's a valid date
+                    if (!isDateValid(value)) return "Invalid date";
+                    // Check if it's in the future
+                    if (new Date(value) <= new Date())
+                      return "Date must be in the future";
+                    // Check if it's after fromDate
+                    if (new Date(value) <= new Date(getValues("fromDate")))
+                      return "Date must be after From Date";
+                    return true;
+                  },
+                },
+              })}
+              type="text"
+              placeholder="mm/dd/yyyy"
+              style={{ color: "black" }}
+              defaultValue={new Date(roomData.endDate).toLocaleDateString(
+                "en-US",
+                { year: "numeric", month: "2-digit", day: "2-digit" }
+              )}
+              readOnly
+            />
+            {errors.toDate && (
+              <ErrorMessage className="error-text">
+                <span>{errors.toDate.message.toString()}</span>
+              </ErrorMessage>
+            )}
           </div>
 
           <br />
