@@ -358,7 +358,7 @@ function Details() {
             }}
           >
             <div style={{ marginRight: "525px" }}>
-              <HotelName>{roomData.hotelName}</HotelName>
+              <HotelName id="hotelName">{roomData.hotelName}</HotelName>
             </div>
             <div>
               {userinfo.accountType === "hotel" && (
@@ -393,18 +393,22 @@ function Details() {
             </ImgContainer>
 
             {isGuest && isReserved ? (
-              <Reserve>
+              <Reserve id="reserved-container">
                 <div>You are currently reserving this listing.</div>
                 <Reservebtn
+                    id="modify-booking-btn"
                   onClick={() =>
                     navigate(`/mybooking/${rid}/modify`, {
                       state: { roomData, numGuests },
-                    })
+                    }
+                    )
                   }
+
                 >
                   Modify Booking
                 </Reservebtn>
                 <Reservebtn
+                    id="cancel-booking-btn"
                   onClick={() =>
                     navigate(`/mybooking/${rid}/cancel`, {
                       state: { roomData, numGuests },
@@ -475,6 +479,7 @@ function Details() {
                   </ReserveDateContainer>
                 </ReserveForm>
                 <Reservebtn
+                    id="reserve-btn"
                   onClick={() => {
                     if (isDoubleBooking) {
                       setShowDoubleBookingWarning(true);
