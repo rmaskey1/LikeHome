@@ -629,7 +629,7 @@ function BookingForm() {
                 </NoFeeContainer>
               )}
               <form onSubmit={handleSubmit(onSubmit)}>
-                <SubmitButton type="submit"> Cancel Booking</SubmitButton>
+                <SubmitButton id="cancel-booking-btn" type="submit"> Cancel Booking</SubmitButton>
               </form>
             </div>
           )}

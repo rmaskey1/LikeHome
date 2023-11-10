@@ -13,6 +13,7 @@ public class BookingForm {
     public SelenideElement cardCvc = $x("//*[@id='cardCvc-input']");
 
     public SelenideElement submitBtn = $x("//*[@id='submitBooking-btn']");
+    public SelenideElement cancelBookingBtn = $x("//*[@id='cancel-booking-btn']");
 
     public SelenideElement bookingSuccessBtn = $x("//*[@id='confirmBookingSuccess-btn']");
 

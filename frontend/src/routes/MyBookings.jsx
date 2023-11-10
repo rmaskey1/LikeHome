@@ -125,7 +125,7 @@ const Card = (booking) => {
       >
         <RoomImage src={booking.imageUrl} alt="Room" />
         <DetailsContainer>
-          <SectionTitle id="bookedName">{booking.hotelName}</SectionTitle>
+          <SectionTitle >{booking.hotelName}</SectionTitle>
           <Divider />
           <IconWithText>
             <CalendarIcon style={{ marginRight: "15px" }} />
