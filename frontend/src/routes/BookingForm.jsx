@@ -257,16 +257,15 @@ const ErrorMessageArea = styled.div`
 function BookingForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const pointsUsed = 100; //temp variable for points used
   const isCancelRoute = window.location.pathname.includes("/cancel");
   const { roomData, numGuests } = location.state;
   const [isFetching, setIsFetching] = useState(false);
   const [serverError, setServerError] = useState({ status: 0, message: "" });
-  const [cardNumber, setCardNumber] = useState("");
-  const [expirationDate, setExpirationDate] = useState("");
-  const [cvc, setCVC] = useState("");
+  const [cardNumber, setCardNumber] = useState("4242424242424242");
+  const [expirationDate, setExpirationDate] = useState("12/34");
+  const [cvc, setCVC] = useState("121");
   const applyInputRef = useRef(null);
-  const [appliedPoints, setAppliedPoints] = useState(0);
+  const [pointsUsed, setPointsUsed] = useState(0);
 
   const { isLoading: isUserInfoLoading, data: userInfo } = useQuery(
     ["userinfo"],
@@ -282,12 +281,13 @@ function BookingForm() {
   const nights = Math.floor(
     (new Date(roomData.endDate).getTime() -
       new Date(roomData.startDate).getTime()) /
-    (24 * 3600 * 1000)
+      (24 * 3600 * 1000)
   );
   const subtotal = roomData.price * nights;
   const tax = subtotal * 0.08;
-  const total = subtotal + tax - appliedPoints / 10;
+  const total = subtotal + tax - pointsUsed / 10;
   const rewardPointsEarned = Math.floor(total * 0.5);
+  console.log(rewardPointsEarned);
 
   let dollarString = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -368,10 +368,11 @@ function BookingForm() {
         endDate: roomData.endDate,
         numGuest: numGuests,
         totalPrice: total,
-        pointsUsed: pointsUsed,
+        pointsUsed,
         cardNumber: cardNumber,
         expirationDate: expirationDate,
         cvc: cvc,
+        rewardPointsEarned,
       };
       setIsFetching(true);
       const response = await fetch(
@@ -391,22 +392,7 @@ function BookingForm() {
 
       if (response.ok) {
         if (data.error) setServerError({ ...serverError, message: data.error });
-        else {
-          const formData = new FormData();
-          console.log(userInfo.rewardPoints, rewardPointsEarned);
-          formData.append(
-            "rewardPoints",
-            userInfo.rewardPoints + rewardPointsEarned
-          );
-          fetch(`${SERVER_URL}/reward`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: formData,
-          });
-          navigate("success");
-        }
+        else navigate("success");
       }
       setIsFetching(false);
     }
@@ -418,7 +404,7 @@ function BookingForm() {
       if (value > userInfo.rewardPoints) {
         alert("You cannot apply reward points greater than that you own");
       } else {
-        setAppliedPoints(value);
+        setPointsUsed(value);
       }
     }
   };
@@ -532,6 +518,7 @@ function BookingForm() {
                   })}
                   id="cardNum-input"
                   type="number"
+
                   style={{ color: "black" }}
                   name="cardNumber"
                   value={cardNumber}
@@ -590,6 +577,7 @@ function BookingForm() {
                       id="cardCvc-input"
                       style={{ color: "black" }}
                       name="cvc"
+                      value={cvc}
                       onChange={(e) => setCVC(e.target.value)}
                     />
                     {errors.cvc && (
@@ -673,7 +661,7 @@ function BookingForm() {
                 </CostAndAmount>
                 <CostAndAmount>
                   <div>Discount from points</div>
-                  <Amount>-{dollarString.format(appliedPoints / 10)}</Amount>
+                  <Amount>-{dollarString.format(pointsUsed / 10)}</Amount>
                 </CostAndAmount>
               </>
             )}
