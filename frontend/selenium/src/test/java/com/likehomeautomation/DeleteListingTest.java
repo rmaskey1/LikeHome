@@ -57,7 +57,7 @@ public class DeleteListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
