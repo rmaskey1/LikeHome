@@ -8,6 +8,8 @@ public class Details {
     public SelenideElement dropdownBtn = $x("//*[@id='dropdown-btn']");
     public SelenideElement editBtn = $x("//*[@id='edit-btn']");
     public SelenideElement deleteBtn = $x("//*[@id='delete-btn']");
+    public SelenideElement confirmDeleteBtn = $x("//*[@id='confirm-delete-btn']");
+    public SelenideElement cancelDeleteBtn = $x("//*[@id='cancel-delete-btn']");
     public SelenideElement responseCode = $x("//*[@id='modify-response-code']");
 
     // listing details
