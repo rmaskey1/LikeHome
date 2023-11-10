@@ -64,9 +64,9 @@ public class DeleteListingTest {
         Thread.sleep(2000);
         details.dropdownBtn.click();
         Thread.sleep(500);
-        details.deleteBtn.click();
+        details.deleteListingBtn.click();
         Thread.sleep(500);
-        details.confirmDeleteBtn.click();
+        details.confirmDeleteListingBtn.click();
         Thread.sleep(2000);
 
         assertEquals("200", home.responseCode.val());
@@ -84,9 +84,9 @@ public class DeleteListingTest {
         Thread.sleep(2000);
         details.dropdownBtn.click();
         Thread.sleep(500);
-        details.deleteBtn.click();
+        details.deleteListingBtn.click();
         Thread.sleep(500);
-        details.cancelDeleteBtn.click();
+        details.cancelDeleteListingBtn.click();
         Thread.sleep(2000);
 
         assert(details.price.isDisplayed()); //modal is closed

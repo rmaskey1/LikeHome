@@ -58,8 +58,8 @@ function BookingSuccess() {
     <Container>
       <div>
         <StyledCheckmarkIcon />
-        <Text>{successText}</Text>
-        <MyBookings onClick={handleMyBookingsClick}>MyBookings</MyBookings>
+        <Text id="successfulBooking-alert">{successText}</Text>
+        <MyBookings id="confirmBookingSuccess-btn" onClick={handleMyBookingsClick}>MyBookings</MyBookings>
       </div>
     </Container>
   );

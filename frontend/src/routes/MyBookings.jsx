@@ -117,7 +117,7 @@ const Card = (booking) => {
   });
 
   return (
-    <CardContainer>
+    <CardContainer className="booking-card">
       <Link
         to={`/room/${booking.rid}`}
         state={booking}
@@ -125,7 +125,7 @@ const Card = (booking) => {
       >
         <RoomImage src={booking.imageUrl} alt="Room" />
         <DetailsContainer>
-          <SectionTitle>{booking.hotelName}</SectionTitle>
+          <SectionTitle id="bookedName">{booking.hotelName}</SectionTitle>
           <Divider />
           <IconWithText>
             <CalendarIcon style={{ marginRight: "15px" }} />
