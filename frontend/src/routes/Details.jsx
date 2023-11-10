@@ -238,6 +238,7 @@ function Details() {
   const navigate = useNavigate();
   const [roomData, setRoomData] = useState(null);
   const { state: stateData } = useLocation();
+
   const [showDoubleBookingWarning, setShowDoubleBookingWarning] =
     useState(false);
   const [isDoubleBooking, setIsDoubleBooking] = useState(false); //check if double booking here!
@@ -347,7 +348,7 @@ function Details() {
     <Container>
       {roomData === null ? (
         "Loading..."
-      ) : (
+          ) : (
         <>
           <div
             style={{
@@ -431,7 +432,6 @@ function Details() {
                   <ReserveDateContainer>
                     <ReserveInputContainer>
                       <ReserveInputLabel>Check-in Date</ReserveInputLabel>
-
                       <ReserveDate id="fromDate-detail">
                         {dateFormatted(roomData.startDate)}
                       </ReserveDate>
@@ -496,15 +496,11 @@ function Details() {
             <h1>Room Details</h1>
             <DetailItem>
               <PersonIcon />
-
               <span id="guests-detail">{roomData.numberGuests} Guests</span>
             </DetailItem>
             <DetailItem>
               <BedIcon />
-              <span id="beds-detail">
-                {roomData.numberOfBeds} Beds / 2{" "}
-                <span id="bedType-detail">{roomData.bedType}</span>
-              </span>
+              <span id="beds-detail">{roomData.numberOfBeds} Bed(s) <span id="bedType-detail">({roomData.bedType})</span></span>
             </DetailItem>
             <DetailItem>
               <SinkIcon />
@@ -514,11 +510,14 @@ function Details() {
             </DetailItem>
           </Detail>
           <Divider />
-          <Detail id="amenities-detail">
+
+          <Detail >
             <h1>Amenities</h1>
-            {roomData.Amenities.map((item, i) => (
-              <Amenity key={i} item={item} />
-            ))}
+            <div id="amenities-detail">
+              {roomData.Amenities.map((item, i) => (
+                <Amenity key={i} item={item} />
+              ))}
+            </div>
           </Detail>
           <Divider />
           <Detail>
@@ -606,9 +605,8 @@ function Details() {
             </div>
           </Modal>
         </>
-      )}
-
-      {/*<input type="hidden" id="modify-response-code" value={state.state}/>*/}
+              )
+      }
     </Container>
   );
 }

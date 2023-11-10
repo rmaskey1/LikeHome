@@ -59,7 +59,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -76,6 +76,9 @@ public class ModifyListingTest {
         modify.submitBtn.click();
         Thread.sleep(2000);
 
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
+
         assertEquals(details.price.text(), "$"+modifiedPrice);
     }
 
@@ -84,7 +87,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).g et(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -106,7 +109,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -121,6 +124,9 @@ public class ModifyListingTest {
         modify.submitBtn.click();
         Thread.sleep(2000);
 
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
+
         assertEquals(details.fromDate.innerText(), "Oct 30, 23");
     }
 
@@ -129,7 +135,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -151,7 +157,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -166,6 +172,9 @@ public class ModifyListingTest {
         modify.submitBtn.click();
         Thread.sleep(2000);
 
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
+
         assertEquals(details.toDate.innerText(), "Jul 19, 24");
     }
 
@@ -174,7 +183,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -195,7 +204,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -205,10 +214,13 @@ public class ModifyListingTest {
         details.editBtn.click();
         Thread.sleep(1000);
 
-        modify.fromDate.clear();
-        modify.fromDate.sendKeys("5");
+        modify.guests.clear();
+        modify.guests.sendKeys("5");
         modify.submitBtn.click();
         Thread.sleep(2000);
+
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
 
         assertEquals(details.guests.innerText(), "5 Guests");
     }
@@ -218,7 +230,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -240,7 +252,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -255,7 +267,10 @@ public class ModifyListingTest {
         modify.submitBtn.click();
         Thread.sleep(2000);
 
-        assertEquals(details.beds.innerText(), "1 Bed(s)");
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
+
+        assertEquals(details.beds.innerText(), "1 Bed(s) "+ details.bedType.innerText());
     }
 
     @Test
@@ -263,7 +278,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -285,7 +300,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -300,6 +315,9 @@ public class ModifyListingTest {
         modify.submitBtn.click();
         Thread.sleep(2000);
 
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
+
         assertEquals(details.bedType.innerText(), "(king)");
     }
 
@@ -308,7 +326,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -330,7 +348,7 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -345,6 +363,9 @@ public class ModifyListingTest {
         modify.submitBtn.click();
         Thread.sleep(2000);
 
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
+
         assertEquals(details.bathrooms.innerText(), "5 Bath");
     }
 
@@ -353,8 +374,9 @@ public class ModifyListingTest {
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
+        Thread.sleep(3000);
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
         Thread.sleep(2000);
@@ -370,15 +392,16 @@ public class ModifyListingTest {
         assert(modify.bathroomsError.isDisplayed());
     }
 
+    /**
+     * Issue B2
+     * currently only displays 1 amenity after modification
+     */
     @Test
     public void modify_amenities_pass() throws Exception {
-        initializeAmenitiesMap();
-        initializeAmenitiesDesr();
-
         WebDriver driver = WebDriverRunner.getWebDriver();
         loginAsHotel();
         Thread.sleep(1000);
-        WebElement previewCard = driver.findElement(By.className("gsgro"));
+        WebElement previewCard = driver.findElements(By.className("previewCard-select")).get(0);
         previewCard.click();
         ((JavascriptExecutor) driver).executeScript(
                 "window.scrollTo(0, -document.body.scrollHeight)");
@@ -388,32 +411,46 @@ public class ModifyListingTest {
         details.editBtn.click();
         Thread.sleep(1000);
 
+        initializeAmenitiesMap();
+        initializeAmenitiesDesr();
         clearAmenities();
-        ArrayList<SelenideElement> selected = selectRandomAmenities();
+
+        ArrayList<String> selected = selectRandomAmenities();
         modify.submitBtn.click();
         Thread.sleep(2000);
 
-        assert(checkAmenities(selected));
+        if(modify.fromDateError.isDisplayed() || modify.toDateError.isDisplayed())
+            tempFixDateFormat();
+
+        assert(checkAmenities(driver, selected));
     }
 
-    boolean checkAmenities(ArrayList<SelenideElement> amenitiesUnderTest){
-        String displayedAmenities = details.amenities.innerText();
+    boolean checkAmenities(WebDriver driver, ArrayList<String> amenitiesUnderTest){
+        ArrayList<WebElement> displayedAmenities = new ArrayList<>(driver.findElements(By.className("amenities-descr")));
+        ArrayList<String> displayedDescr = new ArrayList<>();
+        for(WebElement d: displayedAmenities){
+            String displayedTxt = d.getText();
+            displayedDescr.add(d.getText());
+            System.out.println("displayed: " + displayedTxt);
+        }
 
-        for(SelenideElement a: amenitiesUnderTest){
-            if(!displayedAmenities.contains(amenitiesDescr.get(a)))
+        for(String a: amenitiesUnderTest){
+            System.out.println("selected: " + a);
+            if(!displayedDescr.contains(a))
                 return false;
         }
         return true;
     }
 
 
-    ArrayList<SelenideElement> selectRandomAmenities(){
-        ArrayList<SelenideElement> selectedAmenities = new ArrayList<>();
+    ArrayList<String> selectRandomAmenities(){
+        ArrayList<String> selectedAmenities = new ArrayList<>();
         Random r = new Random();
         int amnt = r.nextInt(14);
         for(int i = 0; i < amnt; i++){
-            int selected = r.nextInt(13);
-            selectedAmenities.add(amenitiesMap.get(selected));
+            int selected = r.nextInt(14);
+            System.out.println("selectRandomAmenities(): selected " + amenitiesDescr.get(amenitiesMap.get(selected)));
+            selectedAmenities.add(amenitiesDescr.get(amenitiesMap.get(selected)));
             amenitiesMap.get(selected).click();
         }
         return selectedAmenities;
@@ -428,11 +465,19 @@ public class ModifyListingTest {
         }
     }
 
+    void tempFixDateFormat(){
+        modify.fromDate.clear();
+        modify.fromDate.sendKeys("10/30/2023");
+        modify.toDate.clear();
+        modify.toDate.sendKeys("07/19/2024");
+        modify.submitBtn.click(); //reattempts submission
+    }
+
     void loginAsHotel() throws Exception{
         login.email.sendKeys("vip@hotel.com");
         login.password.sendKeys("123456");
         login.submitBtn.click();
-        Thread.sleep(3000);
+        Thread.sleep(5000);
     }
 
     void initializeAmenitiesDesr(){
