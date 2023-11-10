@@ -2,12 +2,11 @@ from guest import guest_modification_func
 from hotel import hotel_modification_func
 import firebase_admin
 import database
-from datetime import datetime
 # import pyrebase
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, abort, make_response, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
-from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType, getCardToken
+from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType, getCardToken, get_hid_from_user_or_hotel_api
 from guest import is_valid_password, is_valid_phone_number
 from datetime import datetime
 import stripe
@@ -192,6 +191,7 @@ def bookings():
 # No get function, must call put/delete methods from frontend to work
 # No payment fields yet
 
+
 @app.route('/bookings/<rid>', methods=['GET', 'PUT', 'DELETE'])
 def modify_bookings(rid):
     # test if rid exists
@@ -230,7 +230,7 @@ def modify_bookings(rid):
 
         return jsonify(message="Deletion Successfull")
 
-@app.route('/update_reward_points', methods=['POST'])
+@app.route('/update_reward_points/', methods=['POST'])
 def update_reward_points():
     try:
         uid = getUid()
@@ -240,7 +240,8 @@ def update_reward_points():
         user_data = user_ref.get().to_dict()
 
         if user_data is None:
-            return jsonify({'error': 'User not found'}), 404
+            abort(make_response(
+                jsonify({'error': 'User not found'}), 404))
 
         reward_points = user_data.get('rewardPoints', 0)
 
@@ -256,6 +257,28 @@ def update_reward_points():
 
             # Check if the end date is before or on today's date
             if end_date <= today:
+                
+                bid = booking_doc.id  # Get the booking ID
+                gid = booking_data.get('gid', '')
+                rid = booking_data.get('rid', '')
+
+
+                # find the hid with rid
+                hid = get_hid_from_user_or_hotel_api(rid)
+
+                if hid == 'unknown':
+                    abort(make_response(
+                        jsonify({'error': 'No hotel with that room'}), 404))
+
+                # Check if a document with the same gid and hid already exists in 'pastBooking'
+                past_booking_ref = db.collection('pastBooking')
+                query = past_booking_ref.where('gid', '==', gid).where('hid', '==', hid).limit(1).stream()
+
+                if not next(query, None):
+                    # Add the bid, gid, and hid to the 'pastBooking' collection
+                    past_booking_ref.document(bid).set({'gid': gid, 'hid': hid})
+
+
                 total_price = booking_data.get('totalPrice', 0)
 
                 # Calculate reward points (50% of the total price)
@@ -277,7 +300,8 @@ def update_reward_points():
         return jsonify({'message': 'Reward points updated successfully'}), 200
 
     except Exception as e:
-        return jsonify({'error': 'An error occurred', 'message': str(e)}), 500
+        abort(make_response(
+            jsonify({'error': 'An error occurred', 'message': str(e)}), 500))
     
 
 @app.route('/query', methods=['POST'])

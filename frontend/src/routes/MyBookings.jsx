@@ -30,6 +30,16 @@ const SectionTitle = styled.div`
   font-weight: 400;
 `;
 
+const ErrorSectionTitle = styled.div`
+  margin-top: 20px;
+  font-size: 23px;
+  font-weight: 400;
+  text-align: center; //center horizontally
+  //margin-top: 50px;
+  margin-top: 20%; //center vertically
+  transform: translate(0, -50%); //vertical center
+`;
+
 const SubTitle = styled.div`
   font-size: 20px;
   font-weight: 400;
@@ -154,6 +164,8 @@ function MyBookings() {
         [1, 2].map((i) => <CardLoading key={i} />)
       ) : data.message ? (
         <ErrorMessageArea>{data.message}</ErrorMessageArea>
+      ) : data.length === 0 ? (
+        <ErrorSectionTitle>No bookings made!</ErrorSectionTitle>
       ) : (
         data.map((booking) => (
           <Card
