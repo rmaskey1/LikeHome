@@ -84,8 +84,7 @@ def guest_modification_func(app):
                     booked_rooms = doc.to_dict()['bookedRooms']
                     #for guest, delete past booking by gid (which is just the uid)
                     dPastBookingG=pastBooking_collection.where('gid', '==', uid).stream()
-                    for d in dPastBookingG:
-                        print((str)(d.to_dict()))
+                    
                     if (len(booked_rooms) > 0):
                         abort(make_response(
                             jsonify(message="Cannot delete; User has a booked room"), 400))
