@@ -360,46 +360,48 @@ def queryByRmAttribute():
 
             results = query.stream()
             matching_rooms = []
-
+            
             #
             for doc in results:
                 add = False
-                amenities = doc.to_dict()['Amenities']
-                if set(filter).issubset(set(amenities)):
-                    add = True
-                if bathrooms is not None:
-                    if doc.to_dict()['numberOfBathrooms'] != bathrooms:
-                        add = False
+                if 'Amenities' in doc.to_dict():
+                    amenities = doc.to_dict()['Amenities']
+                    if set(filter).issubset(set(amenities)):
+                        add = True
+                    if bathrooms is not None:
+                        if doc.to_dict()['numberOfBathrooms'] != bathrooms:
+                            add = False
 
-                if bedType is not None:
-                    if bedType.lower() not in doc.to_dict()['bedType'].lower():
-                        add = False
-                
-                if beds is not None:
-                    if doc.to_dict()['numberOfBeds'] != beds:
-                        add = False
-                
-                if guests is not None:
-                    if doc.to_dict()['numberGuests'] != guests:
-                        add = False
-                
-                if minPrice is not None:
-                    if doc.to_dict()['price'] < minPrice:
-                        add = False
+                    if bedType is not None:
+                        if bedType.lower() not in doc.to_dict()['bedType'].lower():
+                            add = False
+                    
+                    if beds is not None:
+                        if doc.to_dict()['numberOfBeds'] != beds:
+                            add = False
+                    
+                    if guests is not None:
+                        if doc.to_dict()['numberGuests'] != guests:
+                            add = False
+                    
+                    if minPrice is not None:
+                        if doc.to_dict()['price'] < minPrice:
+                            add = False
 
-                if maxPrice is not None:
-                    if doc.to_dict()['price'] > maxPrice:
-                        add = False
+                    if maxPrice is not None:
+                        if doc.to_dict()['price'] > maxPrice:
+                            add = False
 
-                if add:
-                    matching_rooms.append(doc.to_dict())
-            print(matching_rooms)
+                    if add:
+                        listing = doc.to_dict()
+                        listing['rid'] = doc.id
+                        matching_rooms.append(listing)
 
             return jsonify(matching_rooms)
-
+        
         else:
             return jsonify([])
-
+      
     except Exception as e:
         print("Error querying rooms:", e)
         return jsonify([])
