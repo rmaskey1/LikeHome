@@ -146,6 +146,7 @@ def bookings():
         rid = request.args['rid']
         gid = getUid()
         data = request.get_json()
+        print(data)
         # time = datetime.now().strftime("%H:%M:%S")
         if roomBooked(rid):
             abort(make_response(jsonify(message="Sorry, this room is already booked"), 409))
@@ -156,7 +157,17 @@ def bookings():
             # exp_month = request.form['exp_month']
             # exp_year = request.form['exp_year']
             # cvc = request.form['cvc']
-            totalPrice = int(data['totalPrice']) * 100  # Convert amount to cents
+            totalPrice = int(data['totalPrice'] * 100)  # Convert amount to cents
+            pointsUsed = int(data['pointsUsed'])  # Points used in the booking
+            rewardPointsEarned = int(data['rewardPointsEarned'])  # Points earned from booking
+            # Check if the user has enough rewardPoints to cover the pointsUsed
+            user_ref = db.collection('user').document(gid)
+            user_data = user_ref.get().to_dict()
+            rewardPoints = user_data.get('rewardPoints', 0)
+
+            # Deduct pointsUsed from rewardPoints
+            new_rewardPoints = int(rewardPoints) + int(rewardPointsEarned) - int(pointsUsed)
+            user_ref.update({'rewardPoints': new_rewardPoints})
             
             charge = stripe.Charge.create(
                 amount=totalPrice,
@@ -164,11 +175,11 @@ def bookings():
                 source=cardToken,
                 description='Payment for your booking'
             )
+            booking = addBooking(gid, rid, data['pointsUsed'], data['totalPrice'], data['startDate'], data['endDate'], data['numGuest'], charge.id)
+            return jsonify(booking)
         except Exception as e:
-            return jsonify({'error': str(e)})
+            return jsonify({'error': str(e.with_traceback())})
         
-        booking = addBooking(gid, rid, data['pointsUsed'], data['totalPrice'], data['startDate'], data['endDate'], data['numGuest'], charge.id)
-        return jsonify(booking)
 
     # Get guest's mybookings
     if request.method == 'GET':
@@ -217,11 +228,24 @@ def modify_bookings(rid):
     # Cancel Booking Here
     elif request.method == 'DELETE':
         booking_ref = db.collection("booking")
-        # Search for the specific booking and delete it
+        # Search for the specific booking, give refund/charge cancellation fee, and delete it
         query_ref = booking_ref.where(
             "rid", "==", rid).where("gid", "==", getUid())
         docs = query_ref.stream()
         for doc in docs:
+            # Cancellation refund calculated using total - cancellation fee
+            # No need for customer payment
+            try:
+                chargeID = doc.to_dict()['chargeID']
+                total = stripe.Charge.retrieve(chargeID).amount
+                cancellationFee = request.get_json()['cancellationFee']
+                # Creating the refund using the id of the charge made to them for their booking
+                stripe.Refund.create(
+                    charge=chargeID,
+                    amount=total-(int(cancellationFee*100))
+                )
+            except Exception as e:
+                return jsonify({'error': str(e)})
             doc.reference.delete()
         # Delete the booked room in guest's bookedRooms array
         uid = getUid()
@@ -381,6 +405,8 @@ def queryByRmAttribute():
     except Exception as e:
         print("Error querying rooms:", e)
         return jsonify([])
+
+
 
 if __name__ == '__main__':
     app.debug = True

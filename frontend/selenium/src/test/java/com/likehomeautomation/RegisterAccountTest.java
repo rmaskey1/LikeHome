@@ -18,13 +18,13 @@ import com.codeborne.selenide.logevents.SelenideLogger;
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RegisterTest {
+public class RegisterAccountTest {
     WebDriver driver;
 
-    Register registration = new Register();
+    RegisterAccount registration = new RegisterAccount();
     Login login = new Login();
     Home home = new Home();
-    Modification mod = new Modification();
+    ModifyAccount mod = new ModifyAccount();
 
     @BeforeAll
     public static void setUpAll() {

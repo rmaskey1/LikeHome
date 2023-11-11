@@ -1,8 +1,5 @@
 package com.likehomeautomation;
 
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Condition.text;
-
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.selenide.AllureSelenide;
@@ -18,12 +15,12 @@ import com.codeborne.selenide.logevents.SelenideLogger;
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ModificationTest {
+public class ModifyAccountTest {
     WebDriver driver;
 
     Login login = new Login();
     Home home = new Home();
-    Modification mod = new Modification();
+    ModifyAccount mod = new ModifyAccount();
 
     @BeforeAll
     public static void setUpAll() {

@@ -238,6 +238,7 @@ function Details() {
   const navigate = useNavigate();
   const [roomData, setRoomData] = useState(null);
   const { state: stateData } = useLocation();
+
   const [showDoubleBookingWarning, setShowDoubleBookingWarning] =
     useState(false);
   const [isDoubleBooking, setIsDoubleBooking] = useState(false); //check if double booking here!
@@ -325,10 +326,12 @@ function Details() {
   useEffect(() => {
     let bookedDates = [];
 
-    bookingData &&
+    if (Array.isArray(bookingData)) {
+      //wrapped this in an array bc it was giving "bookingData.forEach is not a function" errors
       bookingData.forEach((b) => {
         bookedDates = [...bookedDates, ...getDaysArray(b.startDate, b.endDate)];
       });
+    }
 
     roomData &&
       getDaysArray(roomData.startDate, roomData.endDate).forEach((date) => {
@@ -345,7 +348,7 @@ function Details() {
     <Container>
       {roomData === null ? (
         "Loading..."
-      ) : (
+          ) : (
         <>
           <div
             style={{
@@ -355,7 +358,7 @@ function Details() {
             }}
           >
             <div style={{ marginRight: "525px" }}>
-              <HotelName>{roomData.hotelName}</HotelName>
+              <HotelName id="hotelName">{roomData.hotelName}</HotelName>
             </div>
             <div>
               {userinfo.accountType === "hotel" && (
@@ -390,18 +393,22 @@ function Details() {
             </ImgContainer>
 
             {isGuest && isReserved ? (
-              <Reserve>
+              <Reserve id="reserved-container">
                 <div>You are currently reserving this listing.</div>
                 <Reservebtn
+                    id="modify-booking-btn"
                   onClick={() =>
                     navigate(`/mybooking/${rid}/modify`, {
                       state: { roomData, numGuests },
-                    })
+                    }
+                    )
                   }
+
                 >
                   Modify Booking
                 </Reservebtn>
                 <Reservebtn
+                    id="cancel-booking-btn"
                   onClick={() =>
                     navigate(`/mybooking/${rid}/cancel`, {
                       state: { roomData, numGuests },
@@ -429,7 +436,6 @@ function Details() {
                   <ReserveDateContainer>
                     <ReserveInputContainer>
                       <ReserveInputLabel>Check-in Date</ReserveInputLabel>
-
                       <ReserveDate id="fromDate-detail">
                         {dateFormatted(roomData.startDate)}
                       </ReserveDate>
@@ -473,6 +479,7 @@ function Details() {
                   </ReserveDateContainer>
                 </ReserveForm>
                 <Reservebtn
+                    id="reserve-btn"
                   onClick={() => {
                     if (isDoubleBooking) {
                       setShowDoubleBookingWarning(true);
@@ -494,15 +501,11 @@ function Details() {
             <h1>Room Details</h1>
             <DetailItem>
               <PersonIcon />
-
               <span id="guests-detail">{roomData.numberGuests} Guests</span>
             </DetailItem>
             <DetailItem>
               <BedIcon />
-              <span id="beds-detail">
-                {roomData.numberOfBeds} Beds / 2{" "}
-                <span id="bedType-detail">{roomData.bedType}</span>
-              </span>
+              <span id="beds-detail">{roomData.numberOfBeds} Bed(s) <span id="bedType-detail">({roomData.bedType})</span></span>
             </DetailItem>
             <DetailItem>
               <SinkIcon />
@@ -512,11 +515,14 @@ function Details() {
             </DetailItem>
           </Detail>
           <Divider />
-          <Detail id="amenities-detail">
+
+          <Detail >
             <h1>Amenities</h1>
-            {roomData.Amenities.map((item, i) => (
-              <Amenity key={i} item={item} />
-            ))}
+            <div id="amenities-detail">
+              {roomData.Amenities.map((item, i) => (
+                <Amenity key={i} item={item} />
+              ))}
+            </div>
           </Detail>
           <Divider />
           <Detail>
@@ -596,17 +602,16 @@ function Details() {
               }}
             >
               <div style={{ marginRight: "20px" }}>
-                <Buttons onClick={deleteListing}>Yes</Buttons>
+                <Buttons id="confirm-delete-btn" onClick={deleteListing}>Yes</Buttons>
               </div>
               <div>
-                <Buttons onClick={closeDeleteModal}>No</Buttons>
+                <Buttons id="cancel-delete-btn" onClick={closeDeleteModal}>No</Buttons>
               </div>
             </div>
           </Modal>
         </>
-      )}
-
-      {/*<input type="hidden" id="modify-response-code" value={state.state}/>*/}
+              )
+      }
     </Container>
   );
 }

@@ -117,7 +117,7 @@ const Card = (booking) => {
   });
 
   return (
-    <CardContainer>
+    <CardContainer className="booking-card">
       <Link
         to={`/room/${booking.rid}`}
         state={booking}
@@ -125,7 +125,7 @@ const Card = (booking) => {
       >
         <RoomImage src={booking.imageUrl} alt="Room" />
         <DetailsContainer>
-          <SectionTitle>{booking.hotelName}</SectionTitle>
+          <SectionTitle >{booking.hotelName}</SectionTitle>
           <Divider />
           <IconWithText>
             <CalendarIcon style={{ marginRight: "15px" }} />
@@ -162,11 +162,12 @@ function MyBookings() {
       <ListingTitle>My Bookings:</ListingTitle>
       {isLoading ? (
         [1, 2].map((i) => <CardLoading key={i} />)
-      ) : data.message ? (
+      ) : data && data.message ? (
         <ErrorMessageArea>{data.message}</ErrorMessageArea>
-      ) : data.length === 0 ? (
+      ) : data && data.length === 0 ? (
         <ErrorSectionTitle>No bookings made!</ErrorSectionTitle>
       ) : (
+        data &&
         data.map((booking) => (
           <Card
             key={booking.rid} // Ensure each card has a unique key

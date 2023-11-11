@@ -4,7 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selenide.$x;
 
-public class Register {
+public class RegisterAccount {
     // Inputs
     public SelenideElement firstNameInput = $x("//*[@id='firstname-input']");
     public SelenideElement lastNameInput = $x("//*[@id='lastname-input']");
