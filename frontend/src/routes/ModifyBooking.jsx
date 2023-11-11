@@ -105,8 +105,12 @@ function ModifyBooking() {
   //const rid = useParams().id;
   //const roominfo = location.state;
   const [isFetching, setIsFetching] = useState(false);
-  const { roomData, numGuests } = location.state;
+  const { roomData, bookingData, numGuests } = location.state;
   const rid = useParams().id;
+  const userinfo = localStorage.userinfo
+    ? JSON.parse(localStorage.userinfo)
+    : {};
+
   const { isLoading: isUserInfoLoading, data: userInfo } = useQuery(
     ["userinfo"],
     getUserInfo
@@ -115,6 +119,13 @@ function ModifyBooking() {
   const roomStart = roomData.startDate;
   const roomEnd = roomData.endDate;
   const maxRoomGuests = roomData.numberGuests;
+
+  console.log("roomStart", roomStart);
+  console.log("roomEnd", roomEnd);
+  console.log("maxRoomGuests", maxRoomGuests);
+  console.log("rid", roomData.rid);
+  console.log("gid", bookingData.gid);
+  console.log("guests", bookingData.numGuest);
 
   const isDateValid = (date) => {
     const parsedDate = Date.parse(date); // Try to parse the date string
@@ -138,16 +149,6 @@ function ModifyBooking() {
       return;
     }
 
-    setIsFetching(true);
-    console.log(formData);
-    const response = await fetch(`${SERVER_URL}/bookings/${roomData.rid}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-
     const datesAvailable = checkAvailability(formData.toDate);
 
     if (!datesAvailable) {
@@ -158,13 +159,23 @@ function ModifyBooking() {
       return;
     }
 
+    setIsFetching(true);
+    console.log(formData);
+    const response = await fetch(`${SERVER_URL}/bookings/${roomData.rid}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
     const data = await response.json();
     console.log(response.status, data);
 
     if (response.ok) {
       navigate("/mybooking");
     }
-    setIsFetching(false);
+    //setIsFetching(false);
   };
 
   return (
@@ -210,7 +221,6 @@ function ModifyBooking() {
                 "en-US",
                 { year: "numeric", month: "2-digit", day: "2-digit" }
               )}
-              readOnly
             />
             {errors.toDate && (
               <ErrorMessage className="error-text">
@@ -233,7 +243,7 @@ function ModifyBooking() {
             })}
             type="number"
             style={{ color: "black" }}
-            defaultValue={numGuests}
+            defaultValue={bookingData.numGuests}
           />
           {errors.guests && (
             <ErrorMessage className="error-text">
