@@ -1,10 +1,11 @@
-import { SERVER_URL, getUserInfo } from "api";
-import React, { useState } from "react";
+import { SERVER_URL, getUserInfo, getMyBooking } from "api";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams, Link, useLocation } from "react-router-dom";
 import { Ellipsis } from "react-spinners-css";
 import styled from "styled-components";
 import { useQuery } from "react-query";
+import { ConsoleLogEntry } from "selenium-webdriver/bidi/logEntries";
 
 const Container = styled.main`
   display: center;
@@ -91,6 +92,14 @@ const Button = styled.button`
   font-weight: bold;
 `;
 
+const getBookingData = async (bookingId) => {
+  // Use Firestore API or your preferred method to fetch booking data
+  // For example:
+  const bookingDoc = await getMyBooking;
+  const bookingData = bookingDoc;
+  return bookingData;
+};
+
 function ModifyBooking() {
   const {
     handleSubmit,
@@ -102,11 +111,13 @@ function ModifyBooking() {
   } = useForm();
   const location = useLocation();
   const navigate = useNavigate();
-  //const rid = useParams().id;
-  //const roominfo = location.state;
-  const [isFetching, setIsFetching] = useState(false);
-  const { roomData, bookingData, numGuests } = location.state;
   const rid = useParams().id;
+  const roominfo = location.state;
+  const [isFetching, setIsFetching] = useState(false);
+  const { roomData, numGuests } = location.state;
+  const [bookingDataInfo, setBookingDataInfo] = useState(null);
+  const gid = localStorage.uid;
+  const { state: stateData } = useLocation();
   const userinfo = localStorage.userinfo
     ? JSON.parse(localStorage.userinfo)
     : {};
@@ -120,36 +131,41 @@ function ModifyBooking() {
   const roomEnd = roomData.endDate;
   const maxRoomGuests = roomData.numberGuests;
 
-  console.log("roomStart", roomStart);
-  console.log("roomEnd", roomEnd);
-  console.log("maxRoomGuests", maxRoomGuests);
-  console.log("rid", roomData.rid);
-  console.log("gid", bookingData.gid);
-  console.log("guests", bookingData.numGuest);
-
   const isDateValid = (date) => {
     const parsedDate = Date.parse(date); // Try to parse the date string
     return !isNaN(parsedDate); // Check if it's a valid date
   };
 
-  //INTEGRATIONS!! replace with availability check logic??
-  const checkAvailability = (formFromDate, formToDate) => {
-    return false; //made it false so I can check if it works LOL
+  const checkAvailability = (formToDate, roomData) => {
+    /*
+    if (!formToDate || !bookingData) {
+      return false;
+    }
+    */
+
+    //converting form's toDate to a date
+    const selectedEndDate = new Date(formToDate);
+    const bookingStartDate = new Date(roomData.startDate);
+    console.log("Start Date", bookingStartDate);
+    const bookingEndDate = new Date(roomData.endDate);
+
+    //if selectedEndDate is before the bookingStartDate or after the bookingEndDate
+    if (
+      selectedEndDate < bookingStartDate ||
+      selectedEndDate > bookingEndDate
+    ) {
+      return false;
+    }
+    // The listing is available on the selected date
+    return true;
   };
 
   const onSubmit = async (formData) => {
     const { guests } = formData;
 
-    //check if the number of guests exceeds the maximum allowed
-    if (guests > maxRoomGuests) {
-      setError("guests", {
-        type: "manual",
-        message: "The number exceeds the maximum amount of guests allowed.",
-      });
-      return;
-    }
-
-    const datesAvailable = checkAvailability(formData.toDate);
+    const datesAvailable = checkAvailability(formData.endDate, roomData);
+    console.log("dates avail", datesAvailable);
+    console.log("form end", formData.endDate);
 
     if (!datesAvailable) {
       setError("datesAvailable", {
@@ -173,7 +189,9 @@ function ModifyBooking() {
     console.log(response.status, data);
 
     if (response.ok) {
-      navigate("/mybooking");
+      navigate("/mybooking", {
+        state: { roomData, numGuests },
+      });
     }
     //setIsFetching(false);
   };
@@ -190,44 +208,42 @@ function ModifyBooking() {
           <ListingTitle>Modify Booking:</ListingTitle>
           <br />
           <SectionTitle>Check-out Date: </SectionTitle>
-          <div style={{ display: "flex" }}>
-            <Input
-              {...register("toDate", {
-                required: "Date is required",
-                validate: {
-                  validDate: (value) => {
-                    if (!value) return "Date is required";
+          <Input
+            {...register("endDate", {
+              required: "Date is required",
+              validate: {
+                validDate: (value) => {
+                  if (!value) return "Date is required";
 
-                    //check if the date is in the "mm/dd/yyyy" format
-                    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
-                      return "Invalid date format (mm/dd/yyyy)";
-                    }
-                    // Check if it's a valid date
-                    if (!isDateValid(value)) return "Invalid date";
-                    // Check if it's in the future
-                    if (new Date(value) <= new Date())
-                      return "Date must be in the future";
-                    // Check if it's after fromDate
-                    if (new Date(value) <= new Date(getValues("fromDate")))
-                      return "Date must be after From Date";
-                    return true;
-                  },
+                  //check if the date is in the "mm/dd/yyyy" format
+                  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+                    return "Invalid date format (mm/dd/yyyy)";
+                  }
+                  // Check if it's a valid date
+                  if (!isDateValid(value)) return "Invalid date";
+                  // Check if it's in the future
+                  if (new Date(value) <= new Date())
+                    return "Date must be in the future";
+                  // Check if it's after fromDate
+                  if (new Date(value) <= new Date(roomData.endDate))
+                    return "Date must be after From Date";
+                  //return true;
                 },
-              })}
-              type="text"
-              placeholder="mm/dd/yyyy"
-              style={{ color: "black" }}
-              defaultValue={new Date(roomData.endDate).toLocaleDateString(
-                "en-US",
-                { year: "numeric", month: "2-digit", day: "2-digit" }
-              )}
-            />
-            {errors.toDate && (
-              <ErrorMessage className="error-text">
-                <span>{errors.toDate.message.toString()}</span>
-              </ErrorMessage>
+              },
+            })}
+            type="text"
+            placeholder="mm/dd/yyyy"
+            style={{ color: "black" }}
+            defaultValue={new Date(roomData.endDate).toLocaleDateString(
+              "en-US",
+              { year: "numeric", month: "2-digit", day: "2-digit" }
             )}
-          </div>
+          />
+          {errors.endDate && (
+            <ErrorMessage className="error-text">
+              <span>{errors.endDate.message.toString()}</span>
+            </ErrorMessage>
+          )}
 
           <br />
 
@@ -239,11 +255,20 @@ function ModifyBooking() {
                 value: 1,
                 message: "Number of Guests must be greater than 0",
               },
+              validate: {
+                maxGuests: (value) => {
+                  const parsedValue = parseInt(value, 10);
+                  return (
+                    parsedValue <= maxRoomGuests ||
+                    `Exceeds the room maximum of ${maxRoomGuests} guests`
+                  );
+                },
+              },
               required: "Number of Guests is required",
             })}
             type="number"
             style={{ color: "black" }}
-            defaultValue={bookingData.numGuests}
+            defaultValue={roomData.reserved_guests}
           />
           {errors.guests && (
             <ErrorMessage className="error-text">
