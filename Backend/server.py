@@ -403,7 +403,7 @@ def queryByRmAttribute():
             return jsonify([])
       
     except Exception as e:
-        print(e)
+        print("Error querying rooms:", e)
         return jsonify([])
 
 
