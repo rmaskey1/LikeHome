@@ -308,8 +308,8 @@ def updateHotelForRoom(uid, new_hotel_name, state, streetName,zipcode, country, 
 
 
 # Checks if any user has booked the hotel 
-def isBooked():
-    room_ids = getRoomIds()
+def isBooked(uid):
+    room_ids = getRoomIds(uid)
     # Check if there's no rid
     if room_ids[0] == 0:
         return False
@@ -371,6 +371,12 @@ def getAccountType():
     print(userDoc)
     accountType = userDoc['accountType']
     return accountType
+
+
+def getCardToken(card_number):
+    return db.collection("test_card_data").document(card_number).get().get("token")
+
+
 
 # Function to modify user's information
 #def changeGuestInfo(email, phone, password, first_name, ):
