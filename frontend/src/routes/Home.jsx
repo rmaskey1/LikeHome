@@ -56,8 +56,6 @@ const Addbutton = styled.button`
   &:hover {
     background-color: rgb(226, 99, 146);
   }
-
-
 `;
 
 const FilterButton = styled.button`
@@ -231,7 +229,7 @@ function Home() {
           display: "flex",
           justifyContent: "space-between",
           paddingLeft: "10px",
-          paddingRight: "250px",
+          paddingRight: "100px",
           paddingBottom: "20px",
         }}
       >
