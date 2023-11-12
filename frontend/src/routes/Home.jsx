@@ -42,11 +42,11 @@ const Mylisting = styled.div`
 `;
 
 const Addbutton = styled.button`
-  display: inline-block;
+  display: flex;
   color: #293545;
   font-size: 16px;
   font-weight: bold;
-  margin-left: 1000px;
+  margin-top: 50px;
   background-color: #cf316a;
   color: white;
   padding: 10px 32px;
@@ -56,6 +56,8 @@ const Addbutton = styled.button`
   &:hover {
     background-color: rgb(226, 99, 146);
   }
+
+
 `;
 
 const FilterButton = styled.button`
@@ -193,12 +195,20 @@ function Home() {
     <Container>
       {userinfo.accountType === "hotel" && ( //Render if hotel owner
         <>
+          <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          paddingLeft: "10px",
+          paddingRight: "100px",
+          paddingBottom: "20px",
+          }}>
           <Mylisting>
             My listings:
-            <Link to="/room/add">
-              <Addbutton id="add-btn">Add +</Addbutton>
-            </Link>
           </Mylisting>
+          <Link to="/room/add">
+              <Addbutton id="add-btn">Add +</Addbutton>
+          </Link>
+          </div>
           {myListingsIsLoading ? (
             <LoadingCardsListing numCard={1} />
           ) : (
