@@ -23,7 +23,7 @@ public class HotelAccountModificationTest {
 
     Login login = new Login();
     Home home = new Home();
-    Modification mod = new Modification();
+    ModifyAccount mod = new ModifyAccount();
 
     @BeforeAll
     public static void setUpAll() {

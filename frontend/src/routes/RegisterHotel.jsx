@@ -149,10 +149,11 @@ function RegisterHotel() {
             {...register("hotelName", {
               required: "Please enter hotel name",
             })}
+            id="hotelName-input"
           />
         </InputContainer>
         {errors.email && (
-          <ErrorMessageArea>{errors.email.message.toString()}</ErrorMessageArea>
+          <ErrorMessageArea id="hotelName-error">{errors.email.message.toString()}</ErrorMessageArea>
         )}
 
         <Label>Street</Label>
@@ -162,10 +163,11 @@ function RegisterHotel() {
               required: "Please enter street",
             })}
             type="street"
+            id="streetName-input"
           />
         </InputContainer>
         {errors.street && (
-          <ErrorMessageArea>
+          <ErrorMessageArea id="streetName-error">
             {errors.street.message.toString()}
           </ErrorMessageArea>
         )}
@@ -177,10 +179,11 @@ function RegisterHotel() {
                 {...register("city", {
                   required: "Please enter city",
                 })}
+                id="city-input"
               />
             </InputContainer>
             {errors.city && (
-              <ErrorMessageArea>
+              <ErrorMessageArea id="city-error">
                 {errors.city.message.toString()}
               </ErrorMessageArea>
             )}
@@ -192,10 +195,11 @@ function RegisterHotel() {
                 {...register("zipcode", {
                   required: "Please enter zip code",
                 })}
+                id="zip-input"
               />
             </InputContainer>
             {errors.zipcode && (
-              <ErrorMessageArea>
+              <ErrorMessageArea id="zip-error">
                 {errors.zipcode.message.toString()}
               </ErrorMessageArea>
             )}
@@ -209,10 +213,11 @@ function RegisterHotel() {
                 {...register("state", {
                   required: "Please enter state",
                 })}
+                id="state-input"
               />
             </InputContainer>
             {errors.state && (
-              <ErrorMessageArea>
+              <ErrorMessageArea id="state-error">
                 {errors.state.message.toString()}
               </ErrorMessageArea>
             )}
@@ -224,16 +229,17 @@ function RegisterHotel() {
                 {...register("country", {
                   required: "Please enter country",
                 })}
+                id="country-input"
               />
             </InputContainer>
             {errors.country && (
-              <ErrorMessageArea>
+              <ErrorMessageArea id="country-error">
                 {errors.country.message.toString()}
               </ErrorMessageArea>
             )}
           </div>
         </div>
-        <SubmitBtn type="submit">
+        <SubmitBtn type="submit" id="signup-button">
           {isFetching ? (
             <Ellipsis color="white" size={30} />
           ) : (

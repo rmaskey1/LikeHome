@@ -4,7 +4,7 @@ import static com.codeborne.selenide.Selenide.$x;
 
 import com.codeborne.selenide.SelenideElement;
 
-public class Modification {
+public class ModifyAccount {
     // hotel inputs
     public SelenideElement hName = $x("//*[@id='hotel-name-input']");
     public SelenideElement street = $x("//*[@id='street-name-input']");
