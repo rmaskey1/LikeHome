@@ -18,7 +18,7 @@ import com.codeborne.selenide.logevents.SelenideLogger;
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ModificationTest {
+public class HotelAccountModificationTest {
     WebDriver driver;
 
     Login login = new Login();
@@ -38,7 +38,7 @@ public class ModificationTest {
         WebDriverRunner.setWebDriver(new ChromeDriver(new ChromeOptions().addArguments("--remote-allow-origins=*")));
         Configuration.baseUrl = "http://127.0.0.1:3000";
         open("/login");
-        login.email.sendKeys("jack@guest.com");
+        login.email.sendKeys("aHotel@email.com");
         login.password.sendKeys("123456");
         // Submit the form
         login.submitBtn.click();
@@ -50,9 +50,9 @@ public class ModificationTest {
         WebDriverRunner.getWebDriver().quit();
     }
 
-    // test modification with all valid inputs on a guest acct
+    // test modification with all valid inputs on a hotel acct
     @Test
-    public void validModG() throws Exception {
+    public void validModH() throws Exception {
         WebDriver driver = WebDriverRunner.getWebDriver();
 
         // select modify account info
@@ -60,36 +60,54 @@ public class ModificationTest {
         Thread.sleep(1000);
 
         // Fill in registration form fields with valid data
-        mod.fname.setValue("Johnn");
-        mod.lname.setValue("Doee");
+        mod.hName.setValue("Hilton");
+        mod.street.setValue("2 First Street");
+        mod.city.setValue("Sunnyvale");
+        mod.zip.setValue("11111");
+        mod.state.setValue("California");
+        mod.country.setValue("United States Of America");
+        mod.password.setValue("123456");
+        mod.fname.setValue("John");
+        mod.lname.setValue("Doe");
         mod.email.setValue("johnn.doee@example.com");
-        mod.phone.setValue("+11234567888");
+        mod.phone.setValue("+11000000000");
 
         // Submit the form
         mod.updateBtn.click();
-        Thread.sleep(1000);
+        Thread.sleep(3000);
+        mod.editBtn.click();
+        Thread.sleep(5000);
 
         // Add assertions to verify successful mods
-        assertEquals("Johnn", mod.fnameDisplay.text());
-        assertEquals("Doee", mod.lnameDisplay.text());
-        assertEquals("johnn.doee@example.com", mod.emailDisplay.text());
-        assertEquals("+11234567888", mod.phoneDisplay.text());
+        assertEquals("Hilton", mod.hName.getAttribute("value"));
+        assertEquals("2 First Street", mod.street.getAttribute("value"));
+        assertEquals("Sunnyvale", mod.city.getAttribute("value"));
+        assertEquals("11111", mod.zip.getAttribute("value"));
+        assertEquals("California", mod.state.getAttribute("value"));
+        assertEquals("United States Of America", mod.country.getAttribute("value"));
+        assertEquals("John", mod.fname.getAttribute("value"));
+        assertEquals("+11000000000", mod.phone.getAttribute("value"));
+        assertEquals("Doe", mod.lname.getAttribute("value"));
+        assertEquals("johnn.doee@example.com", mod.email.getAttribute("value"));
 
         // put it back for other tests:
-        // select modify account info
-        mod.editBtn.click();
-
         // Fill in registration form fields with valid data
-        mod.fname.setValue("Jack");
-        mod.lname.setValue("Guest");
-        mod.email.setValue("jack@guest.com");
-        mod.phone.setValue("+11234567888");
+        mod.hName.setValue("AHotel1");
+        mod.street.setValue("1 First Street");
+        mod.city.setValue("San Jose");
+        mod.zip.setValue("95112");
+        mod.state.setValue("CA");
+        mod.country.setValue("USA");
+        mod.fname.setValue("A");
+        mod.lname.setValue("Hotel");
+        mod.email.setValue("aHotel@email.com");
+        mod.phone.setValue("+19255490000");
         mod.updateBtn.click();
     }
 
-    // test modification with invalid fname inputs on a guest acct
+    // test modification with invalid fname inputs on a hotel acct
     @Test
-    public void invalidFnameG() throws Exception {
+    public void invalidFnameH() throws Exception {
         WebDriver driver = WebDriverRunner.getWebDriver();
 
         // select modify account info
@@ -112,9 +130,9 @@ public class ModificationTest {
         mod.fnameError.shouldHave(text("Only letters are allowed"));
     }
 
-    // test modification with invalid lname inputs on a guest acct
+    // test modification with invalid lname inputs on a hotel acct
     @Test
-    public void invalidLnameG() throws Exception {
+    public void invalidLnameH() throws Exception {
         WebDriver driver = WebDriverRunner.getWebDriver();
 
         // select modify account info
@@ -137,9 +155,9 @@ public class ModificationTest {
         mod.lnameError.shouldHave(text("Only letters are allowed"));
     }
 
-    // test modification with invalid email inputs on a guest acct
+    // test modification with invalid email inputs on a hotel acct
     @Test
-    public void invalidEmailG() throws Exception {
+    public void invalidEmailH() throws Exception {
         WebDriver driver = WebDriverRunner.getWebDriver();
 
         // select modify account info
@@ -162,42 +180,16 @@ public class ModificationTest {
         mod.emailError.shouldHave(text("Invalid email format"));
     }
 
-    // test modification of a guest acct with email that is already associated with
-    // a guest acct
+    // test modification of a hotel acct with email that is already associated with
+    // a hotel acct
     @Test
-    public void duplicateEmailG() throws Exception {
+    public void duplicateEmailH() throws Exception {
         WebDriver driver = WebDriverRunner.getWebDriver();
 
         // select modify account info
         mod.editBtn.click();
 
         // Fill in registration form fields with duplicate email data
-        mod.fname.setValue("John");
-        mod.lname.setValue("Doe");
-        mod.email.setValue("gc@gmail.com");
-        mod.phone.setValue("+11234567899");
-
-        // Submit the form
-        mod.updateBtn.click();
-        Thread.sleep(1000);
-
-        // Check if the error message is visible
-        mod.emailError.shouldBe(visible);
-
-        // Check the content of the error message
-        mod.emailError.shouldHave(text("Email already in use"));
-    }
-
-    // test modification of a guest acct with email that is already associated with
-    // a hotel acct
-    @Test
-    public void duplicateHEmailG() throws Exception {
-        WebDriver driver = WebDriverRunner.getWebDriver();
-
-        // select modify account info
-        mod.editBtn.click();
-
-        // Fill in registration form fields with valid data
         mod.fname.setValue("John");
         mod.lname.setValue("Doe");
         mod.email.setValue("vip@hotel.com");
@@ -214,9 +206,61 @@ public class ModificationTest {
         mod.emailError.shouldHave(text("Email already in use"));
     }
 
-    // // test modification with invalid password on a guest acct
+    // test modification of a hotel acct with email that is already associated with
+    // a guest acct
+    @Test
+    public void duplicateGEmailH() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+
+        // select modify account info
+        mod.editBtn.click();
+
+        // Fill in registration form fields with valid data
+        mod.fname.setValue("John");
+        mod.lname.setValue("Doe");
+        mod.email.setValue("jack@guest.com");
+        mod.phone.setValue("+11234567899");
+
+        // Submit the form
+        mod.updateBtn.click();
+        Thread.sleep(1000);
+
+        // Check if the error message is visible
+        mod.emailError.shouldBe(visible);
+
+        // Check the content of the error message
+        mod.emailError.shouldHave(text("Email already in use"));
+    }
+
+    // test modification of a hotel acct with invalid zip code input
+    @Test
+    public void invalidZipH() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+
+        // select modify account info
+        mod.editBtn.click();
+
+        // Fill in registration form fields with valid data
+        mod.zip.setValue("   ");
+        mod.lname.setValue("Doe");
+        mod.email.setValue("jack@guest.com");
+        mod.phone.setValue("+11234567899");
+
+        // Submit the form
+        mod.updateBtn.click();
+        Thread.sleep(1000);
+
+        // Check if the error message is visible
+        mod.zipError.shouldBe(visible);
+
+        // Check the content of the error message
+        mod.zipError.shouldHave(text("Zip Code is required"));
+    }
+
+    // // test modification with invalid password on a hotel acct(problem: no error
+    // message atm)
     // @Test
-    // public void invalidPasswordG() throws Exception {
+    // public void invalidPasswordH() throws Exception {
     // WebDriver driver = WebDriverRunner.getWebDriver();
 
     // // select modify account info
@@ -419,4 +463,5 @@ public class ModificationTest {
     // registration.submitBtn.click();
     // Thread.sleep(1000);
     // }
+
 }
