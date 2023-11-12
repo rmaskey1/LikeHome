@@ -281,7 +281,7 @@ function BookingForm() {
   const nights = Math.floor(
     (new Date(roomData.endDate).getTime() -
       new Date(roomData.startDate).getTime()) /
-      (24 * 3600 * 1000)
+    (24 * 3600 * 1000)
   );
   const subtotal = roomData.price * nights;
   const tax = subtotal * 0.08;
