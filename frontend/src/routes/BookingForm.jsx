@@ -5,7 +5,6 @@ import React, { useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Ellipsis } from "react-spinners-css";
 import { useQuery } from "react-query";
-import { format, parse } from "date-fns";
 
 const Container = styled.main`
   width: 100vw;
