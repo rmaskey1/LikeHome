@@ -102,7 +102,7 @@ def guest_modification_func(app):
                         hotel_name = user_data['hotelName']
                         if hotel_name == None:
                             abort(make_response(jsonify(message="This hotel user has no hotel"), 400))
-                        dPastBookingG=pastBooking_collection.where('hid','==', hotel_name).stream()
+                        dPastBookingG=pastBooking_collection.where('hid','==', uid).stream()
                         
                         # Check if any room associated with the hotel has bookings
                         
