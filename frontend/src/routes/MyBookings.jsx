@@ -30,6 +30,16 @@ const SectionTitle = styled.div`
   font-weight: 400;
 `;
 
+const ErrorSectionTitle = styled.div`
+  margin-top: 20px;
+  font-size: 23px;
+  font-weight: 400;
+  text-align: center; //center horizontally
+  //margin-top: 50px;
+  margin-top: 20%; //center vertically
+  transform: translate(0, -50%); //vertical center
+`;
+
 const SubTitle = styled.div`
   font-size: 20px;
   font-weight: 400;
@@ -107,7 +117,7 @@ const Card = (booking) => {
   });
 
   return (
-    <CardContainer>
+    <CardContainer className="booking-card">
       <Link
         to={`/room/${booking.rid}`}
         state={booking}
@@ -115,7 +125,7 @@ const Card = (booking) => {
       >
         <RoomImage src={booking.imageUrl} alt="Room" />
         <DetailsContainer>
-          <SectionTitle>{booking.hotelName}</SectionTitle>
+          <SectionTitle >{booking.hotelName}</SectionTitle>
           <Divider />
           <IconWithText>
             <CalendarIcon style={{ marginRight: "15px" }} />
@@ -147,16 +157,17 @@ const Card = (booking) => {
 function MyBookings() {
   const { isLoading, data } = useQuery(["myBooking"], getMyBooking);
 
-  console.log(data);
-
   return (
     <Container>
       <ListingTitle>My Bookings:</ListingTitle>
       {isLoading ? (
         [1, 2].map((i) => <CardLoading key={i} />)
-      ) : data.message ? (
+      ) : data && data.message ? (
         <ErrorMessageArea>{data.message}</ErrorMessageArea>
+      ) : data && data.length === 0 ? (
+        <ErrorSectionTitle>No bookings made!</ErrorSectionTitle>
       ) : (
+        data &&
         data.map((booking) => (
           <Card
             key={booking.rid} // Ensure each card has a unique key

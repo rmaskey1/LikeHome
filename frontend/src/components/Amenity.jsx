@@ -36,85 +36,85 @@ function Amenity({ item }) {
       {item === "freewifi" && (
         <>
           <WifiIcon />
-          <span>Free Wifi</span>
+          <span className="amenities-descr">Free Wifi</span>
         </>
       )}
       {item === "pool" && (
         <>
           <PoolIcon />
-          <span>Pool</span>
+          <span className="amenities-descr">Pool</span>
         </>
       )}
       {item === "tv" && (
         <>
           <TvIcon />
-          <span>TV</span>
+          <span className="amenities-descr">TV</span>
         </>
       )}
       {item === "freewasherinunit" && (
         <>
           <LaundryIcon />
-          <span>Free Washer - In Unit</span>
+          <span className="amenities-descr">Free Washer - In Unit</span>
         </>
       )}
       {item === "freedryerinunit" && (
         <>
           <LaundryIcon />
-          <span>Free Dryer - In Unit</span>
+          <span className="amenities-descr">Free Dryer - In Unit</span>
         </>
       )}
       {item === "freeparking" && (
         <>
           <ParkingIcon />
-          <span>Free Parking</span>
+          <span className="amenities-descr">Free Parking</span>
         </>
       )}
       {item === "airconditioning" && (
         <>
           <AirConIcon />
-          <span>Air Conditioning</span>
+          <span className="amenities-descr">Air Conditioning</span>
         </>
       )}
       {item === "freebreakfast" && (
         <>
           <FoodIcon />
-          <span>Free Breakfast</span>
+          <span className="amenities-descr">Free Breakfast</span>
         </>
       )}
       {item === "freelunch" && (
         <>
           <FoodIcon />
-          <span>Free Lunch</span>
+          <span className="amenities-descr">Free Lunch</span>
         </>
       )}
       {item === "freedinner" && (
         <>
           <FoodIcon />
-          <span>Free Dinner</span>
+          <span className="amenities-descr">Free Dinner</span>
         </>
       )}
       {item === "microwave" && (
         <>
           <MicrowaveIcon />
-          <span>Microwave</span>
+          <span className="amenities-descr">Microwave</span>
         </>
       )}
       {item === "refrigerator" && (
         <>
           <FridgeIcon />
-          <span>Refrigerator</span>
+          <span className="amenities-descr">Refrigerator</span>
         </>
       )}
       {item === "petfriendly" && (
         <>
           <PetIcon />
-          <span>Pet Friendly</span>
+          <span className="amenities-descr">Pet Friendly</span>
         </>
       )}
       {item === "spa" && (
         <>
           <SpaIcon />
-          <span>Spa</span>
+          <span className="amenities-descr">Spa</span>
         </>
       )}
     </Container>

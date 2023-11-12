@@ -52,7 +52,7 @@ const Container = styled.div`
 const DoubleBookingWarning = ({ onConfirm }) => {
   return (
     <Dimmed>
-      <Container>
+      <Container id="doubleBooking-warning">
         <div>
           <div
             style={{
@@ -70,7 +70,7 @@ const DoubleBookingWarning = ({ onConfirm }) => {
             </StyledP>
           </div>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <Button onClick={onConfirm}>Ok</Button>
+            <Button id="doubleBookedConfirm-btn" onClick={onConfirm}>Ok</Button>
           </div>
         </div>
       </Container>

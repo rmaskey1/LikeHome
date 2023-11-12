@@ -80,8 +80,8 @@ const LeftBox = styled.div`
 const Button = styled.button`
   background-color: transparent;
   cursor: pointer;
-  font-size: 19px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: bold;
 `;
 
 const ErrorText = styled.div`
@@ -155,7 +155,9 @@ function AccountMod() {
   return (
     <>
       <LeftBox>
-        <Button onClick={() => navigate(-1)} id="back-btn">Back</Button>
+        <Button onClick={() => navigate(-1)} id="back-btn">
+          Back
+        </Button>
       </LeftBox>
       <Container>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -372,7 +374,7 @@ function AccountMod() {
           </div>
 
           <SubTitle>Password</SubTitle>
-          <Input {...register("password", {})} type="password"  id="passw"/>
+          <Input {...register("password", {})} type="password" id="passw" />
 
           <SubTitle>Phone Number</SubTitle>
           <Input

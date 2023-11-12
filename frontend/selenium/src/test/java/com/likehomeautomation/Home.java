@@ -6,6 +6,7 @@ import static com.codeborne.selenide.Selenide.$x;
 
 public class Home {
     public SelenideElement addBtn = $x("//*[@id='add-btn']");
+    public SelenideElement myBookingBtn = $x("//*[@id='myBooking-btn']");
     public SelenideElement profileBtn = $x("//*[@id='profile-link']");
     public SelenideElement logoutBtn = $x("//*[@id='logoutBtn']");
     public SelenideElement responseCode = $x("//*[@id='home-response-code']");

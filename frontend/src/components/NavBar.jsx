@@ -80,7 +80,7 @@ function NavBar() {
               <LeftBox>
                 <Link to={"/home"}>Home</Link>
                 {userinfo?.accountType !== "hotel" && (
-                  <Link to="mybooking">MyBooking</Link>
+                  <Link id="myBooking-btn" to="mybooking">MyBooking</Link>
                 )}
                 <Link to={`profile/${localStorage.uid}`} id="profile-link">Profile</Link>
               </LeftBox>

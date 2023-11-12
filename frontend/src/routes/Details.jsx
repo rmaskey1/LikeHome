@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Modal from "react-modal";
 
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-//import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { ReactComponent as PersonIcon } from "../icons/person-fill.svg";
 import { ReactComponent as BedIcon } from "../icons/bed.svg";
@@ -239,8 +238,10 @@ function Details() {
   const navigate = useNavigate();
   const [roomData, setRoomData] = useState(null);
   const { state: stateData } = useLocation();
-  const [showDoubleBookingWarning, setShowDoubleBookingWarning] = useState(false);
-  const isDoubleBooking = true; //check if double booking here!
+
+  const [showDoubleBookingWarning, setShowDoubleBookingWarning] =
+    useState(false);
+  const [isDoubleBooking, setIsDoubleBooking] = useState(false); //check if double booking here!
 
   const rid = params.id;
   const userinfo = localStorage.userinfo
@@ -290,8 +291,13 @@ function Details() {
 
   const isGuest = userinfo.accountType === "guest";
 
-  const isReserved =
-    isGuest && !bookingIsLoading && bookingData.find((b) => b.rid === rid);
+  const isReserved = //BANDAID SOLUTION!! please look into it more INTEGRATIONS!!
+    isGuest &&
+    !bookingIsLoading &&
+    Array.isArray(bookingData) &&
+    bookingData.find((b) => b.rid === rid);
+
+  //isGuest && !bookingIsLoading && bookingData.find((b) => b.rid === rid);
 
   const { isLoading, data: fetchData } = useQuery(["listing"], () =>
     getListing(rid)
@@ -304,13 +310,45 @@ function Details() {
 
   const handleConfirm = () => {
     setShowDoubleBookingWarning(false);
-  }
+  };
+
+  const getDaysArray = (start, end) => {
+    for (
+      var arr = [], dt = new Date(start);
+      dt <= new Date(end);
+      dt.setDate(dt.getDate() + 1)
+    ) {
+      arr.push(new Date(dt));
+    }
+    return arr;
+  };
+
+  useEffect(() => {
+    let bookedDates = [];
+
+    if (Array.isArray(bookingData)) {
+      //wrapped this in an array bc it was giving "bookingData.forEach is not a function" errors
+      bookingData.forEach((b) => {
+        bookedDates = [...bookedDates, ...getDaysArray(b.startDate, b.endDate)];
+      });
+    }
+
+    roomData &&
+      getDaysArray(roomData.startDate, roomData.endDate).forEach((date) => {
+        for (let i = 0; i < bookedDates.length; i++) {
+          if (bookedDates[i].getTime() === date.getTime()) {
+            setIsDoubleBooking(true);
+            break;
+          }
+        }
+      });
+  }, [bookingData, roomData]);
 
   return (
     <Container>
       {roomData === null ? (
         "Loading..."
-      ) : (
+          ) : (
         <>
           <div
             style={{
@@ -320,7 +358,7 @@ function Details() {
             }}
           >
             <div style={{ marginRight: "525px" }}>
-              <HotelName>{roomData.hotelName}</HotelName>
+              <HotelName id="hotelName">{roomData.hotelName}</HotelName>
             </div>
             <div>
               {userinfo.accountType === "hotel" && (
@@ -328,7 +366,10 @@ function Details() {
                   . . .
                   {isDropdownOpen && (
                     <DropdownContent>
-                      <DropdownItem id="edit-btn" onClick={handleEditListingClick}>
+                      <DropdownItem
+                        id="edit-btn"
+                        onClick={handleEditListingClick}
+                      >
                         Edit Listing
                       </DropdownItem>
                       <DropdownItem id="delete-btn" onClick={openDeleteModal}>
@@ -352,18 +393,22 @@ function Details() {
             </ImgContainer>
 
             {isGuest && isReserved ? (
-              <Reserve>
+              <Reserve id="reserved-container">
                 <div>You are currently reserving this listing.</div>
                 <Reservebtn
+                    id="modify-booking-btn"
                   onClick={() =>
                     navigate(`/mybooking/${rid}/modify`, {
                       state: { roomData, numGuests },
-                    })
+                    }
+                    )
                   }
+
                 >
                   Modify Booking
                 </Reservebtn>
                 <Reservebtn
+                    id="cancel-booking-btn"
                   onClick={() =>
                     navigate(`/mybooking/${rid}/cancel`, {
                       state: { roomData, numGuests },
@@ -377,10 +422,11 @@ function Details() {
               //Render the default reserve container if not a guest or not reserved
               <Reserve>
                 <div>
-
-                  <span id="price-detail" style={{ fontSize: "30px", fontWeight: 600 }}>
+                  <span
+                    id="price-detail"
+                    style={{ fontSize: "30px", fontWeight: 600 }}
+                  >
                     ${roomData.price}
-
                   </span>{" "}
                   <span style={{ fontSize: "20px", fontWeight: 400 }}>
                     per night
@@ -390,7 +436,6 @@ function Details() {
                   <ReserveDateContainer>
                     <ReserveInputContainer>
                       <ReserveInputLabel>Check-in Date</ReserveInputLabel>
-
                       <ReserveDate id="fromDate-detail">
                         {dateFormatted(roomData.startDate)}
                       </ReserveDate>
@@ -400,7 +445,6 @@ function Details() {
                       <ReserveDate id="toDate-detail">
                         {dateFormatted(roomData.endDate)}
                       </ReserveDate>
-
                     </ReserveInputContainer>
                   </ReserveDateContainer>
                   <ReserveDateContainer>
@@ -435,17 +479,20 @@ function Details() {
                   </ReserveDateContainer>
                 </ReserveForm>
                 <Reservebtn
-                    onClick={() => {
-                      if (isDoubleBooking) {
-                        setShowDoubleBookingWarning(true);
-                      } else {
-                        navigate("book", { state: { roomData, numGuests } });
-                      }
-                    }}
-                  >
+                    id="reserve-btn"
+                  onClick={() => {
+                    if (isDoubleBooking) {
+                      setShowDoubleBookingWarning(true);
+                    } else {
+                      navigate("book", { state: { roomData, numGuests } });
+                    }
+                  }}
+                >
                   Reserve
                 </Reservebtn>
-                {isDoubleBooking && (< DoubleBookingWarning onConfirm={handleConfirm}/>)}
+                {showDoubleBookingWarning && (
+                  <DoubleBookingWarning onConfirm={handleConfirm} />
+                )}
               </Reserve>
             )}
           </Board>
@@ -454,27 +501,28 @@ function Details() {
             <h1>Room Details</h1>
             <DetailItem>
               <PersonIcon />
-
               <span id="guests-detail">{roomData.numberGuests} Guests</span>
             </DetailItem>
             <DetailItem>
               <BedIcon />
-              <span id="beds-detail">
-                {roomData.numberOfBeds} Beds / 2 <span id="bedType-detail">{roomData.bedType}</span>
-              </span>
+              <span id="beds-detail">{roomData.numberOfBeds} Bed(s) <span id="bedType-detail">({roomData.bedType})</span></span>
             </DetailItem>
             <DetailItem>
               <SinkIcon />
-              <span id="bathrooms-detail">{roomData.numberOfBathrooms} Bath</span>
-
+              <span id="bathrooms-detail">
+                {roomData.numberOfBathrooms} Bath
+              </span>
             </DetailItem>
           </Detail>
           <Divider />
-          <Detail id="amenities-detail">
+
+          <Detail >
             <h1>Amenities</h1>
-            {roomData.Amenities.map((item, i) => (
-              <Amenity key={i} item={item} />
-            ))}
+            <div id="amenities-detail">
+              {roomData.Amenities.map((item, i) => (
+                <Amenity key={i} item={item} />
+              ))}
+            </div>
           </Detail>
           <Divider />
           <Detail>
@@ -554,16 +602,16 @@ function Details() {
               }}
             >
               <div style={{ marginRight: "20px" }}>
-                <Buttons onClick={deleteListing}>Yes</Buttons>
+                <Buttons id="confirm-delete-btn" onClick={deleteListing}>Yes</Buttons>
               </div>
               <div>
-                <Buttons onClick={closeDeleteModal}>No</Buttons>
+                <Buttons id="cancel-delete-btn" onClick={closeDeleteModal}>No</Buttons>
               </div>
             </div>
           </Modal>
-        </>)}
-
-      {/*<input type="hidden" id="modify-response-code" value={state.state}/>*/}
+        </>
+              )
+      }
     </Container>
   );
 }
