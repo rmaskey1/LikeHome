@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Modal from "react-modal";
 
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+//import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { ReactComponent as PersonIcon } from "../icons/person-fill.svg";
 import { ReactComponent as BedIcon } from "../icons/bed.svg";
