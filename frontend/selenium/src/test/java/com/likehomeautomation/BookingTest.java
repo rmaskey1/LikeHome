@@ -17,9 +17,14 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.awt.print.Book;
+import java.sql.Date;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,9 +35,10 @@ public class BookingTest {
     Login login = new Login();
     Home home = new Home();
 
+    ModifyListing modify = new ModifyListing();
+
     Details details = new Details();
     BookingForm bookingForm = new BookingForm();
-    MyBookings myBookings = new MyBookings();
 
     @BeforeAll
     public static void setUpAll() {
@@ -151,6 +157,81 @@ public class BookingTest {
         assert(!checkExistsMyBookings(bookingList, hotelToCancel));
     }
 
+    /**
+     * Feature (ban double booking) isn't implemented yet
+     * placeholder for now
+     */
+//    @Test
+//    public void doubleBookingBan_check() throws Exception {
+//        WebDriver driver = WebDriverRunner.getWebDriver();
+//        loginAsGuest();
+//        Thread.sleep(500);
+//        home.myBookingBtn.click();
+//        Thread.sleep(2000);
+//        try{
+//            driver.findElements(By.className("booking-card")).get(0).click();
+//        }
+//        catch(IndexOutOfBoundsException e){
+//            String hotelName = findAvailableRoom(driver);
+//            Thread.sleep(1000);
+//            System.out.println("[doubleBookingBan_check()] hotelName = " + hotelName);
+//            assert(!hotelName.equals("!!! No available room !!!"));
+//            enterCardInfo("378282246310005", "1234", "05/29");
+//            Thread.sleep(1000);
+//            bookingForm.submitBtn.click();
+//            Thread.sleep(2000);
+//            bookingForm.bookingSuccessBtn.click();
+//            Thread.sleep(1000);
+//            driver.findElements(By.className("booking-card")).get(0).click();
+//            Thread.sleep(1500);
+//        }
+//        //room booked
+//        //get dates
+//        // try to book again
+//        // should not be able to
+//    }
+
+    @Test
+    public void cancellationPolicy_feeCharged() throws Exception {
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        // make sure listing has start date within 3 days
+        modifyListingForCancelFee();
+        open("/login");
+        Thread.sleep(1000);
+        loginAsGuest();
+        Thread.sleep(1000);
+        open("/room/1VvC2T7Qo9UZ8f52rW44");
+        Thread.sleep(500);
+
+        // if not already reserved --> reserve it
+        if(!details.reservedContainer.isDisplayed()){
+            details.reserveBtn.click();
+            Thread.sleep(1000);
+            enterCardInfo("378282246310005", "1234", "05/29");
+            Thread.sleep(1000);
+            bookingForm.submitBtn.click();
+            Thread.sleep(2000);
+            bookingForm.bookingSuccessBtn.click();
+            Thread.sleep(1000);
+        }
+        open("/mybooking");
+        Thread.sleep(1000);
+        
+        // calculate expected cancellation fee
+        List<WebElement> bookingList = driver.findElements(By.className("booking-card"));
+        WebElement selectedBooking = findCardMyBookings(bookingList, "VipHotel");
+        double cancelFee = calculateCancelFee(parseTotalFromBooking(selectedBooking));
+        System.out.println("[cancellationPolicy_feeCharged()] cancelFee = " + cancelFee);
+        Thread.sleep(1000);
+
+        open("/room/1VvC2T7Qo9UZ8f52rW44");
+        Thread.sleep(1000);
+        details.cancelBookingBtn.click();
+        Thread.sleep(1000);
+
+        assertEquals(bookingForm.cancelFee.text(), cancelFee+"");
+    }
+
     boolean checkExistsMyBookings(List<WebElement> bookingList, String hotelName){
         System.out.println("[checkNewBookingExists()]: " + hotelName);
         for(WebElement b: bookingList){
@@ -166,6 +247,23 @@ public class BookingTest {
             }
         }
         return false;
+    }
+
+    WebElement findCardMyBookings(List<WebElement> bookingList, String hotelName){
+        System.out.println("[findCardMyBookings()]: " + hotelName);
+        for(WebElement b: bookingList){
+            try{
+                String[] hotelInfo = b.getText().split("\\r?\\n|\\r");
+                System.out.println("Checking: " + hotelInfo[0]);
+                if(hotelInfo[0].equals(hotelName)){
+                    return b;
+                }
+            }
+            catch(StaleElementReferenceException e){
+                return null;
+            }
+        }
+        return null;
     }
 
     String findAvailableRoom(WebDriver driver){
@@ -211,6 +309,80 @@ public class BookingTest {
         login.password.sendKeys("123456");
         login.submitBtn.click();
         Thread.sleep(3000);
+    }
+
+    void loginAsHotel() throws Exception{
+        login.email.sendKeys("vip@hotel.com");
+        login.password.sendKeys("123456");
+        login.submitBtn.click();
+        Thread.sleep(3000);
+    }
+
+    double calculateCancelFee(double price){
+        return 0.2 * price;
+    }
+
+    double parseTotalFromBooking(WebElement booking){
+        if(booking != null){
+            try{
+                String[] hotelInfo = booking.getText().split("\\r?\\n|\\r");
+                System.out.println("[parseTotalFromBooking()] Parsing Total from: " + hotelInfo[0]);
+//                for(int i = 0; i < hotelInfo.length; i++){
+//                    System.out.println("[parseTotalFromBooking()] hotelInfo["+i+"] = " + hotelInfo[i]);
+//                }
+                String sPrice = hotelInfo[4].replaceAll("[A-za-z,$:]","");
+                System.out.println("[parseTotalFromBooking()] sPrice = " + sPrice);
+                return Double.parseDouble(sPrice);
+
+            }
+            catch(StaleElementReferenceException e){
+                return -1.0;
+            }
+        }
+        return -1.0;
+    }
+
+    void modifyListingForCancelFee() throws Exception{
+        if(home.logoutBtn.isDisplayed()){
+            home.logoutBtn.click();
+            open("/login");
+        }
+        loginAsHotel();
+        open("/room/1VvC2T7Qo9UZ8f52rW44");
+        try{
+            Thread.sleep(2000);
+            details.dropdownBtn.click();
+            Thread.sleep(500);
+            details.editBtn.click();
+            Thread.sleep(1000);
+
+            String dateString = new SimpleDateFormat("MM/dd/yyyy").format(new Date(System.currentTimeMillis()));
+            System.out.println("[modifyListingForCancelFee()] dateString = " + dateString);
+
+            modify.fromDate.clear();
+            modify.fromDate.sendKeys(dateString);
+            modify.submitBtn.click();
+            Thread.sleep(2000);
+
+            if(modify.toDateError.isDisplayed())
+                tempFixToDateFormat();
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        open("/home");
+        Thread.sleep(500);
+        home.logoutBtn.click();
+        Thread.sleep(500);
+        open("/login");
+
+    }
+
+    void tempFixToDateFormat(){
+        modify.toDate.clear();
+        modify.toDate.sendKeys("07/19/2024");
+        modify.submitBtn.click(); //reattempts submission
+
     }
 
     void enterCardInfo(String num, String cvc, String exp){
