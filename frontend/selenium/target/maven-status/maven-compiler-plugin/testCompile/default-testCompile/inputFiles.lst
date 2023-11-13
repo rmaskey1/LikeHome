@@ -1,8 +1,28 @@
+<<<<<<< HEAD
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\Details.java
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\ModifyAccount.java
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\BookingForm.java
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\LoginTest.java
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\RegisterAccount.java
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\BookingTest.java
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\ModifyAccountTest.java
+=======
 C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\RegisterTest.java
 C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\Details.java
 C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\LoginTest.java
+>>>>>>> b96abdebdfc0b6a728405f0d502c3dca76eef3d7
 C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\ModifyListingTest.java
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\DeleteListingTest.java
 C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\AddListingTest.java
+<<<<<<< HEAD
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\ModifyBooking.java
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\MyBookings.java
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\Login.java
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\RegisterAccountTest.java
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\ModifyBookingTest.java
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\AddListing.java
+C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\Home.java
+=======
 C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\Register.java
 C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\Login.java
 C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\HotelAccountModificationTest.java
@@ -10,4 +30,5 @@ C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\
 C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\AddListing.java
 C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\Home.java
 C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\ModificationTest.java
+>>>>>>> b96abdebdfc0b6a728405f0d502c3dca76eef3d7
 C:\Users\Gcrab\OneDrive\Documents\GitHub\cmpe165-likehome\frontend\selenium\src\test\java\com\likehomeautomation\ModifyListing.java
