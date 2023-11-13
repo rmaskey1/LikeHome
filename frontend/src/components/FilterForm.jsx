@@ -86,6 +86,7 @@ const SubmitButton = styled.button`
 
 const ClButton = styled.button`
   cursor: pointer;
+  background: transparent;
   &:hover {
     color: red;
   }
