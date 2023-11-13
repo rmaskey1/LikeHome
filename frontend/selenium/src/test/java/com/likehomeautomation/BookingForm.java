@@ -23,6 +23,7 @@ public class BookingForm {
     public SelenideElement cardNumError = $x("//*[@id='cardNum-error']");
     public SelenideElement cardExpError = $x("//*[@id='cardExp-error']");
     public SelenideElement cardCvcError = $x("//*[@id='cardCvc-error']");
+    public SelenideElement cancelFeeWarning = $x("//*[@id='cancel-fee-warning']");
 
     // alerts
     public SelenideElement bookingSuccess = $x("//*[@id='successfulBooking-alert']");

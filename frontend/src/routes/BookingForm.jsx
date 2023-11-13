@@ -427,7 +427,7 @@ function BookingForm() {
             </BookingRequest>
 
             {isCancelRoute && threeDaysPrior(currentDate, checkInDate) && (
-              <CheckInWarning>
+              <CheckInWarning id="cancel-fee-warning">
                 You have cancellations fees because you are canceling within 3
                 days of your check-in date.
               </CheckInWarning>
