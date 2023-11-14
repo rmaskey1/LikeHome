@@ -163,18 +163,6 @@ function ModifyBooking() {
   const onSubmit = async (formData) => {
     const { guests } = formData;
 
-    const datesAvailable = checkAvailability(formData.endDate, roomData);
-    console.log("dates avail", datesAvailable);
-    console.log("form end", formData.endDate);
-
-    if (!datesAvailable) {
-      setError("datesAvailable", {
-        type: "manual",
-        message: "The listing is not available on the dates you've selected.",
-      });
-      return;
-    }
-
     setIsFetching(true);
     console.log(formData);
     const response = await fetch(`${SERVER_URL}/bookings/${roomData.rid}`, {
@@ -226,8 +214,15 @@ function ModifyBooking() {
                     return "Date must be in the future";
                   // Check if it's after fromDate
                   if (new Date(value) <= new Date(roomData.endDate))
-                    return "Date must be after From Date";
+                    return "Date must be after Check-in Date";
                   //return true;
+
+                  // Check availability
+                  const datesAvailable = checkAvailability(value, roomData);
+
+                  if (!datesAvailable) {
+                    return "The listing is not available on the date you've selected.";
+                  }
                 },
               },
             })}
