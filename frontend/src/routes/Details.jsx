@@ -12,6 +12,7 @@ import "react-calendar/dist/Calendar.css";
 import { SERVER_URL, getListing, getMyBooking } from "api";
 import Amenity from "components/Amenity";
 import DoubleBookingWarning from "components/DoubleBookingWarning";
+import Reviews from "components/Reviews";
 
 const Container = styled.main`
   display: flex;
@@ -580,6 +581,10 @@ function Details() {
             </div>
           </Detail>
           <Divider />
+          <Detail>
+            <h1>Hotel Reviews</h1>
+            <Reviews />
+          </Detail>
           <Detail>
             <h1>Cancellation Policy</h1>
             <DetailItem>
