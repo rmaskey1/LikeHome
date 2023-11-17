@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import styled from "styled-components";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -196,9 +196,11 @@ function ModifyListing() {
     const data = await response.json();
     console.log("[ModifyListing Submitted]: " + response.status, data);
 
+    console.log("location state", location.state);
+
     if (response.ok) {
       navigate(location.pathname.replace("/modify", ""), {
-        state: response.status,
+        state: { status: response.status, roominfo: location.state },
       });
     }
   };
