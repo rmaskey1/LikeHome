@@ -5,7 +5,7 @@ import requests
 import datetime
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, request, jsonify, make_response, abort
-from database import updateHotelDetails, updatePassword, getUid, updateInfomation, getUserEmail, db, getUserPhone, db
+from database import updateHotelDetails, updatePassword, getUid, updateInfomation, getUserEmail, db, getUserPhone, db, roomBooked
 
 
 def guest_modification_func(app):
@@ -73,18 +73,66 @@ def guest_modification_func(app):
         elif method == 'DELETE':
             # after authentication, should delete user and automatically delete user data too
             try:
+                #Both guest and hotel deletion delete relevant pastBookings
+                pastBooking_collection=db.collection('pastBooking')
                 user_ref = db.collection('user').document(uid)
                 doc = user_ref.get()
+                user_data = doc.to_dict()
 
-                if 'bookedRooms' in doc.to_dict():
+                account_type = user_data['accountType']
+                if account_type == 'guest':
                     booked_rooms = doc.to_dict()['bookedRooms']
+                    #for guest, delete past booking by gid (which is just the uid)
+                    dPastBookingG=pastBooking_collection.where('gid', '==', uid).stream()
+                    
                     if (len(booked_rooms) > 0):
                         abort(make_response(
                             jsonify(message="Cannot delete; User has a booked room"), 400))
                     else:
                         auth.delete_user(uid)
-                else:
-                    auth.delete_user(uid)
+                        for d in dPastBookingG:
+                            print((str)(d.to_dict()))
+                            d.reference.delete()
+                        
+                elif account_type == 'hotel':
+                    if 'listedRooms' in user_data:
+                        listed_rooms = doc.to_dict()['listedRooms']
+                        
+                        #for hotel, delete past booking by hid (hotelName)
+                        hotel_name = user_data['hotelName']
+                        if hotel_name == None:
+                            abort(make_response(jsonify(message="This hotel user has no hotel"), 400))
+                        dPastBookingG=pastBooking_collection.where('hid','==', hotel_name).stream()
+                        
+                        # Check if any room associated with the hotel has bookings
+                        
+                        room_ids = user_data.get('listedRooms', [])  
+
+                        #for each room, search guest user collection for a matching booked room by rid. (Guests use the bookedRooms array, so query by those) 
+                        users_collection=db.collection('user')
+                        for rid in room_ids:
+                            print("RID:",rid)
+                            query = users_collection.where('bookedRooms', 'array_contains', rid)
+                            users=query.stream()
+                            #get the rooms of the hotel to delete (rids are all from hotel's listedRooms)
+                            rooms_collection=db.collection('room')
+                            dRoom=rooms_collection.document((str)(rid))
+                            
+                            #should get the users that booked this room if any
+                            matching_users = [user.to_dict() for user in users]
+                            print(matching_users)
+                            
+                            if len(matching_users)!=0:
+                                abort(make_response(jsonify(message="Cannot delete; Hotel user has rooms with bookings"), 400))
+                            else:
+                                #delete the hotel user from auth, their rooms from room collection, and 
+                                #all pastbookings under that hotel name
+                                auth.delete_user(uid)
+                                dRoom.delete()
+                                for d in dPastBookingG:
+                                    d.reference.delete()
+                                break
+
                 # delete them from the db in addition to deleting from auth
                 if user_ref.get().exists:
                     user_ref.delete()
@@ -94,9 +142,6 @@ def guest_modification_func(app):
             except auth.UserNotFoundError:
                 abort(make_response(jsonify(message="User doesn't exist"), 404))
 
-            # except auth.AuthError as e:
-            #     abort(make_response(jsonify(message=f"Error deleting user: {str(e)}"), 500))
-
     @app.route('/reward', methods=['PUT'])
     def reward_points_modification():
         uid = getUid()
@@ -105,6 +150,89 @@ def guest_modification_func(app):
         user_ref.update({'rewardPoints': data['rewardPoints']})
         user_data = user_ref.get().to_dict()
         return jsonify(user_data)
+
+
+
+
+
+
+
+
+    #THIS IS JUST A TESTING METHOD, REMOVE WHEN DONE
+    @app.route('/deleteT', methods=['GET'])
+    def deleteTest():
+        # after authentication, should delete user and automatically delete user data too
+        pastBooking_collection=db.collection('pastBooking')
+        try:
+            rooms_collection=db.collection('room')
+            pastBook_collection=db.collection('pastBooking')
+            
+            user_ref = db.collection('user').document(getUid())
+            doc = user_ref.get()
+            user_data = doc.to_dict()
+
+            account_type = user_data['accountType']
+            if account_type == 'guest':
+                booked_rooms = doc.to_dict()['bookedRooms']
+                dPastBooking=pastBooking_collection.where('gid', '==', getUid()).stream()
+                print("dPastBooking:")
+                for d in dPastBooking:
+                    print((str)(d.to_dict()))
+                if (len(booked_rooms) > 0):
+                    abort(make_response(jsonify(message="Cannot delete; User has a booked room"), 400))
+                else:
+                    return jsonify({'message': f'Should delete here'})
+                    #auth.delete_user(uid)
+                    #if dPastBooking.exists:
+                        #dPastBooking.delete()
+            elif account_type == 'hotel':
+                if 'listedRooms' in user_data:
+                    listed_rooms = doc.to_dict()['listedRooms']
+                    hotel_name = user_data['hotelName']
+                    if hotel_name == None:
+                        abort(make_response(jsonify(message="This hotel user has no hotel"), 400))
+                        
+                    dPastBooking=pastBooking_collection.where('hid','==', hotel_name).stream()
+                    print("pastbooking:")
+                    
+                    for d in dPastBooking:
+                        print((str)(d.to_dict()))
+
+                    # Check if any room associated with the hotel has bookings
+
+                    room_ids = user_data.get('listedRooms', [])  
+
+                    #for each room, search guest user collection for a matching booked room by rid. (Guests use the bookedRooms array, so query by those)    
+
+                    users_collection=db.collection('user')
+
+                    for rid in room_ids:
+                        print("RID:",rid)
+                        query = users_collection.where('bookedRooms', 'array_contains', rid)
+                        users=query.stream()
+                        
+                        rooms_collection=db.collection('room')
+                        dRoom=rooms_collection.document((str)(rid))
+                        
+                        #should get the users that booked this room if any
+                        matching_users = [user.to_dict() for user in users]
+                        print("matchingusers:",matching_users)
+                        print("dRoom:",dRoom)
+                        
+                        if len(matching_users)!=0:
+                            abort(make_response(jsonify(message="Cannot delete; Hotel user has rooms with bookings"), 400))
+                        else:
+                            #auth.delete_user(uid)
+                            #dRoom.delete()
+                            #
+                            return jsonify({'message': f'Should delete here'})
+                            
+            
+                      
+        except auth.UserNotFoundError:
+            abort(make_response(jsonify(message="User doesn't exist"), 404))
+
+
 
 # Function to verify phone
 def is_valid_phone_number(phone_number):
