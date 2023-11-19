@@ -8,21 +8,32 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoginAtom } from "../atom";
 import { SERVER_URL } from "api";
 import { Ellipsis } from "react-spinners-css";
+import background1 from "../img/hotel-room2.jpg";
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: column;
+  align-items: center;
   width: 400px;
   height: 500px;
-  margin: 100px auto;
   padding: 0 40px;
   border: 1px solid rgba(41, 53, 69, 0.5);
   border-radius: 20px;
+  background-color: white;
+  margin-top: 50px;
+`;
+
+const OuterContainer = styled.div`
+  display: flex;
+  height: 100vh;
+  background-color: pink;
+  align-items: center;
+  justify-content: center;
+  background-image: url(${background1});
+  background-size: cover;
 `;
 
 const FormTitle = styled.div`
-  margin-top: 30px;
+  margin-top: 70px;
   font-size: 35px;
   font-weight: 700;
   color: #293545;
@@ -162,61 +173,63 @@ function Login() {
   }, [isLogin, navigate]);
 
   return (
-    <Container>
-      <FormTitle>Log In</FormTitle>
-      <NoAccount>
-        <span>Don't have an account? </span>
-        <Link to={"/register"}>
-          <u>Sign Up</u>
-        </Link>
-      </NoAccount>
-      <Form onSubmit={handleSubmit(handleLogin)}>
-        <Label>Email</Label>
-        <InputContainer>
-          <PersonIcon />
-          <Input
-            {...register("email", {
-              required: "Please enter email",
-              pattern: {
-                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                message: "Please enter valid email",
-              },
-            })}
-            placeholder="Enter email"
-            id="email-input"
-          />
-        </InputContainer>
-        {errors.email && (
-          <ErrorMessageArea id="email-validation-error">{errors.email.message.toString()}</ErrorMessageArea>
-        )}
-        {serverError.status === 404 && (
-          <ErrorMessageArea id="error-message">{serverError.message}</ErrorMessageArea>
-        )}
-        <Label>Password</Label>
-        <InputContainer>
-          <KeyIcon />
-          <Input
-            {...register("password", {
-              required: "Please enter password",
-            })}
-            type="password"
-            placeholder="Enter password"
-            id="password-input"
-          />
-        </InputContainer>
-        {errors.password && (
-          <ErrorMessageArea>
-            {errors.password.message.toString()}
-          </ErrorMessageArea>
-        )}
-        {serverError.status === 401 && (
-          <ErrorMessageArea id="password-error-message">{serverError.message}</ErrorMessageArea>
-        )}
-        <SubmitBtn type="submit" id="submit-btn">
-          {isFetching ? <Ellipsis color="white" size={30} /> : "Login"}
-        </SubmitBtn>
-      </Form>
-    </Container>
+    <OuterContainer>
+      <Container>
+        <FormTitle>Log In</FormTitle>
+        <NoAccount>
+          <span>Don't have an account? </span>
+          <Link to={"/register"}>
+            <u>Sign Up</u>
+          </Link>
+        </NoAccount>
+        <Form onSubmit={handleSubmit(handleLogin)}>
+          <Label>Email</Label>
+          <InputContainer>
+            <PersonIcon />
+            <Input
+              {...register("email", {
+                required: "Please enter email",
+                pattern: {
+                  value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                  message: "Please enter valid email",
+                },
+              })}
+              placeholder="Enter email"
+              id="email-input"
+            />
+          </InputContainer>
+          {errors.email && (
+            <ErrorMessageArea id="email-validation-error">{errors.email.message.toString()}</ErrorMessageArea>
+          )}
+          {serverError.status === 404 && (
+            <ErrorMessageArea id="error-message">{serverError.message}</ErrorMessageArea>
+          )}
+          <Label>Password</Label>
+          <InputContainer>
+            <KeyIcon />
+            <Input
+              {...register("password", {
+                required: "Please enter password",
+              })}
+              type="password"
+              placeholder="Enter password"
+              id="password-input"
+            />
+          </InputContainer>
+          {errors.password && (
+            <ErrorMessageArea>
+              {errors.password.message.toString()}
+            </ErrorMessageArea>
+          )}
+          {serverError.status === 401 && (
+            <ErrorMessageArea id="password-error-message">{serverError.message}</ErrorMessageArea>
+          )}
+          <SubmitBtn type="submit" id="submit-btn">
+            {isFetching ? <Ellipsis color="white" size={30} /> : "Login"}
+          </SubmitBtn>
+        </Form>
+      </Container>
+    </OuterContainer>
   );
 }
 
