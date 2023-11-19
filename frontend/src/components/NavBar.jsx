@@ -13,8 +13,8 @@ const NavbarContainer = styled.nav`
   padding: 10px 50px;
   width: 100vw;
   height: 70px;
-  background: #fff;
-  color: #000;
+  background: #293545;
+  color: #fff;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px,
     rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
   font-size: 16px;
@@ -23,6 +23,11 @@ const NavbarContainer = styled.nav`
 `;
 
 const LeftBox = styled.div`
+  display: flex;
+  gap: 20px;
+`;
+
+const MiddleBox = styled.div`
   display: flex;
   gap: 20px;
 `;
@@ -37,6 +42,7 @@ const Button = styled.button`
   gap: 20px;
   background-color: transparent;
   cursor: pointer;
+  color: #fff;
 `;
 
 function NavBar() {
@@ -78,12 +84,15 @@ function NavBar() {
           ) : (
             <>
               <LeftBox>
+                <Link to={"/"}>LikeHome</Link>
+              </LeftBox>
+              <MiddleBox>
                 <Link to={"/home"}>Home</Link>
                 {userinfo?.accountType !== "hotel" && (
                   <Link id="myBooking-btn" to="mybooking">MyBooking</Link>
                 )}
                 <Link to={`profile/${localStorage.uid}`} id="profile-link">Profile</Link>
-              </LeftBox>
+              </MiddleBox>
               <RightBox>
                 <Button onClick={logout} id="logoutBtn">Logout</Button>
               </RightBox>
@@ -94,7 +103,7 @@ function NavBar() {
         // Without Login
         <>
           <LeftBox>
-            <Link to={"/"}>Home</Link>
+            <Link to={"/"}>LikeHome</Link>
           </LeftBox>
           <RightBox>
             <Link to="login" onClick={logout}>
