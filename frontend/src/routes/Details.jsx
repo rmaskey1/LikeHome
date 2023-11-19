@@ -343,6 +343,8 @@ function Details() {
   console.log("today", new Date());
   //console.log("checkin", new Date(roomData.startDate));
 
+  console.log("userinfo", userinfo);
+
   const handleConfirm = () => {
     setShowDoubleBookingWarning(false);
   };
@@ -392,28 +394,29 @@ function Details() {
               alignItems: "center",
             }}
           >
-            <div style={{ marginRight: "525px" }}>
+            <div style={{ marginRight: "480px" }}>
               <HotelName id="hotelName">{roomData.hotelName}</HotelName>
             </div>
             <div>
-              {userinfo.accountType === "hotel" && (
-                <Dropdown id="dropdown-btn" onClick={toggleDropdown}>
-                  . . .
-                  {isDropdownOpen && (
-                    <DropdownContent>
-                      <DropdownItem
-                        id="edit-btn"
-                        onClick={handleEditListingClick}
-                      >
-                        Edit Listing
-                      </DropdownItem>
-                      <DropdownItem id="delete-btn" onClick={openDeleteModal}>
-                        Delete Listing
-                      </DropdownItem>
-                    </DropdownContent>
-                  )}
-                </Dropdown>
-              )}
+              {userinfo.accountType === "hotel" &&
+                userinfo.listedRooms.includes(roomData.rid) && (
+                  <Dropdown id="dropdown-btn" onClick={toggleDropdown}>
+                    . . .
+                    {isDropdownOpen && (
+                      <DropdownContent>
+                        <DropdownItem
+                          id="edit-btn"
+                          onClick={handleEditListingClick}
+                        >
+                          Edit Listing
+                        </DropdownItem>
+                        <DropdownItem id="delete-btn" onClick={openDeleteModal}>
+                          Delete Listing
+                        </DropdownItem>
+                      </DropdownContent>
+                    )}
+                  </Dropdown>
+                )}
             </div>
           </div>
 
