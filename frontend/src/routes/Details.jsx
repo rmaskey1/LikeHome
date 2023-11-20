@@ -382,7 +382,7 @@ function Details() {
             </div>
           </div>
 
-          <Location>{`${roomData.street_name}, ${roomData.city}, ${roomData.state}`}</Location>
+          <Location id="locationdetail">{`${roomData.street_name}, ${roomData.city}, ${roomData.state}`}</Location>
           <Summary>
             {roomData.numberGuests} Guests - {roomData.numberOfBeds} Beds -{" "}
             {roomData.numberOfBathrooms} Bath
