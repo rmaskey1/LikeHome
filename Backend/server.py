@@ -6,7 +6,7 @@ import database
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, abort, make_response, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
-from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType, getCardToken, get_hid_from_user_or_hotel_api
+from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType, getCardToken, get_hid_from_user_or_hotel_api, check_guest_history
 from guest import is_valid_password, is_valid_phone_number
 from datetime import datetime
 import stripe
