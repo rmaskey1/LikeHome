@@ -102,8 +102,8 @@ const CardLoading = () => (
 
 const Card = (booking) => {
   const nights = Math.floor(
-    (new Date(booking.endDate).getTime() -
-      new Date(booking.startDate).getTime()) /
+    (new Date(booking.bookingEndDate).getTime() -
+      new Date(booking.bookingStartDate).getTime()) /
       (24 * 3600 * 1000)
   );
   const subtotal = booking.price * nights;
@@ -131,7 +131,7 @@ const Card = (booking) => {
             <CalendarIcon style={{ marginRight: "15px" }} />
             <SubTitle>
               {" "}
-              Dates: {booking.startDate} - {booking.endDate}
+              Dates: {booking.bookingStartDate} - {booking.bookingEndDate}
             </SubTitle>
           </IconWithText>
           <IconWithText>

@@ -233,7 +233,7 @@ function ModifyBooking() {
             type="text"
             placeholder="mm/dd/yyyy"
             style={{ color: "black" }}
-            defaultValue={new Date(roomData.endDate).toLocaleDateString(
+            defaultValue={new Date(roomData.bookingEndDate).toLocaleDateString(
               "en-US",
               { year: "numeric", month: "2-digit", day: "2-digit" }
             )}
