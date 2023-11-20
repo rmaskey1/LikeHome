@@ -182,7 +182,7 @@ function AccountMod() {
                 id="hotel-name-input"
               />
               {errors.hotelName && (
-                <ErrorText className="error-text">
+                <ErrorText   id="hname-error" className="error-text">
                   <span>{errors.hotelName.message.toString()}</span>
                 </ErrorText>
               )}
@@ -203,7 +203,7 @@ function AccountMod() {
                 id="street-name-input"
               />
               {errors.street && (
-                <ErrorText className="error-text">
+                <ErrorText   id="sname-error" className="error-text">
                   <span>{errors.street.message.toString()}</span>
                 </ErrorText>
               )}
@@ -221,7 +221,7 @@ function AccountMod() {
                     id="city-input"
                   />
                   {errors.city && (
-                    <ErrorText className="error-text">
+                    <ErrorText   id="city-error" className="error-text">
                       <span>{errors.city.message.toString()}</span>
                     </ErrorText>
                   )}
@@ -238,7 +238,7 @@ function AccountMod() {
                     id="zip-input"
                   />
                   {errors.zipcode && (
-                    <ErrorText className="error-text">
+                    <ErrorText   id="zip-error" className="error-text">
                       <span>{errors.zipcode.message.toString()}</span>
                     </ErrorText>
                   )}
@@ -265,7 +265,7 @@ function AccountMod() {
                     id="state-input"
                   />
                   {errors.state && (
-                    <ErrorText className="error-text">
+                    <ErrorText   id="state-error" className="error-text">
                       <span>{errors.state.message.toString()}</span>
                     </ErrorText>
                   )}
@@ -289,7 +289,7 @@ function AccountMod() {
                     id="country-input"
                   />
                   {errors.country && (
-                    <ErrorText className="error-text">
+                    <ErrorText   id="country-error" className="error-text">
                       <span>{errors.country.message.toString()}</span>
                     </ErrorText>
                   )}
@@ -318,10 +318,10 @@ function AccountMod() {
             id="email-input"
           />
           {errors.email && (
-            <ErrorText>{errors.email.message.toString()}</ErrorText>
+            <ErrorText id="email-error">{errors.email.message.toString()}</ErrorText>
           )}
           {serverError.status === 409 && (
-            <ErrorText className="error-text">
+            <ErrorText id="email-error" className="error-text">
               <span>{serverError.message}</span>
             </ErrorText>
           )}
@@ -346,7 +346,7 @@ function AccountMod() {
                 id="fname-input"
               />
               {errors.firstName && (
-                <ErrorText>{errors.firstName.message.toString()}</ErrorText>
+                <ErrorText  id="fname-error">{errors.firstName.message.toString()}</ErrorText>
               )}
             </div>
             <div style={{ flex: 1 }}>
@@ -368,7 +368,7 @@ function AccountMod() {
                 id="lname-input"
               />
               {errors.lastName && (
-                <ErrorText>{errors.lastName.message.toString()}</ErrorText>
+                <ErrorText  id="lname-error">{errors.lastName.message.toString()}</ErrorText>
               )}
             </div>
           </div>
@@ -387,10 +387,10 @@ function AccountMod() {
             id="phone-input"
           />
           {errors.phoneNumber && (
-            <ErrorText>{errors.phoneNumber.message.toString()}</ErrorText>
+            <ErrorText  id="phone-error">{errors.phoneNumber.message.toString()}</ErrorText>
           )}
           {serverError.status === 418 && (
-            <ErrorText className="error-text">
+            <ErrorText   id="phone-error" className="error-text">
               <span>{serverError.message}</span>
             </ErrorText>
           )}

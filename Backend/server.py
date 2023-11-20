@@ -1,5 +1,5 @@
 from guest import guest_modification_func
-from hotel import hotel_modification_func
+from hotel import hotel_modification_func, format_date
 import firebase_admin
 import database
 # import pyrebase
@@ -212,6 +212,7 @@ def modify_bookings(rid):
     # Modify Booking Here
     if request.method == 'PUT':
         numGuest = request.get_json()['guests']
+        endDate = request.get_json()['endDate']
         booking_ref = db.collection("booking")
         # Search for the specific booking and update it
         query_ref = booking_ref.where(
@@ -219,7 +220,8 @@ def modify_bookings(rid):
         docs = query_ref.stream()
         # Added updated data here, 4 is sample data
         updatedData = {
-            "numGuest": numGuest
+            "numGuest": numGuest,
+            "endDate": format_date(endDate)
         }
         for doc in docs:
             doc.reference.update(updatedData)
@@ -405,6 +407,8 @@ def queryByRmAttribute():
     except Exception as e:
         print("Error querying rooms:", e)
         return jsonify([])
+    
+
 
 
 

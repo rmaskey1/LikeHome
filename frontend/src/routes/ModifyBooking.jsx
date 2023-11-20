@@ -160,20 +160,12 @@ function ModifyBooking() {
     return true;
   };
 
+  console.log("roomData", roomData);
+  console.log("roomEnd", roomData.endDate);
+  console.log("roomStart", roomData.startDate);
+
   const onSubmit = async (formData) => {
     const { guests } = formData;
-
-    const datesAvailable = checkAvailability(formData.endDate, roomData);
-    console.log("dates avail", datesAvailable);
-    console.log("form end", formData.endDate);
-
-    if (!datesAvailable) {
-      setError("datesAvailable", {
-        type: "manual",
-        message: "The listing is not available on the dates you've selected.",
-      });
-      return;
-    }
 
     setIsFetching(true);
     console.log(formData);
@@ -225,9 +217,16 @@ function ModifyBooking() {
                   if (new Date(value) <= new Date())
                     return "Date must be in the future";
                   // Check if it's after fromDate
-                  if (new Date(value) <= new Date(roomData.endDate))
-                    return "Date must be after From Date";
+                  if (new Date(value) <= new Date(roomStart))
+                    return "Date must be after Check-in Date";
                   //return true;
+
+                  // Check availability
+                  const datesAvailable = checkAvailability(value, roomData);
+
+                  if (!datesAvailable) {
+                    return "The listing is not available on the date you've selected.";
+                  }
                 },
               },
             })}
@@ -238,9 +237,10 @@ function ModifyBooking() {
               "en-US",
               { year: "numeric", month: "2-digit", day: "2-digit" }
             )}
+            id="checkout-date-input"
           />
           {errors.endDate && (
-            <ErrorMessage className="error-text">
+            <ErrorMessage className="error-text" id="dates-available-error">
               <span>{errors.endDate.message.toString()}</span>
             </ErrorMessage>
           )}
@@ -269,9 +269,10 @@ function ModifyBooking() {
             type="number"
             style={{ color: "black" }}
             defaultValue={roomData.reserved_guests}
+            id="number-of-guests-input"
           />
           {errors.guests && (
-            <ErrorMessage className="error-text">
+            <ErrorMessage className="error-text" id="guests-error">
               <span>{errors.guests.message.toString()}</span>
             </ErrorMessage>
           )}
@@ -281,11 +282,11 @@ function ModifyBooking() {
 
           <CenteredButtonContainer>
             {errors.datesAvailable && (
-              <ErrorMessage className="error-text">
+              <ErrorMessage className="error-text" id="dates-available-error">
                 <span>{errors.datesAvailable.message.toString()}</span>
               </ErrorMessage>
             )}
-            <SubmitButton type="submit">
+            <SubmitButton type="submit" id="update-btn">
               {isFetching ? <Ellipsis color="white" size={30} /> : "Update"}
             </SubmitButton>
           </CenteredButtonContainer>

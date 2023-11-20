@@ -11,7 +11,7 @@ const SearchForm = styled.form`
   padding-top: 20px;
   padding-bottom: 20px;
   padding-left: 50px;
-  padding-right: 250px;
+  padding-right: 100px;
 `;
 
 const InputContainer = styled.div`

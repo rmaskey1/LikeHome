@@ -12,6 +12,7 @@ import "react-calendar/dist/Calendar.css";
 import { SERVER_URL, getListing, getMyBooking } from "api";
 import Amenity from "components/Amenity";
 import DoubleBookingWarning from "components/DoubleBookingWarning";
+import Reviews from "components/Reviews";
 
 const Container = styled.main`
   display: flex;
@@ -77,6 +78,11 @@ const Reservebtn = styled.button`
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
+
+  &.gray-button {
+    background-color: #888888; /* Use the desired gray color */
+    cursor: not-allowed;
+  }
 `;
 
 const ReserveForm = styled.div`
@@ -239,6 +245,9 @@ function Details() {
   const [roomData, setRoomData] = useState(null);
   const { state: stateData } = useLocation();
 
+  console.log("state", stateData);
+  console.log("roomData", roomData);
+
   const [showDoubleBookingWarning, setShowDoubleBookingWarning] =
     useState(false);
   const [isDoubleBooking, setIsDoubleBooking] = useState(false); //check if double booking here!
@@ -303,10 +312,36 @@ function Details() {
     getListing(rid)
   );
 
+  /*
   useEffect(() => {
     if (stateData) setRoomData(stateData);
     if (stateData == null && !isLoading) setRoomData(fetchData);
   }, [fetchData, isLoading, stateData]);
+  */
+
+  useEffect(() => {
+    if (stateData) {
+      if (stateData.roominfo) {
+        console.log("case 1");
+        //case 1: {roominfo} structure
+        setRoomData(stateData.roominfo);
+      } else {
+        console.log("case 2", stateData);
+        setRoomData(stateData);
+      }
+    } else if (stateData == null && !isLoading) {
+      setRoomData(fetchData);
+    }
+  }, [fetchData, isLoading, stateData]);
+
+  const isCheckInDateToday =
+    roomData &&
+    new Date().toLocaleDateString() ===
+      new Date(roomData.startDate).toLocaleDateString();
+
+  console.log("is checkin today?", isCheckInDateToday);
+  console.log("today", new Date());
+  //console.log("checkin", new Date(roomData.startDate));
 
   const handleConfirm = () => {
     setShowDoubleBookingWarning(false);
@@ -348,7 +383,7 @@ function Details() {
     <Container>
       {roomData === null ? (
         "Loading..."
-          ) : (
+      ) : (
         <>
           <div
             style={{
@@ -395,28 +430,46 @@ function Details() {
             {isGuest && isReserved ? (
               <Reserve id="reserved-container">
                 <div>You are currently reserving this listing.</div>
-                <Reservebtn
+                {isCheckInDateToday ? (
+                  <Reservebtn
                     id="modify-booking-btn"
-                  onClick={() =>
-                    navigate(`/mybooking/${rid}/modify`, {
-                      state: { roomData, numGuests },
+                    className="gray-button"
+                    disabled
+                  >
+                    Modify Booking
+                  </Reservebtn>
+                ) : (
+                  <Reservebtn
+                    id="modify-booking-btn"
+                    onClick={() =>
+                      navigate(`/mybooking/${rid}/modify`, {
+                        state: { roomData, numGuests },
+                      })
                     }
-                    )
-                  }
-
-                >
-                  Modify Booking
-                </Reservebtn>
-                <Reservebtn
+                  >
+                    Modify Booking
+                  </Reservebtn>
+                )}
+                {isCheckInDateToday ? (
+                  <Reservebtn
                     id="cancel-booking-btn"
-                  onClick={() =>
-                    navigate(`/mybooking/${rid}/cancel`, {
-                      state: { roomData, numGuests },
-                    })
-                  }
-                >
-                  Cancel Booking
-                </Reservebtn>
+                    className="gray-button"
+                    disabled
+                  >
+                    Cancel Booking
+                  </Reservebtn>
+                ) : (
+                  <Reservebtn
+                    id="cancel-booking-btn"
+                    onClick={() =>
+                      navigate(`/mybooking/${rid}/cancel`, {
+                        state: { roomData, numGuests },
+                      })
+                    }
+                  >
+                    Cancel Booking
+                  </Reservebtn>
+                )}
               </Reserve>
             ) : (
               //Render the default reserve container if not a guest or not reserved
@@ -479,7 +532,7 @@ function Details() {
                   </ReserveDateContainer>
                 </ReserveForm>
                 <Reservebtn
-                    id="reserve-btn"
+                  id="reserve-btn"
                   onClick={() => {
                     if (isDoubleBooking) {
                       setShowDoubleBookingWarning(true);
@@ -505,7 +558,10 @@ function Details() {
             </DetailItem>
             <DetailItem>
               <BedIcon />
-              <span id="beds-detail">{roomData.numberOfBeds} Bed(s) <span id="bedType-detail">({roomData.bedType})</span></span>
+              <span id="beds-detail">
+                {roomData.numberOfBeds} Bed(s){" "}
+                <span id="bedType-detail">({roomData.bedType})</span>
+              </span>
             </DetailItem>
             <DetailItem>
               <SinkIcon />
@@ -516,15 +572,19 @@ function Details() {
           </Detail>
           <Divider />
 
-          <Detail >
+          <Detail>
             <h1>Amenities</h1>
             <div id="amenities-detail">
-              {roomData.Amenities.map((item, i) => (
+              {roomData.Amenities?.map((item, i) => (
                 <Amenity key={i} item={item} />
               ))}
             </div>
           </Detail>
           <Divider />
+          <Detail>
+            <h1>Hotel Reviews</h1>
+            <Reviews />
+          </Detail>
           <Detail>
             <h1>Cancellation Policy</h1>
             <DetailItem>
@@ -602,16 +662,19 @@ function Details() {
               }}
             >
               <div style={{ marginRight: "20px" }}>
-                <Buttons id="confirm-delete-btn" onClick={deleteListing}>Yes</Buttons>
+                <Buttons id="confirm-delete-btn" onClick={deleteListing}>
+                  Yes
+                </Buttons>
               </div>
               <div>
-                <Buttons id="cancel-delete-btn" onClick={closeDeleteModal}>No</Buttons>
+                <Buttons id="cancel-delete-btn" onClick={closeDeleteModal}>
+                  No
+                </Buttons>
               </div>
             </div>
           </Modal>
         </>
-              )
-      }
+      )}
     </Container>
   );
 }

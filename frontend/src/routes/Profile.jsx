@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import DeleteAccountWarning from "components/DeleteAccountWarning";
+import ErrorDeleteMessage from "components/ErrorDeleteMessage";
 import { useNavigate } from "react-router-dom";
 import { SERVER_URL, getUserInfo } from "../api";
 import { isLoginAtom } from "../atom";
@@ -132,12 +133,32 @@ function Profile() {
       localStorage.clear();
       setServerError(null);
       navigate("/");
+      setIsLogin(false);
+    } else if (response.status === 400) {
+      const errorMessage = isGuestAccount
+        ? "You cannot delete your account because you have reservations."
+        : "You cannot delete your account because there are guests currently reserving your listings.";
+
+      setMessagePopup({
+        message: errorMessage,
+        isOpen: true,
+      });
     } else {
       setServerError(userResult.message);
     }
-
-    setIsLogin(false);
     setShowDeleteConfirmation(false);
+  };
+
+  const [messagePopup, setMessagePopup] = useState({
+    message: "",
+    isOpen: false,
+  });
+
+  const handleCloseMessagePopup = () => {
+    setMessagePopup({
+      message: "",
+      isOpen: false,
+    });
   };
 
   const handleEditProfileClick = () => {
@@ -187,6 +208,12 @@ function Profile() {
           <DeleteAccountWarning
             onConfirm={handleConfirmDelete}
             onCancel={handleCancelDelete}
+          />
+        )}
+        {messagePopup.isOpen && (
+          <ErrorDeleteMessage
+            message={messagePopup.message}
+            onClose={handleCloseMessagePopup}
           />
         )}
       </Container>
