@@ -517,7 +517,6 @@ function BookingForm() {
                   })}
                   id="cardNum-input"
                   type="number"
-
                   style={{ color: "black" }}
                   name="cardNumber"
                   value={cardNumber}
@@ -525,7 +524,9 @@ function BookingForm() {
                 />
                 {errors.cardNumber && (
                   <ErrorText className="error-text">
-                    <span id="cardNum-error">{errors.cardNumber.message.toString()}</span>
+                    <span id="cardNum-error">
+                      {errors.cardNumber.message.toString()}
+                    </span>
                   </ErrorText>
                 )}
 
@@ -553,7 +554,9 @@ function BookingForm() {
                     />
                     {errors.expirationDate && (
                       <ErrorText className="error-text">
-                        <span id="cardExp-error">{errors.expirationDate.message.toString()}</span>
+                        <span id="cardExp-error">
+                          {errors.expirationDate.message.toString()}
+                        </span>
                       </ErrorText>
                     )}
                   </div>
@@ -581,7 +584,9 @@ function BookingForm() {
                     />
                     {errors.cvc && (
                       <ErrorText2 className="error-text">
-                        <span id="cardCvc-error">{errors.cvc.message.toString()}</span>
+                        <span id="cardCvc-error">
+                          {errors.cvc.message.toString()}
+                        </span>
                       </ErrorText2>
                     )}
                   </div>
@@ -628,7 +633,10 @@ function BookingForm() {
                 </NoFeeContainer>
               )}
               <form onSubmit={handleSubmit(onSubmit)}>
-                <SubmitButton id="cancel-booking-btn" type="submit"> Cancel Booking</SubmitButton>
+                <SubmitButton id="cancel-booking-btn" type="submit">
+                  {" "}
+                  Cancel Booking
+                </SubmitButton>
               </form>
             </div>
           )}
