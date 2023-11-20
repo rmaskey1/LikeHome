@@ -157,6 +157,8 @@ const Card = (booking) => {
 function MyBookings() {
   const { isLoading, data } = useQuery(["myBooking"], getMyBooking);
 
+  console.log("data", data);
+
   return (
     <Container>
       <ListingTitle>My Bookings:</ListingTitle>
