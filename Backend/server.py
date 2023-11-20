@@ -254,10 +254,10 @@ def modify_bookings(rid):
 
         return jsonify(message="Deletion Successfull")
 
-@app.route('/update_reward_points/', methods=['POST'])
-def update_reward_points():
+@app.route('/update_reward_points/<uid>', methods=['GET'])
+def update_reward_points(uid):
     try:
-        uid = getUid()
+        #uid = getUid()
         # Query the 'booking' collection
         booking_ref = db.collection('booking')
         user_ref = db.collection('user').document(uid)
@@ -299,8 +299,11 @@ def update_reward_points():
                 query = past_booking_ref.where('gid', '==', gid).where('hid', '==', hid).limit(1).stream()
 
                 if not next(query, None):
-                    # Add the bid, gid, and hid to the 'pastBooking' collection
-                    past_booking_ref.document(bid).set({'gid': gid, 'hid': hid})
+                    # Check if user already have a review for that hotel
+                    review_query = db.collection('review').where('hid', '==', hid).where('gid', '==', gid).limit(1).stream()
+                    if not next(review_query, None):
+                        # Add the bid, gid, and hid to the 'pastBooking' collection
+                        past_booking_ref.document(bid).set({'gid': gid, 'hid': hid})
 
 
                 total_price = booking_data.get('totalPrice', 0)
