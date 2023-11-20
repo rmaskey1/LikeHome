@@ -160,6 +160,10 @@ function ModifyBooking() {
     return true;
   };
 
+  console.log("roomData", roomData);
+  console.log("roomEnd", roomData.endDate);
+  console.log("roomStart", roomData.startDate);
+
   const onSubmit = async (formData) => {
     const { guests } = formData;
 
@@ -213,7 +217,7 @@ function ModifyBooking() {
                   if (new Date(value) <= new Date())
                     return "Date must be in the future";
                   // Check if it's after fromDate
-                  if (new Date(value) <= new Date(roomData.endDate))
+                  if (new Date(value) <= new Date(roomStart))
                     return "Date must be after Check-in Date";
                   //return true;
 

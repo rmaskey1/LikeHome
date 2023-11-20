@@ -104,7 +104,7 @@ const Card = (booking) => {
   const nights = Math.floor(
     (new Date(booking.endDate).getTime() -
       new Date(booking.startDate).getTime()) /
-    (24 * 3600 * 1000)
+      (24 * 3600 * 1000)
   );
   const subtotal = booking.price * nights;
   const tax = subtotal * 0.08;
@@ -125,7 +125,7 @@ const Card = (booking) => {
       >
         <RoomImage src={booking.imageUrl} alt="Room" />
         <DetailsContainer>
-          <SectionTitle >{booking.hotelName}</SectionTitle>
+          <SectionTitle>{booking.hotelName}</SectionTitle>
           <Divider />
           <IconWithText>
             <CalendarIcon style={{ marginRight: "15px" }} />
@@ -136,7 +136,7 @@ const Card = (booking) => {
           </IconWithText>
           <IconWithText>
             <MoonIcon style={{ marginRight: "15px" }} id="moon-icon" />
-            <SubTitle> {nights} Nights</SubTitle>
+            <SubTitle> {nights} Night(s) </SubTitle>
           </IconWithText>
           <IconWithText>
             <GuestIcon
