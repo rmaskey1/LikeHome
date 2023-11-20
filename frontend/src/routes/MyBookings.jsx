@@ -52,7 +52,7 @@ const CardContainer = styled.div`
   border-radius: 15px;
   margin-top: 20px;
   padding-right: 20px;
-  height: 225px; //Set the card height, adjust as needed
+  height: 240px; //Set the card height, adjust as needed
   overflow: hidden;
 `;
 
