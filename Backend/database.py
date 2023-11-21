@@ -378,13 +378,6 @@ def getCardToken(card_number):
 
 def check_guest_history(gid, hid):
 
-    # Check if the guest has left a review for the hotel
-    review_query = db.collection('review').where('gid', '==', gid).where('hid', '==', hid).limit(1).stream()
-
-    if next(review_query, None):
-        # Guest has already left a review for the hotel
-        abort(make_response(jsonify(message="You have already left a review for this hotel"), 409))
-
     # Check if there is no past booking with the specified hid and gid
     past_booking_ref = db.collection('pastBooking')
     past_booking_query = past_booking_ref.where('gid', '==', gid).where('hid', '==', hid).limit(1).stream()
