@@ -148,8 +148,26 @@ def bookings():
         data = request.get_json()
         print(data)
         # time = datetime.now().strftime("%H:%M:%S")
-        if roomBooked(rid):
-            abort(make_response(jsonify(message="Sorry, this room is already booked"), 409))
+        
+        #checks if room is booked for the selected date
+        print("CHECK FOR DOUBLE BOOKING:")
+        startDate=datetime.strptime(data['startDate'], "%b %d, %Y")
+        endDate=datetime.strptime(data['endDate'], "%b %d, %Y")
+        
+        #get all bookings under this uid
+        bookings = db.collection("booking").where("gid", "==", gid).stream()
+        #check the date range
+        for booking in bookings:
+            booking_data = booking.to_dict()
+            print(booking_data)
+            bookingStart = datetime.strptime(booking_data['startDate'], "%b %d, %Y")
+            bookingEnd = datetime.strptime(booking_data['endDate'], "%b %d, %Y")
+            #check if above query date range is occupied. if it is, no booking allowed.
+            if not (endDate < bookingStart or startDate > bookingEnd):
+                abort(make_response(jsonify(message="You've already booked rooms within this date range"), 400))
+        
+        
+  
         
         try:
             # Get credit card information from the form
