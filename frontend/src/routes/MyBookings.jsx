@@ -52,7 +52,7 @@ const CardContainer = styled.div`
   border-radius: 15px;
   margin-top: 20px;
   padding-right: 20px;
-  height: 225px; //Set the card height, adjust as needed
+  height: 240px; //Set the card height, adjust as needed
   overflow: hidden;
 `;
 
@@ -102,9 +102,9 @@ const CardLoading = () => (
 
 const Card = (booking) => {
   const nights = Math.floor(
-    (new Date(booking.endDate).getTime() -
-      new Date(booking.startDate).getTime()) /
-    (24 * 3600 * 1000)
+    (new Date(booking.bookingEndDate).getTime() -
+      new Date(booking.bookingStartDate).getTime()) /
+      (24 * 3600 * 1000)
   );
   const subtotal = booking.price * nights;
   const tax = subtotal * 0.08;
@@ -125,18 +125,18 @@ const Card = (booking) => {
       >
         <RoomImage src={booking.imageUrl} alt="Room" />
         <DetailsContainer>
-          <SectionTitle >{booking.hotelName}</SectionTitle>
+          <SectionTitle>{booking.hotelName}</SectionTitle>
           <Divider />
           <IconWithText>
             <CalendarIcon style={{ marginRight: "15px" }} />
             <SubTitle>
               {" "}
-              Dates: {booking.startDate} - {booking.endDate}
+              Dates: {booking.bookingStartDate} - {booking.bookingEndDate}
             </SubTitle>
           </IconWithText>
           <IconWithText>
             <MoonIcon style={{ marginRight: "15px" }} id="moon-icon" />
-            <SubTitle> {nights} Nights</SubTitle>
+            <SubTitle> {nights} Night(s) </SubTitle>
           </IconWithText>
           <IconWithText>
             <GuestIcon
@@ -156,6 +156,8 @@ const Card = (booking) => {
 
 function MyBookings() {
   const { isLoading, data } = useQuery(["myBooking"], getMyBooking);
+
+  console.log("data", data);
 
   return (
     <Container>

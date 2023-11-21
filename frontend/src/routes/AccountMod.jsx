@@ -182,7 +182,7 @@ function AccountMod() {
                 id="hotel-name-input"
               />
               {errors.hotelName && (
-                <ErrorText   id="hname-error" className="error-text">
+                <ErrorText id="hname-error" className="error-text">
                   <span>{errors.hotelName.message.toString()}</span>
                 </ErrorText>
               )}
@@ -203,7 +203,7 @@ function AccountMod() {
                 id="street-name-input"
               />
               {errors.street && (
-                <ErrorText   id="sname-error" className="error-text">
+                <ErrorText id="sname-error" className="error-text">
                   <span>{errors.street.message.toString()}</span>
                 </ErrorText>
               )}
@@ -221,7 +221,7 @@ function AccountMod() {
                     id="city-input"
                   />
                   {errors.city && (
-                    <ErrorText   id="city-error" className="error-text">
+                    <ErrorText id="city-error" className="error-text">
                       <span>{errors.city.message.toString()}</span>
                     </ErrorText>
                   )}
@@ -238,7 +238,7 @@ function AccountMod() {
                     id="zip-input"
                   />
                   {errors.zipcode && (
-                    <ErrorText   id="zip-error" className="error-text">
+                    <ErrorText id="zip-error" className="error-text">
                       <span>{errors.zipcode.message.toString()}</span>
                     </ErrorText>
                   )}
@@ -265,7 +265,7 @@ function AccountMod() {
                     id="state-input"
                   />
                   {errors.state && (
-                    <ErrorText   id="state-error" className="error-text">
+                    <ErrorText id="state-error" className="error-text">
                       <span>{errors.state.message.toString()}</span>
                     </ErrorText>
                   )}
@@ -289,7 +289,7 @@ function AccountMod() {
                     id="country-input"
                   />
                   {errors.country && (
-                    <ErrorText   id="country-error" className="error-text">
+                    <ErrorText id="country-error" className="error-text">
                       <span>{errors.country.message.toString()}</span>
                     </ErrorText>
                   )}
@@ -318,7 +318,9 @@ function AccountMod() {
             id="email-input"
           />
           {errors.email && (
-            <ErrorText id="email-error">{errors.email.message.toString()}</ErrorText>
+            <ErrorText id="email-error">
+              {errors.email.message.toString()}
+            </ErrorText>
           )}
           {serverError.status === 409 && (
             <ErrorText id="email-error" className="error-text">
@@ -346,7 +348,9 @@ function AccountMod() {
                 id="fname-input"
               />
               {errors.firstName && (
-                <ErrorText  id="fname-error">{errors.firstName.message.toString()}</ErrorText>
+                <ErrorText id="fname-error">
+                  {errors.firstName.message.toString()}
+                </ErrorText>
               )}
             </div>
             <div style={{ flex: 1 }}>
@@ -368,13 +372,29 @@ function AccountMod() {
                 id="lname-input"
               />
               {errors.lastName && (
-                <ErrorText  id="lname-error">{errors.lastName.message.toString()}</ErrorText>
+                <ErrorText id="lname-error">
+                  {errors.lastName.message.toString()}
+                </ErrorText>
               )}
             </div>
           </div>
 
           <SubTitle>Password</SubTitle>
-          <Input {...register("password", {})} type="password" id="passw" />
+          <Input
+            {...register("password", {
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters long",
+              },
+            })}
+            type="password"
+            id="passw"
+          />
+          {errors.password && (
+            <ErrorText className="error-text" id="password-error">
+              <span>{errors.password.message.toString()}</span>
+            </ErrorText>
+          )}
 
           <SubTitle>Phone Number</SubTitle>
           <Input
@@ -387,10 +407,12 @@ function AccountMod() {
             id="phone-input"
           />
           {errors.phoneNumber && (
-            <ErrorText  id="phone-error">{errors.phoneNumber.message.toString()}</ErrorText>
+            <ErrorText id="phone-error">
+              {errors.phoneNumber.message.toString()}
+            </ErrorText>
           )}
           {serverError.status === 418 && (
-            <ErrorText   id="phone-error" className="error-text">
+            <ErrorText id="phone-error" className="error-text">
               <span>{serverError.message}</span>
             </ErrorText>
           )}
