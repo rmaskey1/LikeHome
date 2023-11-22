@@ -217,7 +217,7 @@ function ModifyBooking() {
                   if (new Date(value) <= new Date())
                     return "Date must be in the future";
                   // Check if it's after fromDate
-                  if (new Date(value) <= new Date(roomStart))
+                  if (new Date(value) <= new Date(roomData.checkinDate))
                     return "Date must be after Check-in Date";
                   //return true;
 
@@ -233,7 +233,7 @@ function ModifyBooking() {
             type="text"
             placeholder="mm/dd/yyyy"
             style={{ color: "black" }}
-            defaultValue={new Date(roomData.bookingEndDate).toLocaleDateString(
+            defaultValue={new Date(roomData.checkoutDate).toLocaleDateString(
               "en-US",
               { year: "numeric", month: "2-digit", day: "2-digit" }
             )}
