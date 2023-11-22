@@ -196,6 +196,10 @@ def bookings():
                 bookedRoom_data = db.collection("room").document(id).get().to_dict()
                 bookedRoom_data['rid'] = id
                 bookedRoom_data['reserved_guests'] = booking_ref['numGuest']
+                bookedRoom_data['bid'] = doc.id
+                bookedRoom_data['bookingEndDate'] = booking_ref['endDate']
+                bookedRoom_data['bookingStartDate'] = booking_ref['startDate']
+                bookedRoom_data['gid'] = booking_ref['gid']
                 bookedRooms.append(bookedRoom_data)
         return jsonify(bookedRooms)
 
