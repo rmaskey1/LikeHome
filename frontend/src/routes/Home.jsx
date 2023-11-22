@@ -9,6 +9,7 @@ import SearchBar from "../components/SearchBar";
 import FilterForm from "../components/FilterForm";
 import filterIcon from "../icons/filter.svg";
 import { SERVER_URL } from "api";
+import ErrorDeleteMessage from "components/ErrorDeleteMessage";
 
 const Container = styled.main`
   width: 100vw;
@@ -95,6 +96,18 @@ function Home() {
   const state = useLocation();
   // const [displayListings, setDisplayListings] = useState(allListings);
 
+  const [messagePopup, setMessagePopup] = useState({
+    message: "",
+    isOpen: false,
+  });
+
+  const handleCloseMessagePopup = () => {
+    setMessagePopup({
+      message: "",
+      isOpen: false,
+    });
+  };
+
   /* Search Function Section Start */
   const [searchedListings, setSearchedListings] = useState([]);
   // const [searchCriteria, setSearchCriteria] = useState({
@@ -128,6 +141,15 @@ function Home() {
       return isLocationMatch && isDateMatch && isGuestMatch;
     });
     setSearchedListings(searchedListings);
+    if (searchedListings.length === 0) {
+      const message = "No matching rooms found.";
+
+      setMessagePopup({
+        message: message,
+        isOpen: true,
+      });
+      // alert("No matching rooms found.");
+    }
     // setSearchCriteria({
     //   location: "",
     //   guests: 1,
@@ -177,6 +199,13 @@ function Home() {
       const data = await response.json();
       if (response.ok) {
         console.log(data);
+        if (data.length === 0) {
+          const message = "No matching rooms found.";
+          setMessagePopup({
+            message: message,
+            isOpen: true,
+          });
+        }
         setSearchedListings(data);
         // Update filteredListings
       } else {
@@ -193,19 +222,19 @@ function Home() {
     <Container>
       {userinfo.accountType === "hotel" && ( //Render if hotel owner
         <>
-          <div style={{
-          display: "flex",
-          justifyContent: "space-between",
-          paddingLeft: "10px",
-          paddingRight: "100px",
-          paddingBottom: "20px",
-          }}>
-          <Mylisting>
-            My listings:
-          </Mylisting>
-          <Link to="/room/add">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              paddingLeft: "10px",
+              paddingRight: "100px",
+              paddingBottom: "20px",
+            }}
+          >
+            <Mylisting>My listings:</Mylisting>
+            <Link to="/room/add">
               <Addbutton id="add-btn">Add +</Addbutton>
-          </Link>
+            </Link>
           </div>
           {myListingsIsLoading ? (
             <LoadingCardsListing numCard={1} />
@@ -252,6 +281,12 @@ function Home() {
           listings={
             searchedListings.length > 0 ? searchedListings : allListings
           }
+        />
+      )}
+      {messagePopup.isOpen && (
+        <ErrorDeleteMessage
+          message={messagePopup.message}
+          onClose={handleCloseMessagePopup}
         />
       )}
 
