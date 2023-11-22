@@ -146,7 +146,12 @@ function AddListing() {
 
     if (response.ok) {
       //   alert("Listing created!");
-      navigate("/home", { state: response.status });
+
+      console.log("data id", data.rid);
+      const roomId = data.rid;
+      navigate(`/room/${roomId}`, {
+        state: { status: response.status, roominfo: data },
+      });
     }
     setIsFetching(false);
   };

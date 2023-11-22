@@ -91,12 +91,12 @@ function PreviewCard({ previewCard }) {
     <StyledCard>
       <ImgContainer>
         <StyledImg src={imageUrl} alt={`Image ${rid}`} />
-        <SaveFavoriteIcon
+        {/* <SaveFavoriteIcon
           src={isFavorite ? FavoriteFilled : Favorite}
           alt="Favorite"
           onClick={toggleFavorite}
           style={{ cursor: "pointer" }}
-        />
+        /> */}
       </ImgContainer>
       <StyledCardDetails className="previewCard-select" onClick={handleCardClick}>
         <div
@@ -118,7 +118,7 @@ function PreviewCard({ previewCard }) {
             </StyledP>
           </div>
         </div>
-        <StyledP>{descArr[Math.floor(Math.random() * descArr.length)]}</StyledP>
+        {/* <StyledP>{descArr[Math.floor(Math.random() * descArr.length)]}</StyledP> */}
         <StyledP>
           {formatMonthAndDate(startDate)} - {formatMonthAndDate(endDate)}
         </StyledP>

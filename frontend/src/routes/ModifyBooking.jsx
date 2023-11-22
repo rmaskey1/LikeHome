@@ -146,7 +146,7 @@ function ModifyBooking() {
     //converting form's toDate to a date
     const selectedEndDate = new Date(formToDate);
     const bookingStartDate = new Date(roomData.startDate);
-    console.log("Start Date", bookingStartDate);
+    //console.log("Start Date", bookingStartDate);
     const bookingEndDate = new Date(roomData.endDate);
 
     //if selectedEndDate is before the bookingStartDate or after the bookingEndDate
@@ -161,8 +161,8 @@ function ModifyBooking() {
   };
 
   console.log("roomData", roomData);
-  console.log("roomEnd", roomData.endDate);
-  console.log("roomStart", roomData.startDate);
+  //console.log("roomEnd", roomData.endDate);
+  //console.log("roomStart", roomData.startDate);
 
   const onSubmit = async (formData) => {
     const { guests } = formData;
@@ -233,7 +233,7 @@ function ModifyBooking() {
             type="text"
             placeholder="mm/dd/yyyy"
             style={{ color: "black" }}
-            defaultValue={new Date(roomData.endDate).toLocaleDateString(
+            defaultValue={new Date(roomData.bookingEndDate).toLocaleDateString(
               "en-US",
               { year: "numeric", month: "2-digit", day: "2-digit" }
             )}

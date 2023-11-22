@@ -52,7 +52,7 @@ const CardContainer = styled.div`
   border-radius: 15px;
   margin-top: 20px;
   padding-right: 20px;
-  height: 225px; //Set the card height, adjust as needed
+  height: 240px; //Set the card height, adjust as needed
   overflow: hidden;
 `;
 
@@ -102,9 +102,9 @@ const CardLoading = () => (
 
 const Card = (booking) => {
   const nights = Math.floor(
-    (new Date(booking.endDate).getTime() -
-      new Date(booking.startDate).getTime()) /
-    (24 * 3600 * 1000)
+    (new Date(booking.checkoutDate).getTime() -
+      new Date(booking.checkinDate).getTime()) /
+      (24 * 3600 * 1000)
   );
   const subtotal = booking.price * nights;
   const tax = subtotal * 0.08;
@@ -116,6 +116,13 @@ const Card = (booking) => {
     minimumFractionDigits: 2,
   });
 
+  const dateFormatter = (date) =>
+    new Date(date).toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "2-digit",
+    });
+
   return (
     <CardContainer className="booking-card">
       <Link
@@ -125,18 +132,19 @@ const Card = (booking) => {
       >
         <RoomImage src={booking.imageUrl} alt="Room" />
         <DetailsContainer>
-          <SectionTitle >{booking.hotelName}</SectionTitle>
+          <SectionTitle>{booking.hotelName}</SectionTitle>
           <Divider />
           <IconWithText>
             <CalendarIcon style={{ marginRight: "15px" }} />
             <SubTitle>
               {" "}
-              Dates: {booking.startDate} - {booking.endDate}
+              Dates: {dateFormatter(booking.checkinDate)} -{" "}
+              {dateFormatter(booking.checkoutDate)}
             </SubTitle>
           </IconWithText>
           <IconWithText>
             <MoonIcon style={{ marginRight: "15px" }} id="moon-icon" />
-            <SubTitle> {nights} Nights</SubTitle>
+            <SubTitle> {nights} Night(s) </SubTitle>
           </IconWithText>
           <IconWithText>
             <GuestIcon
@@ -156,6 +164,8 @@ const Card = (booking) => {
 
 function MyBookings() {
   const { isLoading, data } = useQuery(["myBooking"], getMyBooking);
+
+  console.log("data", data);
 
   return (
     <Container>

@@ -4,16 +4,28 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { Ellipsis } from "react-spinners-css";
 import styled from "styled-components";
+import background1 from "../img/resort1.jpeg";
 
 const Container = styled.div`
-  display: flex;
+  display: column;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
   width: 400px;
   margin: 100px auto;
   padding: 0 40px;
   border: 1px solid rgba(41, 53, 69, 0.5);
   border-radius: 20px;
+  background-color: white;
+`;
+
+const OuterContainer = styled.div`
+  display: flex;
+  height: 100vh;
+  background-color: pink;
+  align-items: center;
+  justify-content: center;
+  background-image: url(${background1});
+  background-size: cover;
 `;
 
 const FormTitle = styled.div`
@@ -125,6 +137,17 @@ function Register() {
   const [isFetching, setIsFetching] = useState(false);
   const [serverError, setServerError] = useState({ status: 0, message: "" });
 
+  const isLetter = (str) => {
+    return /^[a-zA-Z\s]*$/.test(str);
+  };
+
+  const isValidPhoneNumber = (value) => {
+    if (/^\+\d{11}$/.test(value)) {
+      return true;
+    }
+    return "Phone number must start with '+' and have 11 digits";
+  };
+
   const handleSignup = async (signupData) => {
     setIsFetching(true);
 
@@ -167,144 +190,172 @@ function Register() {
   };
 
   return (
-    <Container>
-      <FormTitle>Sign Up</FormTitle>
-      <NoAccount>
-        <span>Already have an account? </span>
-        <Link to={"/login"}>
-          <u>Login</u>
-        </Link>
-      </NoAccount>
-      <Form onSubmit={handleSubmit(handleSignup)}>
-        <div style={{ display: "flex", gap: "10px", marginTop: "30px" }}>
-          <div>
-            <Label>First Name</Label>
-            <InputContainer style={{ width: "160px" }}>
-              <Input
-                {...register("firstname", {
-                  required: "Please enter first name",
-                })}
-                id="firstname-input"
-              />
-            </InputContainer>
-            {errors.firstname && (
-              <ErrorMessageArea id="firstname-error">
-                {errors.firstname.message.toString()}
-              </ErrorMessageArea>
-            )}
+    <OuterContainer>
+      <Container>
+        <FormTitle>Sign Up</FormTitle>
+        <NoAccount>
+          <span>Already have an account? </span>
+          <Link to={"/login"}>
+            <u>Login</u>
+          </Link>
+        </NoAccount>
+        <Form onSubmit={handleSubmit(handleSignup)}>
+          <div style={{ display: "flex", gap: "10px", marginTop: "30px" }}>
+            <div>
+              <Label>First Name</Label>
+              <InputContainer style={{ width: "160px" }}>
+                <Input
+                  {...register("firstname", {
+                    required: "Please enter first name",
+                    validate: {
+                      validName: (value) => {
+                        if (!isLetter(value)) {
+                          return "Only letters are allowed";
+                        }
+                        if (value.trim() === "") {
+                          return "First name cannot be just spaces";
+                        }
+                        return true;
+                      },
+                    },
+                  })}
+                  id="firstname-input"
+                />
+              </InputContainer>
+              {errors.firstname && (
+                <ErrorMessageArea id="firstname-error">
+                  {errors.firstname.message.toString()}
+                </ErrorMessageArea>
+              )}
+            </div>
+            <div>
+              <Label>Last Name</Label>
+              <InputContainer style={{ width: "160px" }}>
+                <Input
+                  {...register("lastname", {
+                    required: "Please enter last name",
+                    validate: {
+                      validName: (value) => {
+                        if (!isLetter(value)) {
+                          return "Only letters are allowed";
+                        }
+                        if (value.trim() === "") {
+                          return "Last name cannot be just spaces";
+                        }
+                        return true;
+                      },
+                    },
+                  })}
+                  id="lastname-input"
+                />
+              </InputContainer>
+              {errors.lastname && (
+                <ErrorMessageArea id="lastname-error">
+                  {errors.lastname.message.toString()}
+                </ErrorMessageArea>
+              )}
+            </div>
           </div>
-          <div>
-            <Label>Last Name</Label>
-            <InputContainer style={{ width: "160px" }}>
-              <Input
-                {...register("lastname", {
-                  required: "Please enter last name",
-                })}
-                id="lastname-input"
-              />
-            </InputContainer>
-            {errors.lastname && (
-              <ErrorMessageArea id="lastname-error">
-                {errors.lastname.message.toString()}
-              </ErrorMessageArea>
-            )}
-          </div>
-        </div>
-        <Label>Email</Label>
-        <InputContainer>
-          <Input
-            {...register("email", {
-              required: "Please enter email",
-              pattern: {
-                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                message: "Please enter valid email",
-              },
-            })}
-            id="email-input-r"
-          />
-        </InputContainer>
-        {errors.email && (
-          <ErrorMessageArea id="email-error">{errors.email.message.toString()}</ErrorMessageArea>
-        )}
-        {serverError.status === 409 && (
-          <ErrorMessageArea id="email-error">{serverError.message}</ErrorMessageArea>
-        )}
-        <Label>Password</Label>
-        <InputContainer>
-          <Input
-            {...register("password", {
-              required: "Please enter password",
-              minLength: {
-                value: 6,
-                message:
-                  "Password must be a string at least 6 characters long.",
-              },
-            })}
-            type="password"
-            id="password-input-r"
-          />
-        </InputContainer>
-        {errors.password && (
-          <ErrorMessageArea id="password-error">
-            {errors.password.message.toString()}
-          </ErrorMessageArea>
-        )}
-        <Label>Phone Number</Label>
-        <InputContainer>
-          <Input
-            {...register("phone", {
-              required: "Please enter phone number",
-              // pattern: { value: /^[0-9]/, message: "Please enter numbers" },
-            })}
-            id="phone-input"
-          />
-        </InputContainer>
-        {errors.phone && (
-          <ErrorMessageArea >{errors.phone.message.toString()}</ErrorMessageArea>
-        )}
-        {(serverError.status === 418 || serverError.status === 419) && (
-          <ErrorMessageArea id="phone-error">{serverError.message}</ErrorMessageArea>
-        )}
-
-        <Label>Who are you?</Label>
-        {errors.role && (
-          <ErrorMessageArea>{errors.role.message.toString()}</ErrorMessageArea>
-        )}
-        <RadioContainer>
-          <input
-            {...register("role", { required: "Please select who you are" })}
-            type="radio"
-            value="guest"
-            id="guest-radio"
-          />
-          <span>Guest</span>
-        </RadioContainer>
-        <RadioContainer>
-          <input
-            {...register("role", { required: "Please select who you are" })}
-            type="radio"
-            value="hotel"
-            id="hotel-radio"
-          />
-          <span>Hotel</span>
-        </RadioContainer>
-        <RadioContainer>
-          <input
-            {...register("role", { required: "Please select who you are" })}
-            type="radio"
-            value="admin"
-          />
-          <span>Admin</span>
-        </RadioContainer>
-        <SubmitBtn type="submit" id="signup-button">
-          {isFetching ? (
-            <Ellipsis color="white" size={30} />
-          ) : (
-            <span>Sign Up</span>
+          <Label>Email</Label>
+          <InputContainer>
+            <Input
+              {...register("email", {
+                required: "Please enter email",
+                pattern: {
+                  value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                  message: "Please enter valid email",
+                },
+              })}
+              id="email-input-r"
+            />
+          </InputContainer>
+          {errors.email && (
+            <ErrorMessageArea id="email-error">
+              {errors.email.message.toString()}
+            </ErrorMessageArea>
           )}
-        </SubmitBtn>
-      </Form>
-    </Container>
+          {serverError.status === 409 && (
+            <ErrorMessageArea id="email-error">
+              {serverError.message}
+            </ErrorMessageArea>
+          )}
+          <Label>Password</Label>
+          <InputContainer>
+            <Input
+              {...register("password", {
+                required: "Please enter password",
+                minLength: {
+                  value: 6,
+                  message:
+                    "Password must be a string at least 6 characters long.",
+                },
+              })}
+              type="password"
+              id="password-input-r"
+            />
+          </InputContainer>
+          {errors.password && (
+            <ErrorMessageArea id="password-error">
+              {errors.password.message.toString()}
+            </ErrorMessageArea>
+          )}
+          <Label>Phone Number</Label>
+          <InputContainer>
+            <Input
+              {...register("phone", {
+                required: "Please enter phone number",
+                validate: isValidPhoneNumber,
+                // pattern: { value: /^[0-9]/, message: "Please enter numbers" },
+              })}
+              id="phone-input"
+            />
+          </InputContainer>
+          {errors.phone && (
+            <ErrorMessageArea>
+              {errors.phone.message.toString()}
+            </ErrorMessageArea>
+          )}
+          {(serverError.status === 418 || serverError.status === 419) && (
+            <ErrorMessageArea id="phone-error">
+              {serverError.message}
+            </ErrorMessageArea>
+          )}
+
+          <Label>Who are you?</Label>
+          {errors.role && (
+            <ErrorMessageArea>
+              {errors.role.message.toString()}
+            </ErrorMessageArea>
+          )}
+          <RadioContainer>
+            <input
+              {...register("role", { required: "Please select who you are" })}
+              type="radio"
+              value="guest"
+              id="guest-radio"
+            />
+            <span>Guest</span>
+          </RadioContainer>
+          <RadioContainer>
+            <input
+              {...register("role", { required: "Please select who you are" })}
+              type="radio"
+              value="hotel"
+              id="hotel-radio"
+            />
+            <span>Hotel</span>
+          </RadioContainer>
+
+          <SubmitBtn type="submit" id="signup-button">
+            {isFetching ? (
+              <Ellipsis color="white" size={30} />
+            ) : (
+              <span>Sign Up</span>
+            )}
+          </SubmitBtn>
+        </Form>
+      </Container>
+    </OuterContainer>
   );
 }
 
