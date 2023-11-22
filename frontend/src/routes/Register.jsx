@@ -137,6 +137,17 @@ function Register() {
   const [isFetching, setIsFetching] = useState(false);
   const [serverError, setServerError] = useState({ status: 0, message: "" });
 
+  const isLetter = (str) => {
+    return /^[a-zA-Z\s]*$/.test(str);
+  };
+
+  const isValidPhoneNumber = (value) => {
+    if (/^\+\d{11}$/.test(value)) {
+      return true;
+    }
+    return "Phone number must start with '+' and have 11 digits";
+  };
+
   const handleSignup = async (signupData) => {
     setIsFetching(true);
 
@@ -196,6 +207,17 @@ function Register() {
                 <Input
                   {...register("firstname", {
                     required: "Please enter first name",
+                    validate: {
+                      validName: (value) => {
+                        if (!isLetter(value)) {
+                          return "Only letters are allowed";
+                        }
+                        if (value.trim() === "") {
+                          return "First name cannot be just spaces";
+                        }
+                        return true;
+                      },
+                    },
                   })}
                   id="firstname-input"
                 />
@@ -212,6 +234,17 @@ function Register() {
                 <Input
                   {...register("lastname", {
                     required: "Please enter last name",
+                    validate: {
+                      validName: (value) => {
+                        if (!isLetter(value)) {
+                          return "Only letters are allowed";
+                        }
+                        if (value.trim() === "") {
+                          return "Last name cannot be just spaces";
+                        }
+                        return true;
+                      },
+                    },
                   })}
                   id="lastname-input"
                 />
@@ -237,10 +270,14 @@ function Register() {
             />
           </InputContainer>
           {errors.email && (
-            <ErrorMessageArea id="email-error">{errors.email.message.toString()}</ErrorMessageArea>
+            <ErrorMessageArea id="email-error">
+              {errors.email.message.toString()}
+            </ErrorMessageArea>
           )}
           {serverError.status === 409 && (
-            <ErrorMessageArea id="email-error">{serverError.message}</ErrorMessageArea>
+            <ErrorMessageArea id="email-error">
+              {serverError.message}
+            </ErrorMessageArea>
           )}
           <Label>Password</Label>
           <InputContainer>
@@ -267,21 +304,28 @@ function Register() {
             <Input
               {...register("phone", {
                 required: "Please enter phone number",
+                validate: isValidPhoneNumber,
                 // pattern: { value: /^[0-9]/, message: "Please enter numbers" },
               })}
               id="phone-input"
             />
           </InputContainer>
           {errors.phone && (
-            <ErrorMessageArea >{errors.phone.message.toString()}</ErrorMessageArea>
+            <ErrorMessageArea>
+              {errors.phone.message.toString()}
+            </ErrorMessageArea>
           )}
           {(serverError.status === 418 || serverError.status === 419) && (
-            <ErrorMessageArea id="phone-error">{serverError.message}</ErrorMessageArea>
+            <ErrorMessageArea id="phone-error">
+              {serverError.message}
+            </ErrorMessageArea>
           )}
 
           <Label>Who are you?</Label>
           {errors.role && (
-            <ErrorMessageArea>{errors.role.message.toString()}</ErrorMessageArea>
+            <ErrorMessageArea>
+              {errors.role.message.toString()}
+            </ErrorMessageArea>
           )}
           <RadioContainer>
             <input
