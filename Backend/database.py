@@ -376,7 +376,22 @@ def getAccountType():
 def getCardToken(card_number):
     return db.collection("test_card_data").document(card_number).get().get("token")
 
+def check_guest_history(gid, hid):
 
+    # Check if there is no past booking with the specified hid and gid
+    past_booking_ref = db.collection('pastBooking')
+    past_booking_query = past_booking_ref.where('gid', '==', gid).where('hid', '==', hid).limit(1).stream()
+    
+    past_booking_doc = next(past_booking_query, None)
+    if not past_booking_doc:
+        # There is no past booking with the specified hid and gid
+        abort(make_response(jsonify(message="You have not stayed at this hotel"), 409))
+
+    # Delete the document in the pastBooking collection
+    past_booking_ref.document(past_booking_doc.id).delete()
+
+    # If no past booking or review found, the guest is clear to proceed
+    return True
 
 # Function to modify user's information
 #def changeGuestInfo(email, phone, password, first_name, ):

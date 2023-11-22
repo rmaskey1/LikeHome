@@ -257,7 +257,7 @@ function BookingForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const isCancelRoute = window.location.pathname.includes("/cancel");
-  const { roomData, numGuests } = location.state;
+  const { roomData, numGuests, checkinDate, checkoutDate } = location.state;
   const [isFetching, setIsFetching] = useState(false);
   const [serverError, setServerError] = useState({ status: 0, message: "" });
   const [cardNumber, setCardNumber] = useState("4242424242424242");
@@ -278,15 +278,13 @@ function BookingForm() {
   } = useForm();
 
   const nights = Math.floor(
-    (new Date(roomData.endDate).getTime() -
-      new Date(roomData.startDate).getTime()) /
+    (new Date(checkoutDate).getTime() - new Date(checkinDate).getTime()) /
       (24 * 3600 * 1000)
   );
   const subtotal = roomData.price * nights;
   const tax = subtotal * 0.08;
   const total = subtotal + tax - pointsUsed / 10;
   const rewardPointsEarned = Math.floor(total * 0.5);
-  console.log(rewardPointsEarned);
 
   let dollarString = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -294,27 +292,29 @@ function BookingForm() {
     minimumFractionDigits: 2,
   });
 
-  const checkInDateParts = roomData.startDate.split(", ");
-  const monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const dateParts = checkInDateParts[0].split(" ");
-  const month = monthNames.indexOf(dateParts[0]);
-  const day = parseInt(dateParts[1]);
-  const year = parseInt(checkInDateParts[1]);
+  // const checkInDateParts = checkinDate.split(", ");
+  // const monthNames = [
+  //   "Jan",
+  //   "Feb",
+  //   "Mar",
+  //   "Apr",
+  //   "May",
+  //   "Jun",
+  //   "Jul",
+  //   "Aug",
+  //   "Sep",
+  //   "Oct",
+  //   "Nov",
+  //   "Dec",
+  // ];
+  // // const dateParts = checkInDateParts[0].split(" ");
+  // const dateParts = new Date(checkinDate).getDate();
+  // const month = monthNames.indexOf(dateParts[0]);
+  // const day = parseInt(dateParts[1]);
+  // // const year = parseInt(checkInDateParts[1]);
+  // const year = new Date(checkinDate).getFullYear();
 
-  const checkInDate = new Date(year, month, day);
+  const checkInDate = new Date(checkinDate);
   const currentDate = new Date(); //2023, 10, 11 Mmonths are 0-indexed (10 represents November).
 
   console.log("checkindate", checkInDate);
@@ -363,8 +363,6 @@ function BookingForm() {
     } else {
       const body = {
         ...formData,
-        startDate: roomData.startDate,
-        endDate: roomData.endDate,
         numGuest: numGuests,
         totalPrice: total,
         pointsUsed,
@@ -372,6 +370,8 @@ function BookingForm() {
         expirationDate: expirationDate,
         cvc: cvc,
         rewardPointsEarned,
+        startDate: checkInDate,
+        endDate: checkoutDate,
       };
       setIsFetching(true);
       const response = await fetch(
@@ -408,6 +408,14 @@ function BookingForm() {
     }
   };
 
+  const dateFormatted = (date) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "2-digit",
+    });
+  };
+
   return (
     <>
       <LeftBox>
@@ -440,7 +448,7 @@ function BookingForm() {
 
             <InfoTitle>Dates:</InfoTitle>
             <InfoText>
-              {roomData.startDate} - {roomData.endDate}
+              {dateFormatted(checkinDate)} - {dateFormatted(checkoutDate)}
             </InfoText>
 
             <InfoTitle>Number of Guests:</InfoTitle>
@@ -517,7 +525,6 @@ function BookingForm() {
                   })}
                   id="cardNum-input"
                   type="number"
-
                   style={{ color: "black" }}
                   name="cardNumber"
                   value={cardNumber}
@@ -525,7 +532,9 @@ function BookingForm() {
                 />
                 {errors.cardNumber && (
                   <ErrorText className="error-text">
-                    <span id="cardNum-error">{errors.cardNumber.message.toString()}</span>
+                    <span id="cardNum-error">
+                      {errors.cardNumber.message.toString()}
+                    </span>
                   </ErrorText>
                 )}
 
@@ -553,7 +562,9 @@ function BookingForm() {
                     />
                     {errors.expirationDate && (
                       <ErrorText className="error-text">
-                        <span id="cardExp-error">{errors.expirationDate.message.toString()}</span>
+                        <span id="cardExp-error">
+                          {errors.expirationDate.message.toString()}
+                        </span>
                       </ErrorText>
                     )}
                   </div>
@@ -581,7 +592,9 @@ function BookingForm() {
                     />
                     {errors.cvc && (
                       <ErrorText2 className="error-text">
-                        <span id="cardCvc-error">{errors.cvc.message.toString()}</span>
+                        <span id="cardCvc-error">
+                          {errors.cvc.message.toString()}
+                        </span>
                       </ErrorText2>
                     )}
                   </div>
@@ -628,7 +641,10 @@ function BookingForm() {
                 </NoFeeContainer>
               )}
               <form onSubmit={handleSubmit(onSubmit)}>
-                <SubmitButton id="cancel-booking-btn" type="submit"> Cancel Booking</SubmitButton>
+                <SubmitButton id="cancel-booking-btn" type="submit">
+                  {" "}
+                  Cancel Booking
+                </SubmitButton>
               </form>
             </div>
           )}

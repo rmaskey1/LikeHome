@@ -6,7 +6,7 @@ import database
 from firebase_admin import credentials, firestore, auth
 from flask import Flask, abort, make_response, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
-from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType, getCardToken, get_hid_from_user_or_hotel_api
+from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBooking, roomBooked, checkIfRoomExists, getGuestBookedRooms, getAccountType, getCardToken, get_hid_from_user_or_hotel_api, check_guest_history
 from guest import is_valid_password, is_valid_phone_number
 from datetime import datetime
 import stripe
@@ -148,8 +148,23 @@ def bookings():
         data = request.get_json()
         print(data)
         # time = datetime.now().strftime("%H:%M:%S")
-        if roomBooked(rid):
-            abort(make_response(jsonify(message="Sorry, this room is already booked"), 409))
+        
+        # #checks if room is booked for the selected date
+        # print("CHECK FOR DOUBLE BOOKING:")
+        # startDate=datetime.strptime(data['startDate'], "%b %d, %Y")
+        # endDate=datetime.strptime(data['endDate'], "%b %d, %Y")
+        
+        # #get all bookings under this uid
+        # bookings = db.collection("booking").where("gid", "==", gid).stream()
+        # #check the date range
+        # for booking in bookings:
+        #     booking_data = booking.to_dict()
+        #     print(booking_data)
+        #     bookingStart = datetime.strptime(booking_data['startDate'], "%b %d, %Y")
+        #     bookingEnd = datetime.strptime(booking_data['endDate'], "%b %d, %Y")
+        #     #check if above query date range is occupied. if it is, no booking allowed.
+        #     if not (endDate < bookingStart or startDate > bookingEnd):
+        #         abort(make_response(jsonify(message="You've already booked rooms within this date range"), 400))
         
         try:
             # Get credit card information from the form
@@ -189,6 +204,7 @@ def bookings():
         booking_docs = db.collection("booking").where("gid", "==", getUid()).stream()
         bookedRooms = []
         for doc in booking_docs:
+            print(doc.to_dict())
             booking_ref = doc.to_dict()
             id = booking_ref['rid']
             # Each id corresponds to the rid of a booked room
@@ -196,6 +212,8 @@ def bookings():
                 bookedRoom_data = db.collection("room").document(id).get().to_dict()
                 bookedRoom_data['rid'] = id
                 bookedRoom_data['reserved_guests'] = booking_ref['numGuest']
+                bookedRoom_data['checkinDate'] = doc.to_dict()['startDate']
+                bookedRoom_data['checkoutDate'] = doc.to_dict()['endDate']
                 bookedRooms.append(bookedRoom_data)
         return jsonify(bookedRooms)
 
@@ -299,8 +317,11 @@ def update_reward_points():
                 query = past_booking_ref.where('gid', '==', gid).where('hid', '==', hid).limit(1).stream()
 
                 if not next(query, None):
-                    # Add the bid, gid, and hid to the 'pastBooking' collection
-                    past_booking_ref.document(bid).set({'gid': gid, 'hid': hid})
+                    # Check if user already have a review for that hotel
+                    review_query = db.collection('review').where('hid', '==', hid).where('gid', '==', gid).limit(1).stream()
+                    if not next(review_query, None):
+                        # Add the bid, gid, and hid to the 'pastBooking' collection
+                        past_booking_ref.document(bid).set({'gid': gid, 'hid': hid})
 
 
                 total_price = booking_data.get('totalPrice', 0)
