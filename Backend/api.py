@@ -52,6 +52,19 @@ data = json.load(f)
 #         hotel = db.collection('hotelApi').document(doc.id)
 #         hotel.update({"roomIds": [autoId]})
 
+# # Get all documents in the collection
+# room_docs = db.collection('room').stream()
+
+# # Loop through each document
+# for doc in room_docs:
+#     # Get the amenities array from the document
+#     amenities = doc.to_dict().get('Amenities', [])
+
+#     # Convert each amenity to lowercase
+#     lowercase_amenities = [amenity.lower().replace(' ', '').replace('-', '') for amenity in amenities]
+    
+#     # Update the document with the lowercase amenities
+#     doc.reference.update({'Amenities': lowercase_amenities})
 
 # Closing file
 f.close()
