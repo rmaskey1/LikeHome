@@ -141,6 +141,13 @@ function Register() {
     return /^[a-zA-Z\s]*$/.test(str);
   };
 
+  const isValidPhoneNumber = (value) => {
+    if (/^\+\d{11}$/.test(value)) {
+      return true;
+    }
+    return "Phone number must start with '+' and have 11 digits";
+  };
+
   const handleSignup = async (signupData) => {
     setIsFetching(true);
 
@@ -205,6 +212,9 @@ function Register() {
                         if (!isLetter(value)) {
                           return "Only letters are allowed";
                         }
+                        if (value.trim() === "") {
+                          return "First name cannot be just spaces";
+                        }
                         return true;
                       },
                     },
@@ -228,6 +238,9 @@ function Register() {
                       validName: (value) => {
                         if (!isLetter(value)) {
                           return "Only letters are allowed";
+                        }
+                        if (value.trim() === "") {
+                          return "Last name cannot be just spaces";
                         }
                         return true;
                       },
@@ -291,6 +304,7 @@ function Register() {
             <Input
               {...register("phone", {
                 required: "Please enter phone number",
+                validate: isValidPhoneNumber,
                 // pattern: { value: /^[0-9]/, message: "Please enter numbers" },
               })}
               id="phone-input"
