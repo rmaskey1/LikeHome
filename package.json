@@ -4,6 +4,7 @@
     "date-fns": "^2.30.0",
     "geckodriver": "^4.2.1",
     "react": "^18.2.0",
+    "react-calendar": "^4.6.1",
     "react-hook-form": "^7.47.0",
     "react-icons": "^4.11.0",
     "react-modal": "^3.16.1",

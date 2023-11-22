@@ -13,6 +13,7 @@ import { SERVER_URL, getListing, getMyBooking } from "api";
 import Amenity from "components/Amenity";
 import DoubleBookingWarning from "components/DoubleBookingWarning";
 import Reviews from "components/Reviews";
+import Calendar from "react-calendar";
 
 const Container = styled.main`
   display: flex;
@@ -120,6 +121,7 @@ const ReserveDate = styled.div`
   font-size: 16px;
   border: 1px solid rgb(176, 176, 176);
   border-radius: 10px;
+  cursor: pointer;
   span {
     font-size: 10px;
     font-weight: 600;
@@ -239,6 +241,15 @@ const SectionTitle = styled.div`
   font-weight: 600;
 `;
 
+const CalendarContainer = styled.div`
+  position: absolute;
+  transform: translateY(70px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+`;
+
 function Details() {
   const params = useParams();
   const navigate = useNavigate();
@@ -306,18 +317,35 @@ function Details() {
     Array.isArray(bookingData) &&
     bookingData.find((b) => b.rid === rid);
 
-  //isGuest && !bookingIsLoading && bookingData.find((b) => b.rid === rid);
-
   const { isLoading, data: fetchData } = useQuery(["listing"], () =>
     getListing(rid)
   );
 
-  /*
-  useEffect(() => {
-    if (stateData) setRoomData(stateData);
-    if (stateData == null && !isLoading) setRoomData(fetchData);
-  }, [fetchData, isLoading, stateData]);
-  */
+  /* Calendar*/
+  const [checkinDate, setCheckinDate] = useState(new Date());
+  const [checkoutDate, setCheckoutDate] = useState(new Date());
+  const [showStartCal, setShowStartCal] = useState(false);
+  const [showEndCal, setShowEndCal] = useState(false);
+
+  function onChangeStart(newDate) {
+    setShowStartCal(false);
+    setCheckinDate(new Date(newDate));
+  }
+
+  function onChangeEnd(newDate) {
+    setShowEndCal(false);
+    setCheckoutDate(new Date(newDate));
+  }
+
+  const toggleStartCal = () => {
+    setShowStartCal((prev) => !prev);
+    showEndCal && setShowEndCal(false);
+  };
+
+  const toggleEndCal = () => {
+    setShowEndCal((prev) => !prev);
+    showStartCal && setShowStartCal(false);
+  };
 
   useEffect(() => {
     if (stateData) {
@@ -360,7 +388,27 @@ function Details() {
     return arr;
   };
 
+  const handleReserve = () => {
+    if (isDoubleBooking) {
+      setShowDoubleBookingWarning(true);
+    } else {
+      if (checkoutDate > checkinDate) {
+        navigate("book", {
+          state: {
+            roomData,
+            checkinDate,
+            checkoutDate,
+            numGuests,
+          },
+        });
+      } else {
+        alert("Check-out date should be later than check-in date");
+      }
+    }
+  };
+
   useEffect(() => {
+    setIsDoubleBooking(false);
     let bookedDates = [];
 
     if (Array.isArray(bookingData)) {
@@ -371,7 +419,7 @@ function Details() {
     }
 
     roomData &&
-      getDaysArray(roomData.startDate, roomData.endDate).forEach((date) => {
+      getDaysArray(checkinDate, checkoutDate).forEach((date) => {
         for (let i = 0; i < bookedDates.length; i++) {
           if (bookedDates[i].getTime() === date.getTime()) {
             setIsDoubleBooking(true);
@@ -379,7 +427,14 @@ function Details() {
           }
         }
       });
-  }, [bookingData, roomData]);
+  }, [bookingData, checkoutDate, checkinDate, roomData]);
+
+  useEffect(() => {
+    if (roomData) {
+      setCheckinDate(new Date(roomData.startDate));
+      setCheckoutDate(new Date(roomData.endDate));
+    }
+  }, [roomData]);
 
   return (
     <Container>
@@ -446,7 +501,12 @@ function Details() {
                     id="modify-booking-btn"
                     onClick={() =>
                       navigate(`/mybooking/${rid}/modify`, {
-                        state: { roomData, numGuests },
+                        state: {
+                          roomData,
+                          checkinDate,
+                          checkoutDate,
+                          numGuests,
+                        },
                       })
                     }
                   >
@@ -492,15 +552,46 @@ function Details() {
                   <ReserveDateContainer>
                     <ReserveInputContainer>
                       <ReserveInputLabel>Check-in Date</ReserveInputLabel>
-                      <ReserveDate id="fromDate-detail">
-                        {dateFormatted(roomData.startDate)}
+                      <ReserveDate
+                        id="fromDate-detail"
+                        onClick={toggleStartCal}
+                      >
+                        {dateFormatted(checkinDate)}
                       </ReserveDate>
+                      {showStartCal && (
+                        <CalendarContainer>
+                          <Calendar
+                            onChange={onChangeStart}
+                            value={checkinDate}
+                            formatDay={(locale, date) =>
+                              new Date(date).toLocaleDateString("en-us", {
+                                day: "2-digit",
+                              })
+                            }
+                            locale="en-US"
+                          />
+                        </CalendarContainer>
+                      )}
                     </ReserveInputContainer>
                     <ReserveInputContainer>
                       <ReserveInputLabel>Check-out Date</ReserveInputLabel>
-                      <ReserveDate id="toDate-detail">
-                        {dateFormatted(roomData.endDate)}
+                      <ReserveDate id="toDate-detail" onClick={toggleEndCal}>
+                        {dateFormatted(checkoutDate)}
                       </ReserveDate>
+                      {showEndCal && (
+                        <CalendarContainer>
+                          <Calendar
+                            onChange={onChangeEnd}
+                            value={checkoutDate}
+                            formatDay={(locale, date) =>
+                              new Date(date).toLocaleDateString("en-us", {
+                                day: "2-digit",
+                              })
+                            }
+                            locale="en-US"
+                          />
+                        </CalendarContainer>
+                      )}
                     </ReserveInputContainer>
                   </ReserveDateContainer>
                   <ReserveDateContainer>
@@ -520,30 +611,20 @@ function Details() {
                         >
                           -
                         </GuestModBtn>
-                        <div>{numGuests} Guests</div>
+                        <div>{numGuests}</div>
                         <GuestModBtn
                           onClick={() =>
                             numGuests < roomData.numberGuests &&
                             setNumGuests(numGuests + 1)
                           }
                         >
-                          {" "}
                           +
                         </GuestModBtn>
                       </ReserveDate>
                     </ReserveInputContainer>
                   </ReserveDateContainer>
                 </ReserveForm>
-                <Reservebtn
-                  id="reserve-btn"
-                  onClick={() => {
-                    if (isDoubleBooking) {
-                      setShowDoubleBookingWarning(true);
-                    } else {
-                      navigate("book", { state: { roomData, numGuests } });
-                    }
-                  }}
-                >
+                <Reservebtn id="reserve-btn" onClick={handleReserve}>
                   Reserve
                 </Reservebtn>
                 {showDoubleBookingWarning && (

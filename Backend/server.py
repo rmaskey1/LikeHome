@@ -149,25 +149,22 @@ def bookings():
         print(data)
         # time = datetime.now().strftime("%H:%M:%S")
         
-        #checks if room is booked for the selected date
-        print("CHECK FOR DOUBLE BOOKING:")
-        startDate=datetime.strptime(data['startDate'], "%b %d, %Y")
-        endDate=datetime.strptime(data['endDate'], "%b %d, %Y")
+        # #checks if room is booked for the selected date
+        # print("CHECK FOR DOUBLE BOOKING:")
+        # startDate=datetime.strptime(data['startDate'], "%b %d, %Y")
+        # endDate=datetime.strptime(data['endDate'], "%b %d, %Y")
         
-        #get all bookings under this uid
-        bookings = db.collection("booking").where("gid", "==", gid).stream()
-        #check the date range
-        for booking in bookings:
-            booking_data = booking.to_dict()
-            print(booking_data)
-            bookingStart = datetime.strptime(booking_data['startDate'], "%b %d, %Y")
-            bookingEnd = datetime.strptime(booking_data['endDate'], "%b %d, %Y")
-            #check if above query date range is occupied. if it is, no booking allowed.
-            if not (endDate < bookingStart or startDate > bookingEnd):
-                abort(make_response(jsonify(message="You've already booked rooms within this date range"), 400))
-        
-        
-  
+        # #get all bookings under this uid
+        # bookings = db.collection("booking").where("gid", "==", gid).stream()
+        # #check the date range
+        # for booking in bookings:
+        #     booking_data = booking.to_dict()
+        #     print(booking_data)
+        #     bookingStart = datetime.strptime(booking_data['startDate'], "%b %d, %Y")
+        #     bookingEnd = datetime.strptime(booking_data['endDate'], "%b %d, %Y")
+        #     #check if above query date range is occupied. if it is, no booking allowed.
+        #     if not (endDate < bookingStart or startDate > bookingEnd):
+        #         abort(make_response(jsonify(message="You've already booked rooms within this date range"), 400))
         
         try:
             # Get credit card information from the form
@@ -207,6 +204,7 @@ def bookings():
         booking_docs = db.collection("booking").where("gid", "==", getUid()).stream()
         bookedRooms = []
         for doc in booking_docs:
+            print(doc.to_dict())
             booking_ref = doc.to_dict()
             id = booking_ref['rid']
             # Each id corresponds to the rid of a booked room
@@ -214,6 +212,8 @@ def bookings():
                 bookedRoom_data = db.collection("room").document(id).get().to_dict()
                 bookedRoom_data['rid'] = id
                 bookedRoom_data['reserved_guests'] = booking_ref['numGuest']
+                bookedRoom_data['checkinDate'] = doc.to_dict()['startDate']
+                bookedRoom_data['checkoutDate'] = doc.to_dict()['endDate']
                 bookedRooms.append(bookedRoom_data)
         return jsonify(bookedRooms)
 

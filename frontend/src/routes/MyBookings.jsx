@@ -102,8 +102,8 @@ const CardLoading = () => (
 
 const Card = (booking) => {
   const nights = Math.floor(
-    (new Date(booking.bookingEndDate).getTime() -
-      new Date(booking.bookingStartDate).getTime()) /
+    (new Date(booking.checkoutDate).getTime() -
+      new Date(booking.checkinDate).getTime()) /
       (24 * 3600 * 1000)
   );
   const subtotal = booking.price * nights;
@@ -115,6 +115,13 @@ const Card = (booking) => {
     currency: "USD",
     minimumFractionDigits: 2,
   });
+
+  const dateFormatter = (date) =>
+    new Date(date).toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "2-digit",
+    });
 
   return (
     <CardContainer className="booking-card">
@@ -131,7 +138,8 @@ const Card = (booking) => {
             <CalendarIcon style={{ marginRight: "15px" }} />
             <SubTitle>
               {" "}
-              Dates: {booking.bookingStartDate} - {booking.bookingEndDate}
+              Dates: {dateFormatter(booking.checkinDate)} -{" "}
+              {dateFormatter(booking.checkoutDate)}
             </SubTitle>
           </IconWithText>
           <IconWithText>
