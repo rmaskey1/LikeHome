@@ -63,7 +63,7 @@ const DoubleBookingWarning = ({ onConfirm }) => {
             }}
           >
             <StyledP style={{ fontSize: "20px", fontWeight: "700" }}>
-              This listing is currently booked on the dates you've selected.
+              You already have a reservation for the selected dates.
             </StyledP>
             <StyledP style={{ fontSize: "16px", fontWeight: "400" }}>
               Please select other dates.
