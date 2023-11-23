@@ -256,8 +256,8 @@ function Details() {
   const [roomData, setRoomData] = useState(null);
   const { state: stateData } = useLocation();
 
-  console.log("state", stateData);
-  console.log("roomData", roomData);
+  // console.log("state", stateData);
+  // console.log("roomData", roomData);
 
   const [showDoubleBookingWarning, setShowDoubleBookingWarning] =
     useState(false);
@@ -272,6 +272,9 @@ function Details() {
     ["myBooking"],
     getMyBooking
   );
+
+  const isBookedByMe =
+    bookingData && bookingData.find((b) => b.rid === rid) !== undefined;
 
   const [numGuests, setNumGuests] = useState(2);
 
@@ -350,11 +353,11 @@ function Details() {
   useEffect(() => {
     if (stateData) {
       if (stateData.roominfo) {
-        console.log("case 1");
+        // console.log("case 1");
         //case 1: {roominfo} structure
         setRoomData(stateData.roominfo);
       } else {
-        console.log("case 2", stateData);
+        // console.log("case 2", stateData);
         setRoomData(stateData);
       }
     } else if (stateData == null && !isLoading) {
@@ -367,11 +370,11 @@ function Details() {
     new Date().toLocaleDateString() ===
       new Date(roomData.startDate).toLocaleDateString();
 
-  console.log("is checkin today?", isCheckInDateToday);
-  console.log("today", new Date());
+  // console.log("is checkin today?", isCheckInDateToday);
+  // console.log("today", new Date());
   //console.log("checkin", new Date(roomData.startDate));
 
-  console.log("userinfo", userinfo);
+  // console.log("userinfo", userinfo);
 
   const handleConfirm = () => {
     setShowDoubleBookingWarning(false);
@@ -667,7 +670,7 @@ function Details() {
           <Divider />
           <Detail>
             <h1>Hotel Reviews</h1>
-            <Reviews />
+            <Reviews isBookedByMe={isBookedByMe} />
           </Detail>
           <Detail>
             <h1>Cancellation Policy</h1>

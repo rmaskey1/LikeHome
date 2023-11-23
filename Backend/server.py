@@ -10,7 +10,7 @@ from database import addUser, addHotelInfo, pyrebase_auth, db, getUid, addBookin
 from guest import is_valid_password, is_valid_phone_number
 from datetime import datetime
 import stripe
-
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 app = Flask(__name__)
 CORS(app)
@@ -350,6 +350,73 @@ def update_reward_points():
         abort(make_response(
             jsonify({'error': 'An error occurred', 'message': str(e)}), 500))
     
+@app.route('/review', methods=['GET'])
+def reviews():
+    if request.method == 'GET':
+        review_docs = db.collection('review').stream()
+        data = []
+        for doc in review_docs:
+            temp = doc.to_dict()
+            temp['id'] = doc.id
+            data.append(temp)
+        return jsonify(data)
+    
+@app.route('/review/<rid>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def review(rid):
+    gid = getUid()
+    docs = db.collection('review').where(filter=FieldFilter('rid', '==', rid)).where(filter=FieldFilter('gid', '==', gid))
+    user_ref = db.collection("user").document(gid)
+    user = user_ref.get().to_dict()
+
+    if request.method == 'GET':
+        temp = []
+        docs = db.collection('review').where(filter=FieldFilter('rid', '==', rid)).stream()
+        for doc in docs:
+            dict = doc.to_dict()
+            dict['id'] = doc.id
+            temp.append(dict)
+        return jsonify(temp)
+    
+    if request.method == 'POST':    
+        data = request.get_json()
+        if len(docs.get()) > 0:
+            abort(make_response(jsonify(message="Review already exists"), 400))
+        else:
+            current_time = datetime.today()
+            review_data = {
+                "gid": gid,
+                "rid": rid,
+                "images": [],
+                "rating": data['rating'],
+                "text": data['text'],
+                "title": data['title'],
+                'createdTime': current_time,
+                'lastModifiedTime': current_time,
+                'name': user['firstName']
+            }
+            db.collection("review").add(review_data)
+        return jsonify(review_data)
+    
+    elif request.method == 'PUT':
+        data = request.get_json()
+        if len(docs.get()) != 1:
+            abort(make_response(jsonify(message="no review to edit"), 404))
+        else:
+            id = docs.get()[0].id
+            doc_ref = db.collection('review').document(id)
+            data['lastModifiedTime'] = datetime.today()
+            doc_ref.update(data)
+            return jsonify(doc_ref.get().to_dict())
+
+        
+    elif request.method == 'DELETE':
+        for doc in docs.get():
+            id = doc.id
+            doc_ref = db.collection('review').document(id)
+            doc_ref.delete()
+        return jsonify(message="deleted")
+    else:
+        abort(make_response(jsonify(message="wrong method"), 405))
 
 @app.route('/query', methods=['POST'])
 def queryByRmAttribute():

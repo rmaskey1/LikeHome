@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@heroicons/react": "^2.0.18",
     "chromedriver": "^118.0.1",
     "date-fns": "^2.30.0",
     "geckodriver": "^4.2.1",

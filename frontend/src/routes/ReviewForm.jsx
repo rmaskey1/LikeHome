@@ -1,4 +1,8 @@
-import React from "react";
+import { SERVER_URL } from "api";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
+import { Ellipsis } from "react-spinners-css";
 import styled from "styled-components";
 
 const BackBtn = styled.button`
@@ -42,7 +46,7 @@ const Input = styled.div`
     padding: 0 15px;
   }
 `;
-const Submit = styled.input`
+const Submit = styled.button`
   width: 500px;
   height: 36px;
   margin-left: 115px;
@@ -55,25 +59,68 @@ const Submit = styled.input`
   cursor: pointer;
 `;
 function ReviewForm() {
+  const params = useParams();
+  const navigate = useNavigate();
+  const { register, handleSubmit, resetField } = useForm();
+  const rid = params.id;
+  const [isFetching, setIsFetching] = useState(false);
+
+  const submit = async ({ title, text, rating }) => {
+    setIsFetching(true);
+    const response = await fetch(`${SERVER_URL}/review/${rid}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        rating: Number(rating),
+        text,
+      }),
+    });
+
+    const data = await response.json();
+    console.log(response.status, data);
+    if (response.ok) {
+      resetField("title");
+      resetField("rating");
+      resetField("text");
+    } else {
+      alert("You have already written a review");
+    }
+    setIsFetching(false);
+    navigate(-1);
+  };
+
   return (
     <>
-      <BackBtn>Back</BackBtn>
+      <BackBtn onClick={() => navigate(-1)}>Back</BackBtn>
       <Container>
         <h1>Review Your Stay</h1>
-        <Form>
+        <Form onSubmit={handleSubmit(submit)}>
           <Input>
             <label>Review Title</label>
-            <input />
+            <input {...register("title", { required: "Please enter title" })} />
           </Input>
           <Input>
             <label>Rating</label>
-            <input type="number" defaultValue={5} min={0} max={5} />
+            <input
+              {...register("rating", { required: "Please enter rating" })}
+              type="number"
+              defaultValue={5}
+              min={0}
+              max={5}
+            />
           </Input>
           <Input>
             <label>Review Details</label>
-            <input />
+            <input
+              {...register("text", { required: "Please enter details" })}
+            />
           </Input>
-          <Submit type="submit" value={"Submit"} />
+          <Submit type="submit" id="submit-btn">
+            {isFetching ? <Ellipsis color="white" size={30} /> : "Submit"}
+          </Submit>{" "}
         </Form>
       </Container>
     </>
