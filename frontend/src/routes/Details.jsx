@@ -9,7 +9,7 @@ import { ReactComponent as BedIcon } from "../icons/bed.svg";
 import { ReactComponent as SinkIcon } from "../icons/sink.svg";
 import { useQuery } from "react-query";
 import "react-calendar/dist/Calendar.css";
-import { SERVER_URL, getListing, getMyBooking } from "api";
+import { SERVER_URL, getListing, getMyBooking, getUserInfo } from "api";
 import Amenity from "components/Amenity";
 import DoubleBookingWarning from "components/DoubleBookingWarning";
 import Reviews from "components/Reviews";
@@ -264,9 +264,14 @@ function Details() {
   const [isDoubleBooking, setIsDoubleBooking] = useState(false); //check if double booking here!
 
   const rid = params.id;
-  const userinfo = localStorage.userinfo
-    ? JSON.parse(localStorage.userinfo)
-    : {};
+  // const userinfo = localStorage.userinfo
+  //   ? JSON.parse(localStorage.userinfo)
+  //   : {};
+
+  const { isLoading: userInfoLoading, data: userinfo } = useQuery(
+    ["userInfo", "allUserInfo"],
+    getUserInfo
+  );
 
   const { isLoading: bookingIsLoading, data: bookingData } = useQuery(
     ["myBooking"],
@@ -309,7 +314,7 @@ function Details() {
     await navigate("/home");
   };
 
-  const isGuest = userinfo.accountType === "guest";
+  const isGuest = userinfo?.accountType === "guest";
 
   const isReserved = //BANDAID SOLUTION!! please look into it more INTEGRATIONS!!
     isGuest &&
@@ -453,8 +458,8 @@ function Details() {
               <HotelName id="hotelName">{roomData.hotelName}</HotelName>
             </div>
             <div>
-              {userinfo.accountType === "hotel" &&
-                userinfo.listedRooms.includes(roomData.rid) && (
+              {userinfo?.accountType === "hotel" &&
+                userinfo?.listedRooms.includes(roomData.rid) && (
                   <Dropdown id="dropdown-btn" onClick={toggleDropdown}>
                     . . .
                     {isDropdownOpen && (
