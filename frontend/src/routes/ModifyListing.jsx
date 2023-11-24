@@ -200,7 +200,7 @@ function ModifyListing() {
 
     if (response.ok) {
       navigate(location.pathname.replace("/modify", ""), {
-        state: { status: response.status, roominfo: location.state },
+        state: { status: response.status, roominfo: data.room },
       });
     }
   };

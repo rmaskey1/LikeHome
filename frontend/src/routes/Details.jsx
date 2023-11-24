@@ -274,7 +274,8 @@ function Details() {
   );
 
   const isBookedByMe =
-    bookingData && bookingData.find((b) => b.rid === rid) !== undefined;
+  Array.isArray(bookingData) &&
+  bookingData.find((b) => b.rid === rid) !== undefined;
 
   const [numGuests, setNumGuests] = useState(2);
 
