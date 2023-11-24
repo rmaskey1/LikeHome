@@ -9,7 +9,7 @@ import { ReactComponent as BedIcon } from "../icons/bed.svg";
 import { ReactComponent as SinkIcon } from "../icons/sink.svg";
 import { useQuery } from "react-query";
 import "react-calendar/dist/Calendar.css";
-import { SERVER_URL, getListing, getMyBooking, getUserInfo } from "api";
+import { SERVER_URL, getListing, getMyBooking } from "api";
 import Amenity from "components/Amenity";
 import DoubleBookingWarning from "components/DoubleBookingWarning";
 import Reviews from "components/Reviews";
@@ -256,27 +256,25 @@ function Details() {
   const [roomData, setRoomData] = useState(null);
   const { state: stateData } = useLocation();
 
-  console.log("state", stateData);
-  console.log("roomData", roomData);
+  // console.log("state", stateData);
+  // console.log("roomData", roomData);
 
   const [showDoubleBookingWarning, setShowDoubleBookingWarning] =
     useState(false);
   const [isDoubleBooking, setIsDoubleBooking] = useState(false); //check if double booking here!
 
   const rid = params.id;
-  // const userinfo = localStorage.userinfo
-  //   ? JSON.parse(localStorage.userinfo)
-  //   : {};
-
-  const { isLoading: userInfoLoading, data: userinfo } = useQuery(
-    ["userInfo", "allUserInfo"],
-    getUserInfo
-  );
+  const userinfo = localStorage.userinfo
+    ? JSON.parse(localStorage.userinfo)
+    : {};
 
   const { isLoading: bookingIsLoading, data: bookingData } = useQuery(
     ["myBooking"],
     getMyBooking
   );
+
+  const isBookedByMe =
+    bookingData && bookingData.find((b) => b.rid === rid) !== undefined;
 
   const [numGuests, setNumGuests] = useState(2);
 
@@ -314,7 +312,7 @@ function Details() {
     await navigate("/home");
   };
 
-  const isGuest = userinfo?.accountType === "guest";
+  const isGuest = userinfo.accountType === "guest";
 
   const isReserved = //BANDAID SOLUTION!! please look into it more INTEGRATIONS!!
     isGuest &&
@@ -355,11 +353,11 @@ function Details() {
   useEffect(() => {
     if (stateData) {
       if (stateData.roominfo) {
-        console.log("case 1");
+        // console.log("case 1");
         //case 1: {roominfo} structure
         setRoomData(stateData.roominfo);
       } else {
-        console.log("case 2", stateData);
+        // console.log("case 2", stateData);
         setRoomData(stateData);
       }
     } else if (stateData == null && !isLoading) {
@@ -372,11 +370,11 @@ function Details() {
     new Date().toLocaleDateString() ===
       new Date(roomData.startDate).toLocaleDateString();
 
-  console.log("is checkin today?", isCheckInDateToday);
-  console.log("today", new Date());
+  // console.log("is checkin today?", isCheckInDateToday);
+  // console.log("today", new Date());
   //console.log("checkin", new Date(roomData.startDate));
 
-  console.log("userinfo", userinfo);
+  // console.log("userinfo", userinfo);
 
   const handleConfirm = () => {
     setShowDoubleBookingWarning(false);
@@ -458,8 +456,8 @@ function Details() {
               <HotelName id="hotelName">{roomData.hotelName}</HotelName>
             </div>
             <div>
-              {userinfo?.accountType === "hotel" &&
-                userinfo?.listedRooms.includes(roomData.rid) && (
+              {userinfo.accountType === "hotel" &&
+                userinfo.listedRooms.includes(roomData.rid) && (
                   <Dropdown id="dropdown-btn" onClick={toggleDropdown}>
                     . . .
                     {isDropdownOpen && (
@@ -672,7 +670,7 @@ function Details() {
           <Divider />
           <Detail>
             <h1>Hotel Reviews</h1>
-            <Reviews />
+            <Reviews isBookedByMe={isBookedByMe} />
           </Detail>
           <Detail>
             <h1>Cancellation Policy</h1>

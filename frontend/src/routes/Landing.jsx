@@ -7,6 +7,7 @@ import HotelBed from "../img/hotel-bed.jpeg";
 import HotelMeal from "../img/hotel-dining.jpeg";
 import Vacation from "../img/vacation.jpeg";
 
+
 const Container = styled.main`
   width: 100vw;
   height: 100vh;
@@ -39,7 +40,6 @@ const ImageContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  
 `;
 
 const Image = styled.img`
@@ -68,6 +68,7 @@ const WhiteBox = styled.div`
   height: 400px;
   display: flex;
   background-color: white;
+  overflow: hidden;
 `;
 
 const BlueBox = styled.div`
@@ -77,6 +78,7 @@ const BlueBox = styled.div`
   background-color: #293545;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 `;
 
 const LeftSide = styled.div`
@@ -113,7 +115,7 @@ const LeftWhiteText = styled.div`
 
 const HotelBedImage = styled.img`
   width: 80%; 
-  height: auto; 
+  height: auto;
 `;
 
 const HotelMealImage = styled.img`
@@ -159,12 +161,6 @@ const Email = styled.div`
   margin-top: 15px;
   margin-right: 50px;
 `;
-
-const Dots = styled.img`
-  width: 10%; 
-  height: 10%; 
-`;
-
 
 function Landing() {
     return (
