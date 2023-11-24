@@ -3,6 +3,7 @@ import { useRecoilState } from "recoil";
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import logo from "../img/logo.png";
 
 const NavbarContainer = styled.nav`
   position: fixed;
@@ -25,6 +26,7 @@ const NavbarContainer = styled.nav`
 const LeftBox = styled.div`
   display: flex;
   gap: 20px;
+  align-items: center;
 `;
 
 const MiddleBox = styled.div`
@@ -44,6 +46,20 @@ const Button = styled.button`
   cursor: pointer;
   color: #fff;
 `;
+
+const LogoLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+`;
+
+const LogoImage = styled.img`
+  width: 100%;
+  height: 100%;
+  margin-right: 5px;
+`;
+
 
 function NavBar() {
   const navigate = useNavigate();
@@ -84,7 +100,10 @@ function NavBar() {
           ) : (
             <>
               <LeftBox>
-                <Link to={"/"}>LikeHome</Link>
+                <LogoLink to={"/"}>
+                  <LogoImage src={logo} alt="Logo" />
+                  LikeHome
+                </LogoLink>
               </LeftBox>
               <MiddleBox>
                 <Link to={"/home"}>Home</Link>
@@ -103,7 +122,10 @@ function NavBar() {
         // Without Login
         <>
           <LeftBox>
-            <Link to={"/"}>LikeHome</Link>
+                <LogoLink to={"/"}>
+                  <LogoImage src={logo} alt="Logo" />
+                  LikeHome
+                </LogoLink>
           </LeftBox>
           <RightBox>
             <Link to="login" onClick={logout}>
