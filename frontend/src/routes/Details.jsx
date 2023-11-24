@@ -273,10 +273,6 @@ function Details() {
     getMyBooking
   );
 
-  const isBookedByMe =
-  Array.isArray(bookingData) &&
-  bookingData.find((b) => b.rid === rid) !== undefined;
-
   const [numGuests, setNumGuests] = useState(2);
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -489,7 +485,7 @@ function Details() {
               <img src={roomData.imageUrl} alt="example" />
             </ImgContainer>
 
-            {isGuest && isReserved ? (
+            {isGuest && isDoubleBooking ? (
               <Reserve id="reserved-container">
                 <div>You are currently reserving this listing.</div>
                 {isCheckInDateToday ? (
@@ -671,7 +667,7 @@ function Details() {
           <Divider />
           <Detail>
             <h1>Hotel Reviews</h1>
-            <Reviews isBookedByMe={isBookedByMe} />
+            <Reviews isBookedByMe={isReserved} />
           </Detail>
           <Detail>
             <h1>Cancellation Policy</h1>
