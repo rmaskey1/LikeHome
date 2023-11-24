@@ -1,10 +1,14 @@
+import { SERVER_URL, getReviews } from "api";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useQuery } from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 const Container = styled.div`
   display: flex;
   gap: 74px;
+  margin-bottom: 50px;
 `;
 const Left = styled.div`
   display: flex;
@@ -43,6 +47,7 @@ const WriteBtn = styled.button`
   cursor: pointer;
 `;
 const Review = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -58,61 +63,88 @@ const Title = styled.div`
 const Rating = styled.div``;
 const Description = styled.div``;
 const Info = styled.div``;
+const NoReview = styled.div`
+  display: grid;
+  place-content: center;
+  width: 422px;
+  height: 206px;
+  border-radius: 20px;
+  background: rgba(243, 243, 243, 1);
+  font-size: 20px;
+  font-weight: 400;
+`;
+const DeleteIcon = styled.div`
+  position: absolute;
+  top: 0;
+  right: 20px;
+  transition: none;
+  cursor: pointer;
 
-const temporaryReviews = [
-  {
-    title: "Best Stay!",
-    rating: 5,
-    description:
-      "Loved the stay at this hotel! The staff and service was quick. The view from the room is amazing too! Would stay here again.",
-    writer: "Susan",
-    date: new Date("Dec 13, 2023"),
-  },
-  {
-    title: "It was ok...",
-    rating: 3,
-    description:
-      "The room was nice but felt that there can be more to it. The service was not bad.",
-    writer: "John",
-    date: new Date("Dec 15, 2023"),
-  },
-  {
-    title: "Would book again",
-    rating: 5,
-    description:
-      "The staff was very nice and offered an upgrade for us for free! Which we gladly took the offer. The breakfast was delicious as well.",
-    writer: "Bob",
-    date: new Date("Dec 23, 2023"),
-  },
-];
+  &:hover {
+    color: #616161;
+  }
 
-function Reviews() {
+  svg {
+    transition: none;
+  }
+`;
+
+function Reviews({ isBookedByMe }) {
+  const params = useParams();
   const navigate = useNavigate();
-  const formatDate = (date) => date.toLocaleDateString("en-US");
+
+  const rid = params.id;
+  const { isLoading, data } = useQuery(["reviews"], () => getReviews(rid));
+
+  const sum = data && data.reduce((acc, obj) => acc + obj.rating, 0);
+  const average = data && Math.round((sum / data.length) * 10) / 10;
+  const noReview = data && data.length === 0;
+
+  const formatDate = (date) => new Date(date).toLocaleDateString("en-US");
+  const deleteReview = async () => {
+    fetch(`${SERVER_URL}/review/${rid}`, { method: "DELETE" });
+    navigate(0);
+  };
+
   return (
-    <Container>
-      <Left>
-        <RatingBox>
-          <OverallRating>4.5/5</OverallRating>
-          <span>Overall Rating</span>
-        </RatingBox>
-        <WriteBtn onClick={() => navigate("review")}>Write a Review</WriteBtn>
-      </Left>
-      <Right>
-        {temporaryReviews.map(
-          ({ title, writer, description, date, rating }, i) => (
-            <Review>
-              <Title>{title}</Title>
-              <Rating>Rating: {rating}/5</Rating>
-              <Description>{description}</Description>
-              <Info>
-                By {writer}, {formatDate(date)}
-              </Info>
-            </Review>
-          )
+    !isLoading && (
+      <Container>
+        <Left>
+          <RatingBox>
+            <OverallRating>{noReview ? "N/A" : `${average}/5`}</OverallRating>
+            <span>Overall Rating</span>
+          </RatingBox>
+          {isBookedByMe && (
+            <WriteBtn onClick={() => navigate("review")}>
+              Write a Review
+            </WriteBtn>
+          )}
+        </Left>
+        {noReview ? (
+          <NoReview>No reviews at the moment</NoReview>
+        ) : (
+          <Right>
+            {data.map(
+              ({ title, gid, name, text, rating, lastModifiedTime, id }) => (
+                <Review key={id}>
+                  <Title>{title}</Title>
+                  <Rating>Rating: {rating}/5</Rating>
+                  <Description>{text}</Description>
+                  <Info>
+                    By {name}, {formatDate(lastModifiedTime)}
+                  </Info>
+                  {gid === localStorage.uid && (
+                    <DeleteIcon onClick={deleteReview}>
+                      <TrashIcon width={20} />
+                    </DeleteIcon>
+                  )}
+                </Review>
+              )
+            )}
+          </Right>
         )}
-      </Right>
-    </Container>
+      </Container>
+    )
   );
 }
 
