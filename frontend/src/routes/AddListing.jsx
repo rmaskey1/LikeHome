@@ -149,8 +149,9 @@ function AddListing() {
 
       console.log("data id", data.rid);
       const roomId = data.rid;
+      localStorage.setItem("userinfo", JSON.stringify(data.userInfo));
       navigate(`/room/${roomId}`, {
-        state: { status: response.status, roominfo: data },
+        state: { status: response.status, roominfo: data},
       });
     }
     setIsFetching(false);
