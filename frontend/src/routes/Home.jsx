@@ -110,6 +110,8 @@ function Home() {
 
   /* Search Function Section Start */
   const [searchedListings, setSearchedListings] = useState([]);
+  const [filteredListings, setFilteredListings] = useState([]);
+  const [displayListings, setDisplayListings] = useState([]);
   // const [searchCriteria, setSearchCriteria] = useState({
   //   location: "",
   //   guests: 1,
@@ -119,7 +121,6 @@ function Home() {
 
   const handleSearch = (formData) => {
     console.log("Searching");
-    console.log(allListings);
     // e.preventDefault();
     const searchedListings = allListings.filter((listing) => {
       const { location, guests, dateFrom, dateTo } = formData;
@@ -140,7 +141,9 @@ function Home() {
 
       return isLocationMatch && isDateMatch && isGuestMatch;
     });
+    console.log(searchedListings);
     setSearchedListings(searchedListings);
+    // setDisplayListings(searchedListings);
     if (searchedListings.length === 0) {
       const message = "No matching rooms found.";
 
@@ -158,7 +161,35 @@ function Home() {
     // });
   };
 
-  useEffect(() => {}, [searchedListings]);
+  // useEffect(() => {}, [searchedListings]);
+
+  useEffect(() => {
+    // If both filtered and searched listings are available, intersect them
+    if (filteredListings.length > 0 && searchedListings.length > 0) {
+      console.log("filter and search...");
+      const filteredAndSearched = filteredListings.filter((filteredListing) =>
+        searchedListings.some(
+          (searchedListing) => searchedListing.rid === filteredListing.rid
+        )
+      );
+      console.log(filteredAndSearched);
+      setDisplayListings(filteredAndSearched);
+      setFilteredListings([]);
+      setSearchedListings([]);
+    } else if (filteredListings.length > 0) {
+      console.log("only filter ...");
+      // If only filtered listings are available
+      console.log(filteredListings);
+      setDisplayListings(filteredListings);
+    } else if (searchedListings.length > 0) {
+      console.log("only search ...");
+      // If only searched listings are available
+      console.log(searchedListings);
+      setDisplayListings(searchedListings);
+    }
+  }, [filteredListings, searchedListings]);
+
+  useEffect(() => {}, [displayListings]);
 
   /* Search Function Section End */
 
@@ -206,7 +237,8 @@ function Home() {
             isOpen: true,
           });
         }
-        setSearchedListings(data);
+        setFilteredListings(data);
+        // setDisplayListings(data);
         // Update filteredListings
       } else {
         // Handle errors
@@ -278,9 +310,7 @@ function Home() {
         <LoadingCardsListing numCard={20} />
       ) : (
         <PreviewCardsListing
-          listings={
-            searchedListings.length > 0 ? searchedListings : allListings
-          }
+          listings={displayListings.length > 0 ? displayListings : allListings}
         />
       )}
       {messagePopup.isOpen && (
