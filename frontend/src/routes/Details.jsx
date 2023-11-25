@@ -14,6 +14,8 @@ import Amenity from "components/Amenity";
 import DoubleBookingWarning from "components/DoubleBookingWarning";
 import Reviews from "components/Reviews";
 import Calendar from "react-calendar";
+import { useSetRecoilState } from "recoil";
+import { isLoginAtom } from "../atom";
 
 const Container = styled.main`
   display: flex;
@@ -347,20 +349,37 @@ function Details() {
     showStartCal && setShowStartCal(false);
   };
 
+  const setIsLogin = useSetRecoilState(isLoginAtom);
   useEffect(() => {
-    if (stateData) {
-      if (stateData.roominfo) {
-        // console.log("case 1");
-        //case 1: {roominfo} structure
-        setRoomData(stateData.roominfo);
-      } else {
-        // console.log("case 2", stateData);
-        setRoomData(stateData);
+    if (!bookingIsLoading) {
+      if (bookingData.message) {
+        alert("you need to login again.");
+        setIsLogin(false);
+        navigate("/login", { replace: true });
+        return;
       }
-    } else if (stateData == null && !isLoading) {
-      setRoomData(fetchData);
+      if (stateData) {
+        if (stateData.roominfo) {
+          // console.log("case 1");
+          //case 1: {roominfo} structure
+          setRoomData(stateData.roominfo);
+        } else {
+          // console.log("case 2", stateData);
+          setRoomData(stateData);
+        }
+      } else if (stateData == null && !isLoading) {
+        setRoomData(fetchData);
+      }
     }
-  }, [fetchData, isLoading, stateData]);
+  }, [
+    bookingData,
+    bookingIsLoading,
+    fetchData,
+    isLoading,
+    navigate,
+    setIsLogin,
+    stateData,
+  ]);
 
   const isCheckInDateToday =
     roomData &&

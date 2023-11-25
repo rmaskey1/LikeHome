@@ -1,9 +1,11 @@
 import { SERVER_URL, getReviews } from "api";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import { useSetRecoilState } from "recoil";
+import { isLoginAtom } from "../atom";
 
 const Container = styled.div`
   display: flex;
@@ -96,15 +98,28 @@ function Reviews({ isBookedByMe }) {
   const rid = params.id;
   const { isLoading, data } = useQuery(["reviews"], () => getReviews(rid));
 
-  const sum = data && data.reduce((acc, obj) => acc + obj.rating, 0);
-  const average = data && Math.round((sum / data.length) * 10) / 10;
-  const noReview = data && data.length === 0;
+  const [sum, setSum] = useState(0);
+  const [average, setAverage] = useState(0);
+  const [noReview, setNoReview] = useState(false);
+  const setIsLogin = useSetRecoilState(isLoginAtom);
 
   const formatDate = (date) => new Date(date).toLocaleDateString("en-US");
   const deleteReview = async () => {
     fetch(`${SERVER_URL}/review/${rid}`, { method: "DELETE" });
     navigate(0);
   };
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (data.message) {
+        console.log("HI");
+        return;
+      }
+      setSum(data.reduce((acc, obj) => acc + obj.rating, 0));
+      setAverage(data && Math.round((sum / data.length) * 10) / 10);
+      setNoReview(data.length === 0);
+    }
+  }, [data, isLoading, navigate, setIsLogin, sum]);
 
   return (
     !isLoading && (

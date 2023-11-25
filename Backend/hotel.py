@@ -165,6 +165,12 @@ def hotel_modification_func(app):
         # Get a listing info
         if request.method == 'GET':
             listing = db.collection('room').document(rid).get().to_dict()
+            rating = 0
+            review_docs = db.collection('review').where(filter=FieldFilter('rid', '==', rid))
+            if len(review_docs.get()) > 0:
+                rating = sum(review.to_dict()['rating'] for review in review_docs.get()) / len(review_docs.get())
+                print(rid, rating)
+            listing['rating'] = rating
             listing['rid'] = rid
             return listing
 

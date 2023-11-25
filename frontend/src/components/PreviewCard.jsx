@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Rating from "../icons/rating.svg";
-import Favorite from "../icons/favorite.svg";
-import FavoriteFilled from "../icons/favorite-filled.svg";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "react-query";
+import { getListing } from "api";
 
 const StyledP = styled.p`
   font-family: Rubik, sans-serif;
@@ -78,6 +78,8 @@ function PreviewCard({ previewCard }) {
 
   const { imageUrl, rid, startDate, endDate, price, city, state } = previewCard;
 
+  const { isLoading, data } = useQuery(["listing", rid], () => getListing(rid));
+
   const toggleFavorite = () => {
     setIsFavorite((prevIsFavorite) => !prevIsFavorite);
   };
@@ -98,7 +100,10 @@ function PreviewCard({ previewCard }) {
           style={{ cursor: "pointer" }}
         /> */}
       </ImgContainer>
-      <StyledCardDetails className="previewCard-select" onClick={handleCardClick}>
+      <StyledCardDetails
+        className="previewCard-select"
+        onClick={handleCardClick}
+      >
         <div
           style={{
             display: "flex",
@@ -113,9 +118,9 @@ function PreviewCard({ previewCard }) {
               style={{ width: "15px", height: "15px" }}
               alt="Rating"
             />
-            <StyledP style={{ marginLeft: "3px" }}>
-              {2 + Math.floor(Math.random() * 30) / 10}
-            </StyledP>
+            <div style={{ marginLeft: "3px", fontWeight: "lighter" }}>
+              {isLoading || data.rating === 0 ? "-" : data.rating}
+            </div>
           </div>
         </div>
         {/* <StyledP>{descArr[Math.floor(Math.random() * descArr.length)]}</StyledP> */}
