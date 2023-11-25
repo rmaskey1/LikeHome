@@ -148,6 +148,7 @@ function SearchBar({ handleSearch }) {
 
   const onSubmit = (formData) => {
     handleSearch(formData);
+    console.log(formData);
     reset();
   };
 

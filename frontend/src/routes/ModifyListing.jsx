@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import styled from "styled-components";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { SERVER_URL } from "api";
+import { Ellipsis } from "react-spinners-css";
 
 const Container = styled.main`
   display: center;
@@ -133,6 +134,7 @@ function ModifyListing() {
   const navigate = useNavigate();
   const rid = useParams().id;
   const roominfo = location.state;
+  const [isFetching, setIsFetching] = useState(false);
 
   const formatDate = (date) => {
     const d = new Date(date);
@@ -182,6 +184,7 @@ function ModifyListing() {
 
   const onSubmit = async (formData) => {
     console.log(formData);
+    setIsFetching(true);
     const response = await fetch(
       `${SERVER_URL}/listing/${rid}?uid=${localStorage.uid}`,
       {
@@ -196,11 +199,14 @@ function ModifyListing() {
     const data = await response.json();
     console.log("[ModifyListing Submitted]: " + response.status, data);
 
+    console.log("location state", location.state);
+
     if (response.ok) {
       navigate(location.pathname.replace("/modify", ""), {
-        state: response.status,
+        state: { status: response.status, roominfo: data.room },
       });
     }
+    setIsFetching(false);
   };
 
   return (
@@ -676,7 +682,7 @@ function ModifyListing() {
           </CheckboxGroup>
           <CenteredButtonContainer>
             <SubmitButton id="submit-btn" type="submit">
-              Save
+              {isFetching ? <Ellipsis color="white" size={30} /> : "Save"}
             </SubmitButton>
           </CenteredButtonContainer>
         </form>

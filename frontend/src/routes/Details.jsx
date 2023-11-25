@@ -14,6 +14,8 @@ import Amenity from "components/Amenity";
 import DoubleBookingWarning from "components/DoubleBookingWarning";
 import Reviews from "components/Reviews";
 import Calendar from "react-calendar";
+import { useSetRecoilState } from "recoil";
+import { isLoginAtom } from "../atom";
 
 const Container = styled.main`
   display: flex;
@@ -251,6 +253,9 @@ function Details() {
   const [roomData, setRoomData] = useState(null);
   const { state: stateData } = useLocation();
 
+  // console.log("state", stateData);
+  // console.log("roomData", roomData);
+
   const [showDoubleBookingWarning, setShowDoubleBookingWarning] =
     useState(false);
   const [isDoubleBooking, setIsDoubleBooking] = useState(false); //check if double booking here!
@@ -339,31 +344,48 @@ function Details() {
     showStartCal && setShowStartCal(false);
   };
 
+  const setIsLogin = useSetRecoilState(isLoginAtom);
   useEffect(() => {
-    if (stateData) {
-      if (stateData.roominfo) {
-        console.log("case 1");
-        //case 1: {roominfo} structure
-        setRoomData(stateData.roominfo);
-      } else {
-        console.log("case 2", stateData);
-        setRoomData(stateData);
+    if (!bookingIsLoading) {
+      if (bookingData.message) {
+        alert("you need to login again.");
+        setIsLogin(false);
+        navigate("/login", { replace: true });
+        return;
       }
-    } else if (stateData == null && !isLoading) {
-      setRoomData(fetchData);
+      if (stateData) {
+        if (stateData.roominfo) {
+          // console.log("case 1");
+          //case 1: {roominfo} structure
+          setRoomData(stateData.roominfo);
+        } else {
+          // console.log("case 2", stateData);
+          setRoomData(stateData);
+        }
+      } else if (stateData == null && !isLoading) {
+        setRoomData(fetchData);
+      }
     }
-  }, [fetchData, isLoading, stateData]);
+  }, [
+    bookingData,
+    bookingIsLoading,
+    fetchData,
+    isLoading,
+    navigate,
+    setIsLogin,
+    stateData,
+  ]);
 
   const isCheckInDateToday =
     roomData &&
     new Date().toLocaleDateString() ===
       new Date(roomData.startDate).toLocaleDateString();
 
-  console.log("is checkin today?", isCheckInDateToday);
-  console.log("today", new Date());
+  // console.log("is checkin today?", isCheckInDateToday);
+  // console.log("today", new Date());
   //console.log("checkin", new Date(roomData.startDate));
 
-  console.log("userinfo", userinfo);
+  // console.log("userinfo", userinfo);
 
   const handleConfirm = () => {
     setShowDoubleBookingWarning(false);
@@ -476,7 +498,7 @@ function Details() {
               <img src={roomData.imageUrl} alt="example" />
             </ImgContainer>
 
-            {isGuest && isReserved ? (
+            {isGuest && isDoubleBooking ? (
               <Reserve id="reserved-container">
                 <div>You are currently reserving this listing.</div>
                 <Reservebtn
@@ -636,6 +658,10 @@ function Details() {
             </div>
           </Detail>
           <Divider />
+          <Detail>
+            <h1>Hotel Reviews</h1>
+            <Reviews isBookedByMe={isReserved} />
+          </Detail>
           <Detail>
             <h1>Cancellation Policy</h1>
             <DetailItem>

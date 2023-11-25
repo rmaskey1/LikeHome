@@ -3,6 +3,7 @@ import { useRecoilState } from "recoil";
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import logo from "../img/logo.png";
 
 const NavbarContainer = styled.nav`
   position: fixed;
@@ -25,6 +26,7 @@ const NavbarContainer = styled.nav`
 const LeftBox = styled.div`
   display: flex;
   gap: 20px;
+  align-items: center;
 `;
 
 const RightBox = styled.div`
@@ -38,6 +40,20 @@ const Button = styled.button`
   background-color: transparent;
   cursor: pointer;
 `;
+
+const LogoLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+`;
+
+const LogoImage = styled.img`
+  width: 100%;
+  height: 100%;
+  margin-right: 5px;
+`;
+
 
 function NavBar() {
   const navigate = useNavigate();
@@ -72,11 +88,17 @@ function NavBar() {
                 <Button onClick={() => navigate(-1)}>Back</Button>
               </LeftBox>
               <RightBox>
-                <Button onClick={logout}>Logout</Button>
+                <Button id="logout-btn" onClick={logout}>Logout</Button>
               </RightBox>
             </>
           ) : (
             <>
+              <LeftBox>
+                <LogoLink to={"/"}>
+                  <LogoImage src={logo} alt="Logo" />
+                  LikeHome
+                </LogoLink>
+              </LeftBox>
               <LeftBox>
                 <Link to={"/home"}>Home</Link>
                 {userinfo?.accountType !== "hotel" && (
@@ -85,7 +107,7 @@ function NavBar() {
                 <Link to={`profile/${localStorage.uid}`} id="profile-link">Profile</Link>
               </LeftBox>
               <RightBox>
-                <Button onClick={logout}>Logout</Button>
+                <Button id="logout-btn" onClick={logout}>Logout</Button>
               </RightBox>
             </>
           )}
@@ -94,7 +116,10 @@ function NavBar() {
         // Without Login
         <>
           <LeftBox>
-            <Link to={"/"}>Home</Link>
+                <LogoLink to={"/"}>
+                  <LogoImage src={logo} alt="Logo" />
+                  LikeHome
+                </LogoLink>
           </LeftBox>
           <RightBox>
             <Link to="login" onClick={logout}>

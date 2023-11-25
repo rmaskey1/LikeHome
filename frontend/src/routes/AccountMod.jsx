@@ -256,6 +256,9 @@ function AccountMod() {
                           if (!isLetter(value)) {
                             return "Only letters are allowed";
                           }
+                          if (value.trim() === "") {
+                            return "State cannot be just spaces";
+                          }
                           return true;
                         },
                       },
@@ -279,6 +282,9 @@ function AccountMod() {
                         validName: (value) => {
                           if (!isLetter(value)) {
                             return "Only letters are allowed";
+                          }
+                          if (value.trim() === "") {
+                            return "Country cannot be just spaces";
                           }
                           return true;
                         },
@@ -339,6 +345,9 @@ function AccountMod() {
                       if (!isLetter(value)) {
                         return "Only letters are allowed";
                       }
+                      if (value.trim() === "") {
+                        return "First Name cannot be just spaces";
+                      }
                       return true;
                     },
                   },
@@ -362,6 +371,9 @@ function AccountMod() {
                     validName: (value) => {
                       if (!isLetter(value)) {
                         return "Only letters are allowed";
+                      }
+                      if (value.trim() === "") {
+                        return "Last Name cannot be just spaces";
                       }
                       return true;
                     },

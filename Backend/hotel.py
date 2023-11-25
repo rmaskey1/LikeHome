@@ -96,7 +96,6 @@ def hotel_modification_func(app):
 
         # Add a listing
         elif request.method == 'POST':
-
             try:
                 roomData = request.get_json()
                 # Generate rid and get amenities
@@ -123,8 +122,7 @@ def hotel_modification_func(app):
             if get_year_from_date(roomData['toDate']) < 2023:
                 abort(make_response(
                     jsonify(message=f"Error: Listing should not be created before 2023"), 400))
-
-            # Add listing to room collection
+            
             try:
                 db.collection('room').document(autoId).set({
                     "hotelName": hotelDoc['hotelName'],
@@ -144,8 +142,7 @@ def hotel_modification_func(app):
                     "imageUrl": roomData['image']
                 })
                 # If first time making listing for a hotel owner
-                print(hotelDoc['listedRooms'][0])
-                if hotelDoc['listedRooms'][0] == 0:
+                if 0 in hotelDoc['listedRooms']:
                     hotel_ref.update({"listedRooms": [autoId]})
                 else:  # Already have made a listing for this hotel owner
                     hotel_ref.update(
@@ -154,6 +151,8 @@ def hotel_modification_func(app):
                 listing = db.collection("room").document(
                     autoId).get().to_dict()
                 listing['rid'] = autoId
+                listing['userInfo'] = db.collection(
+                    'user').document(uid).get().to_dict()
                 return jsonify(listing)
             except Exception as e:
                 abort(make_response(jsonify(message=f"Error: {str(e)}"), 400))
@@ -166,6 +165,12 @@ def hotel_modification_func(app):
         # Get a listing info
         if request.method == 'GET':
             listing = db.collection('room').document(rid).get().to_dict()
+            rating = 0
+            review_docs = db.collection('review').where(filter=FieldFilter('rid', '==', rid))
+            if len(review_docs.get()) > 0:
+                rating = sum(review.to_dict()['rating'] for review in review_docs.get()) / len(review_docs.get())
+                print(rid, rating)
+            listing['rating'] = rating
             listing['rid'] = rid
             return listing
 
@@ -178,7 +183,7 @@ def hotel_modification_func(app):
 
             # Get JSON data from frontent
             data = request.get_json()
-
+           
             amenities = []
             for dict in data['amenities']:
                 key = list(dict.keys())[0]
@@ -190,7 +195,9 @@ def hotel_modification_func(app):
                 if is_start_date_before_or_on_end_date(data['fromDate'], data['toDate']):
                     update_room(uid, rid, data['price'], format_date(data['fromDate']), format_date(
                         data['toDate']), data['beds'], data['guests'], data['bathrooms'], data['bedType'], data['image'], amenities)
-                    return jsonify({'message': 'Listing modification was successful'})
+                    listing = db.collection('room').document(rid).get().to_dict()
+                    listing['rid'] = rid
+                    return jsonify({'message': 'Listing modification was successful', 'room': listing})
                 else:
                     abort(make_response(
                         jsonify(message="Start date cannot be after end date"), 400))

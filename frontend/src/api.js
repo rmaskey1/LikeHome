@@ -23,3 +23,9 @@ export function getMyBooking() {
 export function getUserInfo() {
   return fetch(`${SERVER_URL}/user`).then((response) => response.json());
 }
+
+export function getReviews(rid) {
+  return fetch(`${SERVER_URL}/review/${rid}`).then((response) =>
+    response.json()
+  );
+}
