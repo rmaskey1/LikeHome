@@ -173,6 +173,15 @@ function Home() {
         )
       );
       console.log(filteredAndSearched);
+      if (filteredAndSearched.length === 0) {
+        const message = "No matching rooms found.";
+
+        setMessagePopup({
+          message: message,
+          isOpen: true,
+        });
+        // alert("No matching rooms found.");
+      }
       setDisplayListings(filteredAndSearched);
       setFilteredListings([]);
       setSearchedListings([]);
