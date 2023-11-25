@@ -38,7 +38,6 @@ public class ModifyBookingTest {
 
     Details details = new Details();
     BookingForm bookingForm = new BookingForm();
-    MyBookings myBookings = new MyBookings();
     ModifyBooking Mb = new ModifyBooking();
 
     @BeforeAll

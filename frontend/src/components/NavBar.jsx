@@ -94,7 +94,7 @@ function NavBar() {
                 <Button onClick={() => navigate(-1)}>Back</Button>
               </LeftBox>
               <RightBox>
-                <Button onClick={logout} id="logoutBtn">Logout</Button>
+                <Button id="logout-btn" onClick={logout}>Logout</Button>
               </RightBox>
             </>
           ) : (
@@ -113,7 +113,7 @@ function NavBar() {
                 <Link to={`profile/${localStorage.uid}`} id="profile-link">Profile</Link>
               </MiddleBox>
               <RightBox>
-                <Button onClick={logout} id="logoutBtn">Logout</Button>
+                <Button id="logout-btn" onClick={logout}>Logout</Button>
               </RightBox>
             </>
           )}
