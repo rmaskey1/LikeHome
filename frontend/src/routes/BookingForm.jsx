@@ -257,7 +257,7 @@ function BookingForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const isCancelRoute = window.location.pathname.includes("/cancel");
-  const { roomData, numGuests, checkinDate, checkoutDate } = location.state;
+  const { roomData, numGuests } = location.state;
   const [isFetching, setIsFetching] = useState(false);
   const [serverError, setServerError] = useState({ status: 0, message: "" });
   const [cardNumber, setCardNumber] = useState("4242424242424242");
@@ -265,6 +265,9 @@ function BookingForm() {
   const [cvc, setCVC] = useState("121");
   const applyInputRef = useRef(null);
   const [pointsUsed, setPointsUsed] = useState(0);
+
+  const checkinDate = new Date(roomData.checkinDate);
+  const checkoutDate = new Date(roomData.checkoutDate);
 
   const { isLoading: isUserInfoLoading, data: userInfo } = useQuery(
     ["userinfo"],
@@ -448,11 +451,13 @@ function BookingForm() {
 
             <InfoTitle>Dates:</InfoTitle>
             <InfoText>
-              {dateFormatted(checkinDate)} - {dateFormatted(checkoutDate)}
+              {roomData.checkinDate} - {roomData.checkoutDate}
             </InfoText>
 
             <InfoTitle>Number of Guests:</InfoTitle>
-            <InfoText>{numGuests}</InfoText>
+            <InfoText>
+              {isCancelRoute ? roomData.reserved_guests : numGuests}
+            </InfoText>
           </div>
 
           <div
