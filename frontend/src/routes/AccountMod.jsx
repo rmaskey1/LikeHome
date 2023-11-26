@@ -329,7 +329,7 @@ function AccountMod() {
             </ErrorText>
           )}
           {serverError.status === 409 && (
-            <ErrorText id="email-error" className="error-text">
+            <ErrorText className="error-text">
               <span>{serverError.message}</span>
             </ErrorText>
           )}

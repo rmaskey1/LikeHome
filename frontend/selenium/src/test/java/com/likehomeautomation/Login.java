@@ -15,5 +15,5 @@ public class Login {
         // errors
         public SelenideElement emailError = $x("//*[@id='error-message']");
         public SelenideElement passwordError = $x("//*[@id='password-error-message']");
-        public SelenideElement emailFormatError = $x("//*[@id='email-validation-error']");
+        SelenideElement emailFormatError = $x("//*[@id='email-validation-error']");
 }

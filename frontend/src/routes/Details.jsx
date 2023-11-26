@@ -81,11 +81,6 @@ const Reservebtn = styled.button`
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-
-  &.gray-button {
-    background-color: #888888; /* Use the desired gray color */
-    cursor: not-allowed;
-  }
 `;
 
 const ReserveForm = styled.div`
@@ -459,7 +454,7 @@ function Details() {
     <Container>
       {roomData === null ? (
         "Loading..."
-      ) : (
+          ) : (
         <>
           <div
             style={{
@@ -468,33 +463,32 @@ function Details() {
               alignItems: "center",
             }}
           >
-            <div style={{ marginRight: "480px" }}>
+            <div style={{ marginRight: "525px" }}>
               <HotelName id="hotelName">{roomData.hotelName}</HotelName>
             </div>
             <div>
-              {userinfo.accountType === "hotel" &&
-                userinfo.listedRooms.includes(roomData.rid) && (
-                  <Dropdown id="dropdown-btn" onClick={toggleDropdown}>
-                    . . .
-                    {isDropdownOpen && (
-                      <DropdownContent>
-                        <DropdownItem
-                          id="edit-btn"
-                          onClick={handleEditListingClick}
-                        >
-                          Edit Listing
-                        </DropdownItem>
-                        <DropdownItem id="delete-btn" onClick={openDeleteModal}>
-                          Delete Listing
-                        </DropdownItem>
-                      </DropdownContent>
-                    )}
-                  </Dropdown>
-                )}
+              {userinfo.accountType === "hotel" && (
+                <Dropdown id="dropdown-btn" onClick={toggleDropdown}>
+                  . . .
+                  {isDropdownOpen && (
+                    <DropdownContent>
+                      <DropdownItem
+                        id="edit-btn"
+                        onClick={handleEditListingClick}
+                      >
+                        Edit Listing
+                      </DropdownItem>
+                      <DropdownItem id="delete-btn" onClick={openDeleteModal}>
+                        Delete Listing
+                      </DropdownItem>
+                    </DropdownContent>
+                  )}
+                </Dropdown>
+              )}
             </div>
           </div>
 
-          <Location>{`${roomData.street_name}, ${roomData.city}, ${roomData.state}`}</Location>
+          <Location id="locationdetail">{`${roomData.street_name}, ${roomData.city}, ${roomData.state}`}</Location>
           <Summary>
             {roomData.numberGuests} Guests - {roomData.numberOfBeds} Beds -{" "}
             {roomData.numberOfBathrooms} Bath
@@ -507,16 +501,7 @@ function Details() {
             {isGuest && isDoubleBooking ? (
               <Reserve id="reserved-container">
                 <div>You are currently reserving this listing.</div>
-                {isCheckInDateToday ? (
-                  <Reservebtn
-                    id="modify-booking-btn"
-                    className="gray-button"
-                    disabled
-                  >
-                    Modify Booking
-                  </Reservebtn>
-                ) : (
-                  <Reservebtn
+                <Reservebtn
                     id="modify-booking-btn"
                     onClick={() =>
                       navigate(`/mybooking/${rid}/modify`, {
@@ -528,30 +513,22 @@ function Details() {
                         },
                       })
                     }
-                  >
-                    Modify Booking
-                  </Reservebtn>
-                )}
-                {isCheckInDateToday ? (
-                  <Reservebtn
+                    )
+                  }
+
+                >
+                  Modify Booking
+                </Reservebtn>
+                <Reservebtn
                     id="cancel-booking-btn"
-                    className="gray-button"
-                    disabled
-                  >
-                    Cancel Booking
-                  </Reservebtn>
-                ) : (
-                  <Reservebtn
-                    id="cancel-booking-btn"
-                    onClick={() =>
-                      navigate(`/mybooking/${rid}/cancel`, {
-                        state: { roomData, numGuests },
-                      })
-                    }
-                  >
-                    Cancel Booking
-                  </Reservebtn>
-                )}
+                  onClick={() =>
+                    navigate(`/mybooking/${rid}/cancel`, {
+                      state: { roomData, numGuests },
+                    })
+                  }
+                >
+                  Cancel Booking
+                </Reservebtn>
               </Reserve>
             ) : (
               //Render the default reserve container if not a guest or not reserved
@@ -661,10 +638,7 @@ function Details() {
             </DetailItem>
             <DetailItem>
               <BedIcon />
-              <span id="beds-detail">
-                {roomData.numberOfBeds} Bed(s){" "}
-                <span id="bedType-detail">({roomData.bedType})</span>
-              </span>
+              <span id="beds-detail">{roomData.numberOfBeds} Bed(s) <span id="bedType-detail">({roomData.bedType})</span></span>
             </DetailItem>
             <DetailItem>
               <SinkIcon />
@@ -675,10 +649,10 @@ function Details() {
           </Detail>
           <Divider />
 
-          <Detail>
+          <Detail >
             <h1>Amenities</h1>
             <div id="amenities-detail">
-              {roomData.Amenities?.map((item, i) => (
+              {roomData.Amenities.map((item, i) => (
                 <Amenity key={i} item={item} />
               ))}
             </div>
@@ -765,19 +739,16 @@ function Details() {
               }}
             >
               <div style={{ marginRight: "20px" }}>
-                <Buttons id="confirm-delete-btn" onClick={deleteListing}>
-                  Yes
-                </Buttons>
+                <Buttons id="confirm-delete-btn" onClick={deleteListing}>Yes</Buttons>
               </div>
               <div>
-                <Buttons id="cancel-delete-btn" onClick={closeDeleteModal}>
-                  No
-                </Buttons>
+                <Buttons id="cancel-delete-btn" onClick={closeDeleteModal}>No</Buttons>
               </div>
             </div>
           </Modal>
         </>
-      )}
+              )
+      }
     </Container>
   );
 }

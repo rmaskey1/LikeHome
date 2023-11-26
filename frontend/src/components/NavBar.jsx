@@ -14,8 +14,8 @@ const NavbarContainer = styled.nav`
   padding: 10px 50px;
   width: 100vw;
   height: 70px;
-  background: #293545;
-  color: #fff;
+  background: #fff;
+  color: #000;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px,
     rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
   font-size: 16px;
@@ -29,11 +29,6 @@ const LeftBox = styled.div`
   align-items: center;
 `;
 
-const MiddleBox = styled.div`
-  display: flex;
-  gap: 20px;
-`;
-
 const RightBox = styled.div`
   display: flex;
   gap: 20px;
@@ -44,7 +39,6 @@ const Button = styled.button`
   gap: 20px;
   background-color: transparent;
   cursor: pointer;
-  color: #fff;
 `;
 
 const LogoLink = styled(Link)`
@@ -105,13 +99,13 @@ function NavBar() {
                   LikeHome
                 </LogoLink>
               </LeftBox>
-              <MiddleBox>
+              <LeftBox>
                 <Link to={"/home"}>Home</Link>
                 {userinfo?.accountType !== "hotel" && (
                   <Link id="myBooking-btn" to="mybooking">MyBooking</Link>
                 )}
                 <Link to={`profile/${localStorage.uid}`} id="profile-link">Profile</Link>
-              </MiddleBox>
+              </LeftBox>
               <RightBox>
                 <Button id="logout-btn" onClick={logout}>Logout</Button>
               </RightBox>

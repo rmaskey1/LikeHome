@@ -33,18 +33,4 @@ public class ModifyAccount {
     public SelenideElement fnameDisplay = $x("//*[@id='first-name-content']");
     public SelenideElement lnameDisplay = $x("//*[@id='last-name-content']");
     public SelenideElement phoneDisplay = $x("//*[@id='phone-number-content']");
-
-    // errors
-    public SelenideElement hnameError = $x("//*[@id='hname-error']");
-    public SelenideElement snameError = $x("//*[@id='sname-error']");
-    public SelenideElement cityError = $x("//*[@id='city-error']");
-    public SelenideElement zipError = $x("//*[@id='zip-error']");
-    public SelenideElement stateError = $x("//*[@id='state-error']");
-    public SelenideElement countryError = $x("//*[@id='country-error']");
-    public SelenideElement emailError = $x("//*[@id='email-error']");
-    public SelenideElement fnameError = $x("//*[@id='fname-error']");
-    public SelenideElement lnameError = $x("//*[@id='lname-error']");
-    public SelenideElement phoneError = $x("//*[@id='phone-error']");
-    // public SelenideElement passwordError =
-    // $x("//*[@id='password-error-message']");
 }
