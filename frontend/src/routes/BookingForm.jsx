@@ -257,7 +257,7 @@ function BookingForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const isCancelRoute = window.location.pathname.includes("/cancel");
-  const { roomData, numGuests } = location.state;
+  const { roomData, numGuests, checkinDate, checkoutDate } = location.state;
   const [isFetching, setIsFetching] = useState(false);
   const [serverError, setServerError] = useState({ status: 0, message: "" });
   const [cardNumber, setCardNumber] = useState("4242424242424242");
@@ -266,8 +266,8 @@ function BookingForm() {
   const applyInputRef = useRef(null);
   const [pointsUsed, setPointsUsed] = useState(0);
 
-  const checkinDate = new Date(roomData.checkinDate);
-  const checkoutDate = new Date(roomData.checkoutDate);
+  const cancelCheckinDate = new Date(roomData.checkinDate);
+  const cancelCheckoutDate = new Date(roomData.checkoutDate);
 
   const { isLoading: isUserInfoLoading, data: userInfo } = useQuery(
     ["userinfo"],
@@ -280,10 +280,24 @@ function BookingForm() {
     formState: { errors },
   } = useForm();
 
-  const nights = Math.floor(
-    (new Date(checkoutDate).getTime() - new Date(checkinDate).getTime()) /
-      (24 * 3600 * 1000)
-  );
+  const roomCheckinDate = roomData.checkinDate;
+  const roomCheckoutDate = roomData.checkoutDate;
+
+  const getNights = (checkin, checkout) => {
+    return Math.floor(
+      (new Date(checkout).getTime() - new Date(checkin).getTime()) /
+        (24 * 3600 * 1000)
+    );
+  };
+
+  const nights =
+    roomCheckinDate && roomCheckoutDate
+      ? getNights(roomCheckinDate, roomCheckoutDate)
+      : Math.floor(
+          (new Date(checkoutDate).getTime() - new Date(checkinDate).getTime()) /
+            (24 * 3600 * 1000)
+        );
+
   const subtotal = roomData.price * nights;
   const tax = subtotal * 0.08;
   const total = subtotal + tax - pointsUsed / 10;
@@ -318,6 +332,7 @@ function BookingForm() {
   // const year = new Date(checkinDate).getFullYear();
 
   const checkInDate = new Date(checkinDate);
+  const checkOutDate = new Date(checkoutDate);
   const currentDate = new Date(); //2023, 10, 11 Mmonths are 0-indexed (10 represents November).
 
   console.log("checkindate", checkInDate);
@@ -339,6 +354,9 @@ function BookingForm() {
   };
 
   const onSubmit = async (formData) => {
+    const formattedCheckinDate = dateFormatted(checkinDate);
+    const formattedCheckoutDate = dateFormatted(checkoutDate);
+
     if (isCancelRoute) {
       //calculating cancellation fee
       const cancellationFee = getCancellationFee();
@@ -373,8 +391,8 @@ function BookingForm() {
         expirationDate: expirationDate,
         cvc: cvc,
         rewardPointsEarned,
-        startDate: checkInDate,
-        endDate: checkoutDate,
+        startDate: formattedCheckinDate,
+        endDate: formattedCheckoutDate,
       };
       setIsFetching(true);
       const response = await fetch(
@@ -415,7 +433,7 @@ function BookingForm() {
     return new Date(date).toLocaleDateString("en-US", {
       month: "short",
       day: "2-digit",
-      year: "2-digit",
+      year: "numeric",
     });
   };
 
@@ -451,7 +469,11 @@ function BookingForm() {
 
             <InfoTitle>Dates:</InfoTitle>
             <InfoText>
-              {roomData.checkinDate} - {roomData.checkoutDate}
+              {isCancelRoute
+                ? `${roomData.checkinDate} - ${roomData.checkoutDate}`
+                : `${dateFormatted(checkinDate)} - ${dateFormatted(
+                    checkoutDate
+                  )}`}
             </InfoText>
 
             <InfoTitle>Number of Guests:</InfoTitle>
