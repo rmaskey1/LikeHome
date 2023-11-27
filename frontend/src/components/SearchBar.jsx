@@ -183,7 +183,7 @@ function SearchBar({ handleSearch }) {
           })}
         />
         {errors.guests && (
-          <ErrorMessage className="error-text" id='guest-error'>
+          <ErrorMessage className="error-text">
             <span>{errors.guests.message.toString()}</span>
           </ErrorMessage>
         )}
@@ -210,7 +210,7 @@ function SearchBar({ handleSearch }) {
           })}
         />
         {errors.dateFrom && (
-          <ErrorMessage className="error-text" id='from-error'>
+          <ErrorMessage className="error-text">
             <span>{errors.dateFrom.message.toString()}</span>
           </ErrorMessage>
         )}
@@ -241,13 +241,13 @@ function SearchBar({ handleSearch }) {
           })}
         />
         {errors.dateTo && (
-          <ErrorMessage className="error-text" id='to-error'>
+          <ErrorMessage className="error-text">
             <span>{errors.dateTo.message.toString()}</span>
           </ErrorMessage>
         )}
       </InputContainer>
 
-      <Button type="submit" id = "search-btn">Search</Button>
+      <Button type="submit">Search</Button>
     </SearchForm>
   );
 }

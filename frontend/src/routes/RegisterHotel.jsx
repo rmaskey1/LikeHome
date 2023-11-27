@@ -4,16 +4,28 @@ import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Ellipsis } from "react-spinners-css";
 import styled from "styled-components";
+import background1 from "../img/resort1.jpeg";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
   width: 400px;
   margin: 100px auto;
   padding: 0 40px;
   border: 1px solid rgba(41, 53, 69, 0.5);
   border-radius: 20px;
+  background-color: white;
+`;
+
+const OuterContainer = styled.div`
+  display: flex;
+  height: 100vh;
+  background-color: pink;
+  align-items: center;
+  justify-content: center;
+  background-image: url(${background1});
+  background-size: cover;
 `;
 
 const FormTitle = styled.div`
@@ -140,108 +152,116 @@ function RegisterHotel() {
   };
 
   return (
-    <Container>
-      <FormTitle>Please fill in the information</FormTitle>
-      <Form onSubmit={handleSubmit(handleSignupHotel)}>
-        <Label>Hotel Name</Label>
-        <InputContainer>
-          <Input
-            {...register("hotelName", {
-              required: "Please enter hotel name",
-            })}
-          />
-        </InputContainer>
-        {errors.email && (
-          <ErrorMessageArea>{errors.email.message.toString()}</ErrorMessageArea>
-        )}
-
-        <Label>Street</Label>
-        <InputContainer>
-          <Input
-            {...register("street", {
-              required: "Please enter street",
-            })}
-            type="street"
-          />
-        </InputContainer>
-        {errors.street && (
-          <ErrorMessageArea>
-            {errors.street.message.toString()}
-          </ErrorMessageArea>
-        )}
-        <div style={{ display: "flex", gap: "10px", marginTop: "30px" }}>
-          <div>
-            <Label>City</Label>
-            <InputContainer style={{ width: "160px" }}>
-              <Input
-                {...register("city", {
-                  required: "Please enter city",
-                })}
-              />
-            </InputContainer>
-            {errors.city && (
-              <ErrorMessageArea>
-                {errors.city.message.toString()}
-              </ErrorMessageArea>
-            )}
-          </div>
-          <div>
-            <Label>Zip code</Label>
-            <InputContainer style={{ width: "160px" }}>
-              <Input
-                {...register("zipcode", {
-                  required: "Please enter zip code",
-                })}
-              />
-            </InputContainer>
-            {errors.zipcode && (
-              <ErrorMessageArea>
-                {errors.zipcode.message.toString()}
-              </ErrorMessageArea>
-            )}
-          </div>
-        </div>
-        <div style={{ display: "flex", gap: "10px", marginTop: "30px" }}>
-          <div>
-            <Label>State</Label>
-            <InputContainer style={{ width: "160px" }}>
-              <Input
-                {...register("state", {
-                  required: "Please enter state",
-                })}
-              />
-            </InputContainer>
-            {errors.state && (
-              <ErrorMessageArea>
-                {errors.state.message.toString()}
-              </ErrorMessageArea>
-            )}
-          </div>
-          <div>
-            <Label>Country</Label>
-            <InputContainer style={{ width: "160px" }}>
-              <Input
-                {...register("country", {
-                  required: "Please enter country",
-                })}
-              />
-            </InputContainer>
-            {errors.country && (
-              <ErrorMessageArea>
-                {errors.country.message.toString()}
-              </ErrorMessageArea>
-            )}
-          </div>
-        </div>
-        <SubmitBtn type="submit">
-          {isFetching ? (
-            <Ellipsis color="white" size={30} />
-          ) : (
-            <span>Sign Up</span>
+    <OuterContainer>
+      <Container>
+        <FormTitle>Please fill in the information</FormTitle>
+        <Form onSubmit={handleSubmit(handleSignupHotel)}>
+          <Label>Hotel Name</Label>
+          <InputContainer>
+            <Input
+              {...register("hotelName", {
+                required: "Please enter hotel name",
+              })}
+              id="hotelName-input"
+            />
+          </InputContainer>
+          {errors.email && (
+            <ErrorMessageArea id="hotelName-error">{errors.email.message.toString()}</ErrorMessageArea>
           )}
-        </SubmitBtn>
-      </Form>
-    </Container>
+
+          <Label>Street</Label>
+          <InputContainer>
+            <Input
+              {...register("street", {
+                required: "Please enter street",
+              })}
+              type="street"
+              id="streetName-input"
+            />
+          </InputContainer>
+          {errors.street && (
+            <ErrorMessageArea id="streetName-error">
+              {errors.street.message.toString()}
+            </ErrorMessageArea>
+          )}
+          <div style={{ display: "flex", gap: "10px", marginTop: "30px" }}>
+            <div>
+              <Label>City</Label>
+              <InputContainer style={{ width: "160px" }}>
+                <Input
+                  {...register("city", {
+                    required: "Please enter city",
+                  })}
+                  id="city-input"
+                />
+              </InputContainer>
+              {errors.city && (
+                <ErrorMessageArea id="city-error">
+                  {errors.city.message.toString()}
+                </ErrorMessageArea>
+              )}
+            </div>
+            <div>
+              <Label>Zip code</Label>
+              <InputContainer style={{ width: "160px" }}>
+                <Input
+                  {...register("zipcode", {
+                    required: "Please enter zip code",
+                  })}
+                  id="zip-input"
+                />
+              </InputContainer>
+              {errors.zipcode && (
+                <ErrorMessageArea id="zip-error">
+                  {errors.zipcode.message.toString()}
+                </ErrorMessageArea>
+              )}
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: "10px", marginTop: "30px" }}>
+            <div>
+              <Label>State</Label>
+              <InputContainer style={{ width: "160px" }}>
+                <Input
+                  {...register("state", {
+                    required: "Please enter state",
+                  })}
+                  id="state-input"
+                />
+              </InputContainer>
+              {errors.state && (
+                <ErrorMessageArea id="state-error">
+                  {errors.state.message.toString()}
+                </ErrorMessageArea>
+              )}
+            </div>
+            <div>
+              <Label>Country</Label>
+              <InputContainer style={{ width: "160px" }}>
+                <Input
+                  {...register("country", {
+                    required: "Please enter country",
+                  })}
+                  id="country-input"
+                />
+              </InputContainer>
+              {errors.country && (
+                <ErrorMessageArea id="country-error">
+                  {errors.country.message.toString()}
+                </ErrorMessageArea>
+              )}
+            </div>
+          </div>
+          <SubmitBtn type="submit" id="signup-button">
+            {isFetching ? (
+              <Ellipsis color="white" size={30} />
+            ) : (
+              <span>Sign Up</span>
+            )}
+          </SubmitBtn>
+        </Form>
+      </Container>
+    </OuterContainer>
   );
 }
 

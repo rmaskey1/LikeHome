@@ -304,7 +304,7 @@ function Home() {
         }}
       >
         <Start>Available Rooms:</Start>
-        <FilterButton onClick={handleFilterClick} id="filterButton">
+        <FilterButton onClick={handleFilterClick}>
           <div style={{ display: "flex" }}>
             <img src={filterIcon} alt="" />
             Filters

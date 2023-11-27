@@ -93,14 +93,17 @@ function PreviewCard({ previewCard }) {
     <StyledCard>
       <ImgContainer>
         <StyledImg src={imageUrl} alt={`Image ${rid}`} />
-        <SaveFavoriteIcon
+        {/* <SaveFavoriteIcon
           src={isFavorite ? FavoriteFilled : Favorite}
           alt="Favorite"
           onClick={toggleFavorite}
           style={{ cursor: "pointer" }}
-        />
+        /> */}
       </ImgContainer>
-      <StyledCardDetails id="previewCardSelect" className="previewCard-select" onClick={handleCardClick}>
+      <StyledCardDetails
+        className="previewCard-select"
+        onClick={handleCardClick}
+      >
         <div
           style={{
             display: "flex",
@@ -108,7 +111,7 @@ function PreviewCard({ previewCard }) {
             width: "300px",
           }}
         >
-          <StyledP id={`location-${rid}`} style={{ fontWeight: "500" }}>{`${city}, ${state}`}</StyledP>
+          <StyledP style={{ fontWeight: "500" }}>{`${city}, ${state}`}</StyledP>
           <div style={{ display: "flex", alignItems: "center" }}>
             <img
               src={Rating}
@@ -120,11 +123,11 @@ function PreviewCard({ previewCard }) {
             </div>
           </div>
         </div>
-        <StyledP>{descArr[Math.floor(Math.random() * descArr.length)]}</StyledP>
-        <StyledP id={`dates-${rid}`}>
+        {/* <StyledP>{descArr[Math.floor(Math.random() * descArr.length)]}</StyledP> */}
+        <StyledP>
           {formatMonthAndDate(startDate)} - {formatMonthAndDate(endDate)}
         </StyledP>
-        <StyledP id={`price-${rid}`} style={{ marginTop: "10px", fontWeight: "400" }}>
+        <StyledP style={{ marginTop: "10px", fontWeight: "400" }}>
           <span style={{ fontWeight: "500" }}>${price}</span> night
         </StyledP>
       </StyledCardDetails>
