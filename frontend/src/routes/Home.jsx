@@ -10,6 +10,8 @@ import FilterForm from "../components/FilterForm";
 import filterIcon from "../icons/filter.svg";
 import { SERVER_URL } from "api";
 import ErrorDeleteMessage from "components/ErrorDeleteMessage";
+import ascIcon from "../icons/sort-asc.svg";
+import descIcon from "../icons/sort-desc.svg";
 
 const Container = styled.main`
   width: 100vw;
@@ -69,6 +71,23 @@ const FilterButton = styled.button`
   cursor: pointer;
   background-color: white;
   border: 1px solid black;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+`;
+
+const SortButton = styled.button`
+  display: flex;
+  padding: 10px 20px;
+  border-radius: 20px;
+  color: black;
+  font-weight: 400;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: white;
+  border: 1px solid black;
+  margin-right: 10px;
 
   &:hover {
     background-color: #f0f0f0;
@@ -198,7 +217,7 @@ function Home() {
     }
   }, [filteredListings, searchedListings]);
 
-  useEffect(() => {}, [displayListings]);
+  useEffect(() => { }, [displayListings]);
 
   /* Search Function Section End */
 
@@ -259,6 +278,23 @@ function Home() {
     }
   };
 
+  const [sortOrder, setSortOrder] = useState("asc");
+
+  const handleSortByPrice = () => {
+    const listingsToSort =
+      displayListings.length > 0 ? [...displayListings] : [...allListings];
+
+    const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
+
+    listingsToSort.sort((a, b) => {
+      const comparison = a.price - b.price;
+      return newSortOrder === "asc" ? comparison : -comparison;
+    });
+
+    setDisplayListings(listingsToSort);
+    setSortOrder(newSortOrder);
+  };
+
   return (
     <Container>
       {userinfo.accountType === "hotel" && ( //Render if hotel owner
@@ -304,7 +340,20 @@ function Home() {
         }}
       >
         <Start>Available Rooms:</Start>
-        <FilterButton onClick={handleFilterClick}>
+        <SortButton onClick={handleSortByPrice}>
+          {sortOrder === "asc" ? (
+            <div style={{ display: "flex" }}>
+              <img src={ascIcon} alt="" />
+              Sort by Price (Low to High)
+            </div>
+          ) : (
+            <div style={{ display: "flex" }}>
+              <img src={descIcon} alt="" />
+              Sort by Price (High to Low)
+            </div>
+          )}
+        </SortButton>
+        <FilterButton onClick={handleFilterClick} id="filterButton">
           <div style={{ display: "flex" }}>
             <img src={filterIcon} alt="" />
             Filters

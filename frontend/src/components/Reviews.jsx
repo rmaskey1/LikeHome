@@ -112,7 +112,6 @@ function Reviews({ isBookedByMe }) {
   useEffect(() => {
     if (!isLoading) {
       if (data.message) {
-        console.log("HI");
         return;
       }
       setSum(data.reduce((acc, obj) => acc + obj.rating, 0));

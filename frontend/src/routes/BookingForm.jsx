@@ -266,6 +266,9 @@ function BookingForm() {
   const applyInputRef = useRef(null);
   const [pointsUsed, setPointsUsed] = useState(0);
 
+  const cancelCheckinDate = new Date(roomData.checkinDate);
+  const cancelCheckoutDate = new Date(roomData.checkoutDate);
+
   const { isLoading: isUserInfoLoading, data: userInfo } = useQuery(
     ["userinfo"],
     getUserInfo
@@ -277,10 +280,24 @@ function BookingForm() {
     formState: { errors },
   } = useForm();
 
-  const nights = Math.floor(
-    (new Date(checkoutDate).getTime() - new Date(checkinDate).getTime()) /
-      (24 * 3600 * 1000)
-  );
+  const roomCheckinDate = roomData.checkinDate;
+  const roomCheckoutDate = roomData.checkoutDate;
+
+  const getNights = (checkin, checkout) => {
+    return Math.floor(
+      (new Date(checkout).getTime() - new Date(checkin).getTime()) /
+        (24 * 3600 * 1000)
+    );
+  };
+
+  const nights =
+    roomCheckinDate && roomCheckoutDate
+      ? getNights(roomCheckinDate, roomCheckoutDate)
+      : Math.floor(
+          (new Date(checkoutDate).getTime() - new Date(checkinDate).getTime()) /
+            (24 * 3600 * 1000)
+        );
+
   const subtotal = roomData.price * nights;
   const tax = subtotal * 0.08;
   const total = subtotal + tax - pointsUsed / 10;
@@ -315,20 +332,21 @@ function BookingForm() {
   // const year = new Date(checkinDate).getFullYear();
 
   const checkInDate = new Date(checkinDate);
+  const checkOutDate = new Date(checkoutDate);
   const currentDate = new Date(); //2023, 10, 11 Mmonths are 0-indexed (10 represents November).
 
   console.log("checkindate", checkInDate);
   console.log("currentdate", currentDate);
 
-  const threeDaysPrior = (currentDate, checkInDate) => {
-    const hoursDifference = Math.abs(currentDate - checkInDate) / 36e5;
+  const threeDaysPrior = (currentDate, cancelCheckinDate) => {
+    const hoursDifference = Math.abs(currentDate - cancelCheckinDate) / 36e5;
     return hoursDifference <= 72;
   };
 
-  console.log("3 days", threeDaysPrior(currentDate, checkInDate));
+  console.log("3 days", threeDaysPrior(currentDate, cancelCheckinDate));
 
   const getCancellationFee = () => {
-    if (isCancelRoute && threeDaysPrior(currentDate, checkInDate)) {
+    if (isCancelRoute && threeDaysPrior(currentDate, cancelCheckinDate)) {
       return Math.round(total * 0.2); // Cancellation fee applies within 3 days
     } else {
       return 0; // No cancellation fee
@@ -336,6 +354,9 @@ function BookingForm() {
   };
 
   const onSubmit = async (formData) => {
+    const formattedCheckinDate = dateFormatted(checkinDate);
+    const formattedCheckoutDate = dateFormatted(checkoutDate);
+
     if (isCancelRoute) {
       //calculating cancellation fee
       const cancellationFee = getCancellationFee();
@@ -370,8 +391,8 @@ function BookingForm() {
         expirationDate: expirationDate,
         cvc: cvc,
         rewardPointsEarned,
-        startDate: checkInDate,
-        endDate: checkoutDate,
+        startDate: formattedCheckinDate,
+        endDate: formattedCheckoutDate,
       };
       setIsFetching(true);
       const response = await fetch(
@@ -412,7 +433,7 @@ function BookingForm() {
     return new Date(date).toLocaleDateString("en-US", {
       month: "short",
       day: "2-digit",
-      year: "2-digit",
+      year: "numeric",
     });
   };
 
@@ -448,11 +469,17 @@ function BookingForm() {
 
             <InfoTitle>Dates:</InfoTitle>
             <InfoText>
-              {dateFormatted(checkinDate)} - {dateFormatted(checkoutDate)}
+              {isCancelRoute
+                ? `${roomData.checkinDate} - ${roomData.checkoutDate}`
+                : `${dateFormatted(checkinDate)} - ${dateFormatted(
+                    checkoutDate
+                  )}`}
             </InfoText>
 
             <InfoTitle>Number of Guests:</InfoTitle>
-            <InfoText>{numGuests}</InfoText>
+            <InfoText>
+              {isCancelRoute ? roomData.reserved_guests : numGuests}
+            </InfoText>
           </div>
 
           <div
@@ -625,7 +652,7 @@ function BookingForm() {
               }}
             >
               <InfoTitle>Cancellation Within 3 Days Refund Policy:</InfoTitle>
-              {threeDaysPrior(currentDate, checkInDate) ? (
+              {threeDaysPrior(currentDate, cancelCheckinDate) ? (
                 <>
                   <InfoText>
                     Only a partial refund will be provided due to cancellation

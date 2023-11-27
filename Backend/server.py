@@ -184,14 +184,18 @@ def bookings():
             new_rewardPoints = int(rewardPoints) + int(rewardPointsEarned) - int(pointsUsed)
             user_ref.update({'rewardPoints': new_rewardPoints})
             
-            charge = stripe.Charge.create(
-                amount=totalPrice,
-                currency='usd',
-                source=cardToken,
-                description='Payment for your booking'
-            )
-            booking = addBooking(gid, rid, data['pointsUsed'], data['totalPrice'], data['startDate'], data['endDate'], data['numGuest'], charge.id)
-            return jsonify(booking)
+            if totalPrice > 0:
+                charge = stripe.Charge.create(
+                    amount=totalPrice,
+                    currency='usd',
+                    source=cardToken,
+                    description='Payment for your booking'
+                )
+                booking = addBooking(gid, rid, data['pointsUsed'], data['totalPrice'], data['startDate'], data['endDate'], data['numGuest'], charge.id)
+                return jsonify(booking)
+            else:
+                booking = addBooking(gid, rid, data['pointsUsed'], data['totalPrice'], data['startDate'], data['endDate'], data['numGuest'], "none")
+                return jsonify(booking)
         except Exception as e:
             return jsonify({'error': str(e.with_traceback())})
         
@@ -256,14 +260,15 @@ def modify_bookings(rid):
             # Cancellation refund calculated using total - cancellation fee
             # No need for customer payment
             try:
-                chargeID = doc.to_dict()['chargeID']
-                total = stripe.Charge.retrieve(chargeID).amount
-                cancellationFee = request.get_json()['cancellationFee']
-                # Creating the refund using the id of the charge made to them for their booking
-                stripe.Refund.create(
-                    charge=chargeID,
-                    amount=total-(int(cancellationFee*100))
-                )
+                if doc.to_dict()['chargeID'] != "none":
+                    chargeID = doc.to_dict()['chargeID']
+                    total = stripe.Charge.retrieve(chargeID).amount
+                    cancellationFee = request.get_json()['cancellationFee']
+                    # Creating the refund using the id of the charge made to them for their booking
+                    stripe.Refund.create(
+                        charge=chargeID,
+                        amount=total-(int(cancellationFee*100))
+                    )
             except Exception as e:
                 return jsonify({'error': str(e)})
             doc.reference.delete()
