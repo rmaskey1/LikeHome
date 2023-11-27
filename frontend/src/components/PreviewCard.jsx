@@ -101,6 +101,7 @@ function PreviewCard({ previewCard }) {
         /> */}
       </ImgContainer>
       <StyledCardDetails
+        id="previewCardSelect"
         className="previewCard-select"
         onClick={handleCardClick}
       >
@@ -111,7 +112,7 @@ function PreviewCard({ previewCard }) {
             width: "300px",
           }}
         >
-          <StyledP style={{ fontWeight: "500" }}>{`${city}, ${state}`}</StyledP>
+          <StyledP id={`location-${rid}`} style={{ fontWeight: "500" }}>{`${city}, ${state}`}</StyledP>
           <div style={{ display: "flex", alignItems: "center" }}>
             <img
               src={Rating}
@@ -124,10 +125,10 @@ function PreviewCard({ previewCard }) {
           </div>
         </div>
         {/* <StyledP>{descArr[Math.floor(Math.random() * descArr.length)]}</StyledP> */}
-        <StyledP>
+        <StyledP id={`dates-${rid}`}>
           {formatMonthAndDate(startDate)} - {formatMonthAndDate(endDate)}
         </StyledP>
-        <StyledP style={{ marginTop: "10px", fontWeight: "400" }}>
+        <StyledP id={`price-${rid}`} style={{ marginTop: "10px", fontWeight: "400" }}>
           <span style={{ fontWeight: "500" }}>${price}</span> night
         </StyledP>
       </StyledCardDetails>
