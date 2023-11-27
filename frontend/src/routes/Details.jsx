@@ -351,25 +351,17 @@ function Details() {
 
   const setIsLogin = useSetRecoilState(isLoginAtom);
   useEffect(() => {
-    if (!bookingIsLoading) {
-      if (bookingData.message) {
-        alert("you need to login again.");
-        setIsLogin(false);
-        navigate("/login", { replace: true });
-        return;
+    if (stateData) {
+      if (stateData.roominfo) {
+        // console.log("case 1");
+        //case 1: {roominfo} structure
+        setRoomData(stateData.roominfo);
+      } else {
+        // console.log("case 2", stateData);
+        setRoomData(stateData);
       }
-      if (stateData) {
-        if (stateData.roominfo) {
-          // console.log("case 1");
-          //case 1: {roominfo} structure
-          setRoomData(stateData.roominfo);
-        } else {
-          // console.log("case 2", stateData);
-          setRoomData(stateData);
-        }
-      } else if (stateData == null && !isLoading) {
-        setRoomData(fetchData);
-      }
+    } else if (stateData == null && !isLoading) {
+      setRoomData(fetchData);
     }
   }, [
     bookingData,
@@ -384,7 +376,7 @@ function Details() {
   const isCheckInDateToday =
     roomData &&
     new Date().toLocaleDateString() ===
-    new Date(roomData.startDate).toLocaleDateString();
+      new Date(roomData.startDate).toLocaleDateString();
 
   // console.log("is checkin today?", isCheckInDateToday);
   // console.log("today", new Date());
