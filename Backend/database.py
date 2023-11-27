@@ -20,13 +20,6 @@ cred = credentials.Certificate("Backend/serviceAccountKey.json")
 app = firebase_admin.initialize_app(cred)
 db = firestore.client()
 
-config = {
-  "apiKey": "AIzaSyBSFok_KWaBdRyXkdrqektCu8E0rYyhV5Y",
-  "authDomain": "innsight-87ed1.firebaseapp.com",
-  "projectId": "innsight-87ed1",
-  "databaseURL": "https://databasename.firebaseio.com/",
-  "storageBucket": "innsight-87ed1.appspot.com"
-}
 firebase = pyrebase.initialize_app(config)
 pyrebase_auth = firebase.auth()
 
