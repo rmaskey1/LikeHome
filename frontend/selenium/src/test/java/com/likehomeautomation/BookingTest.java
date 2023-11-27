@@ -17,10 +17,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.awt.print.Book;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.math.RoundingMode;
 import java.sql.Date;
 import java.text.DecimalFormat;
@@ -31,7 +27,6 @@ import java.util.*;
 
 import static com.codeborne.selenide.Selenide.open;
 import static java.lang.Math.round;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BookingTest {
@@ -40,10 +35,10 @@ public class BookingTest {
     Login login = new Login();
     Home home = new Home();
 
+    ModifyListing modify = new ModifyListing();
+
     Details details = new Details();
     BookingForm bookingForm = new BookingForm();
-    MyBookings myBookings = new MyBookings();
-    ModifyListing modify = new ModifyListing();
 
     @BeforeAll
     public static void setUpAll() {
@@ -271,7 +266,6 @@ public class BookingTest {
         assertEquals(bookingForm.cancelFee.text(), "$0");
     }
 
-
     boolean checkExistsMyBookings(List<WebElement> bookingList, String hotelName){
         System.out.println("[checkNewBookingExists()]: " + hotelName);
         for(WebElement b: bookingList){
@@ -289,7 +283,6 @@ public class BookingTest {
         return false;
     }
 
-
     WebElement findCardMyBookings(List<WebElement> bookingList, String hotelName){
         System.out.println("[findCardMyBookings()]: " + hotelName);
         for(WebElement b: bookingList){
@@ -306,7 +299,6 @@ public class BookingTest {
         }
         return null;
     }
-
 
     String findAvailableRoom(WebDriver driver){
         System.out.println("Looking for available room...");
@@ -352,7 +344,6 @@ public class BookingTest {
         login.submitBtn.click();
         Thread.sleep(3000);
     }
-
 
     void loginAsHotel() throws Exception{
         login.email.sendKeys("vip@hotel.com");
@@ -471,7 +462,6 @@ public class BookingTest {
 
     }
 
-
     void enterCardInfo(String num, String cvc, String exp){
         bookingForm.cardNum.clear();
         bookingForm.cardCvc.clear();
@@ -488,4 +478,3 @@ public class BookingTest {
         bookingForm.cardExp.setValue(exp);
     }
 }
-

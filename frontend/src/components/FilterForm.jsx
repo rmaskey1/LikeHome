@@ -184,10 +184,9 @@ function FilterForm({ onClose, onFilter }) {
                 })}
                 type="number"
                 style={{ color: "black" }}
-                id = "min-input"
               />
               {errors.minPrice && (
-                <ErrorMessage className="error-text" id='min-message'>
+                <ErrorMessage className="error-text">
                   <span>{errors.minPrice.message.toString()}</span>
                 </ErrorMessage>
               )}
@@ -215,10 +214,9 @@ function FilterForm({ onClose, onFilter }) {
                 })}
                 type="number"
                 style={{ color: "black" }}
-                id = "max-input"
               />
               {errors.maxPrice && (
-                <ErrorMessage className="error-text" id='max-message'>
+                <ErrorMessage className="error-text">
                   <span>{errors.maxPrice.message.toString()}</span>
                 </ErrorMessage>
               )}
@@ -247,10 +245,9 @@ function FilterForm({ onClose, onFilter }) {
               })}
               type="number"
               style={{ color: "black" }}
-              id = "bed-input"
             />
             {errors.beds && (
-              <ErrorMessage className="error-text" id='beds-message'>
+              <ErrorMessage className="error-text">
                 <span>{errors.beds.message.toString()}</span>
               </ErrorMessage>
             )}
@@ -269,10 +266,9 @@ function FilterForm({ onClose, onFilter }) {
               })}
               type="number"
               style={{ color: "black" }}
-              id = "guests-input"
             />
             {errors.guests && (
-              <ErrorMessage className="error-text" id='guests-error'>
+              <ErrorMessage className="error-text">
                 <span>{errors.guests.message.toString()}</span>
               </ErrorMessage>
             )}
@@ -291,10 +287,9 @@ function FilterForm({ onClose, onFilter }) {
               })}
               type="number"
               style={{ color: "black" }}
-              id = "bathrooms-input"
             />
             {errors.bathrooms && (
-              <ErrorMessage className="error-text" id='baths-error'>
+              <ErrorMessage className="error-text">
                 <span>{errors.bathrooms.message.toString()}</span>
               </ErrorMessage>
             )}
@@ -319,7 +314,7 @@ function FilterForm({ onClose, onFilter }) {
                     control={control}
                     defaultValue={NaN}
                     render={({ field }) => (
-                      <input {...field} type="radio" value={option} id={`bedType_${option}`}/>
+                      <input {...field} type="radio" value={option} />
                     )}
                   />
                   <div style={{ marginLeft: "10px" }}>{option}</div>
@@ -346,7 +341,7 @@ function FilterForm({ onClose, onFilter }) {
                     name={`amenities[${index}.${amenity}]`}
                     control={control}
                     defaultValue={false}
-                    render={({ field }) => <input {...field} type="checkbox" id={`amenityCheckbox_${index}`}/>}
+                    render={({ field }) => <input {...field} type="checkbox" />}
                   />
                   <div style={{ marginLeft: "10px" }}>{amenity}</div>
                 </Label>
@@ -368,7 +363,7 @@ function FilterForm({ onClose, onFilter }) {
             <ClButton type="button" onClick={handleClear}>
               Clear All
             </ClButton>
-            <SubmitButton type="submit" id='start-filter-btn'>Filter</SubmitButton>
+            <SubmitButton type="submit">Filter</SubmitButton>
           </ButtonContainer>
         </form>
       </Container>
