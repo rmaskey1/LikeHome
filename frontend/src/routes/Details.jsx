@@ -384,7 +384,7 @@ function Details() {
   const isCheckInDateToday =
     roomData &&
     new Date().toLocaleDateString() ===
-      new Date(roomData.startDate).toLocaleDateString();
+    new Date(roomData.startDate).toLocaleDateString();
 
   // console.log("is checkin today?", isCheckInDateToday);
   // console.log("today", new Date());
@@ -494,7 +494,7 @@ function Details() {
             </div>
           </div>
 
-          <Location>{`${roomData.street_name}, ${roomData.city}, ${roomData.state}`}</Location>
+          <Location id="locationdetail">{`${roomData.street_name}, ${roomData.city}, ${roomData.state}`}</Location>
           <Summary>
             {roomData.numberGuests} Guests - {roomData.numberOfBeds} Beds -{" "}
             {roomData.numberOfBathrooms} Bath
