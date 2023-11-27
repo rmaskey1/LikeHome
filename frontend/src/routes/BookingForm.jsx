@@ -338,15 +338,15 @@ function BookingForm() {
   console.log("checkindate", checkInDate);
   console.log("currentdate", currentDate);
 
-  const threeDaysPrior = (currentDate, checkInDate) => {
-    const hoursDifference = Math.abs(currentDate - checkInDate) / 36e5;
+  const threeDaysPrior = (currentDate, cancelCheckinDate) => {
+    const hoursDifference = Math.abs(currentDate - cancelCheckinDate) / 36e5;
     return hoursDifference <= 72;
   };
 
-  console.log("3 days", threeDaysPrior(currentDate, checkInDate));
+  console.log("3 days", threeDaysPrior(currentDate, cancelCheckinDate));
 
   const getCancellationFee = () => {
-    if (isCancelRoute && threeDaysPrior(currentDate, checkInDate)) {
+    if (isCancelRoute && threeDaysPrior(currentDate, cancelCheckinDate)) {
       return Math.round(total * 0.2); // Cancellation fee applies within 3 days
     } else {
       return 0; // No cancellation fee
@@ -652,7 +652,7 @@ function BookingForm() {
               }}
             >
               <InfoTitle>Cancellation Within 3 Days Refund Policy:</InfoTitle>
-              {threeDaysPrior(currentDate, checkInDate) ? (
+              {threeDaysPrior(currentDate, cancelCheckinDate) ? (
                 <>
                   <InfoText>
                     Only a partial refund will be provided due to cancellation
