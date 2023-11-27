@@ -425,7 +425,10 @@ function Details() {
     if (Array.isArray(bookingData)) {
       //wrapped this in an array bc it was giving "bookingData.forEach is not a function" errors
       bookingData.forEach((b) => {
-        bookedDates = [...bookedDates, ...getDaysArray(b.startDate, b.endDate)];
+        bookedDates = [
+          ...bookedDates,
+          ...getDaysArray(b.checkinDate, b.checkoutDate),
+        ];
       });
     }
 
@@ -438,7 +441,7 @@ function Details() {
           }
         }
       });
-  }, [bookingData, checkoutDate, checkinDate, roomData]);
+  }, [bookingData, checkoutDate, checkinDate, roomData, isDoubleBooking]);
 
   useEffect(() => {
     if (roomData) {
@@ -496,7 +499,7 @@ function Details() {
               <img src={roomData.imageUrl} alt="example" />
             </ImgContainer>
 
-            {isGuest && isDoubleBooking ? (
+            {isGuest && isReserved ? (
               <Reserve id="reserved-container">
                 <div>You are currently reserving this listing.</div>
                 {isCheckInDateToday ? (
