@@ -1,4 +1,4 @@
-# cmpe165-likehome
+# LikeHome
 
 ## How to run frontend
 
